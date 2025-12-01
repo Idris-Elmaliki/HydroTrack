@@ -5,5 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
 
     // must include this in order to be able to use ksp for libraries like ROOM
-    id("com.google.devtools.ksp") version "2.0.0-1.0.21" apply false
+    // (check libs.versions.toml for ksp version)
+    id("com.google.devtools.ksp") version libs.versions.ksp apply false
 }
