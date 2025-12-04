@@ -1,11 +1,12 @@
 package com.example.water_logging_app.ui
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,20 +16,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.dimensionResource
-import com.example.water_logging_app.R
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.example.water_logging_app.ui.navigation.UiNavigationRoutes
 import com.example.water_logging_app.ui.ui_data.BottomNavList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WaterLogUiLayout(
+    navController : NavHostController = rememberNavController(),
     modifier : Modifier = Modifier
 ) {
-    var selectItem by remember { mutableStateOf(0) }
+    var selectItem by remember { mutableStateOf(1) }
     Scaffold(
         modifier = modifier,
         bottomBar = {
             NavigationBar(
+                windowInsets = NavigationBarDefaults.windowInsets,
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
@@ -48,6 +52,7 @@ fun WaterLogUiLayout(
                         selected = (selectItem == index),
                         onClick = {
                             selectItem = index
+                            navController.navigate(item.navHostName)
                         },
                         label = {
                             Text(
@@ -58,7 +63,13 @@ fun WaterLogUiLayout(
                 }
             }
         }
-    ) {
-
+    ) { innerpadding ->
+        // here is the problem
+        UiNavigationRoutes(
+            navController = navController,
+            modifier = modifier
+                .padding(innerpadding)
+                .navigationBarsPadding()
+        )
     }
 }
