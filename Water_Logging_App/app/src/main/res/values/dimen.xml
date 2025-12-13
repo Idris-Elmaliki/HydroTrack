@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="ui_padding">16dp</dimen>
+    <dimen name="mini_text_padding">4dp</dimen>
+    <dimen name="icon_padding">8dp</dimen>
+    <dimen name="text_padding">8dp</dimen>
+
+    <dimen name="container_padding">16dp</dimen>
+    <dimen name="text_bubble_size">55dp</dimen>
 </resources>
