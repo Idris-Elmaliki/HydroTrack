@@ -29,7 +29,7 @@ fun UiNavigationRoutes(
             route = UiNavigationRoutesEnum.Home.name
         ) {
             HomeScreen(
-                modifier = modifier
+                onButtonClick = {}
             )
         }
         composable(

@@ -1,8 +1,8 @@
 package com.example.water_logging_app.ui
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -12,7 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -24,10 +24,11 @@ import com.example.water_logging_app.ui.ui_data.BottomNavList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WaterLogUiLayout(
+    modifier : Modifier = Modifier,
+    /*made the navController instance here, to ensure */
     navController : NavHostController = rememberNavController(),
-    modifier : Modifier = Modifier
 ) {
-    var selectItem by remember { mutableStateOf(1) }
+    var selectItem by remember { mutableIntStateOf(1) }
     Scaffold(
         modifier = modifier,
         bottomBar = {
@@ -64,12 +65,11 @@ fun WaterLogUiLayout(
             }
         }
     ) { innerpadding ->
-        // here is the problem
         UiNavigationRoutes(
             navController = navController,
             modifier = modifier
                 .padding(innerpadding)
-                .navigationBarsPadding()
+                .safeContentPadding()
         )
     }
 }
