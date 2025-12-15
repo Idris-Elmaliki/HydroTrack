@@ -56,7 +56,7 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = {
-            CurrentDateText()
+            GreetingText()
         }
     ) { innerpadding ->
         Row(
@@ -207,7 +207,7 @@ private fun AddNewDate(
 
 
 @Composable
-private fun CurrentDateText() {
+private fun GreetingText() {
     var time by remember { mutableStateOf(currentTime()) }
     var date by remember { mutableStateOf(currentDate()) }
 

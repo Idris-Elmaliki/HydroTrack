@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Water_Logging_App</string>
 
+    <!-- Home Screen -->
     <string name="Good_Morning">Good Morning,</string>
     <string name="Good_Afternoon">Good Afternoon,"></string>
     <string name="Good_Evening">Good Evening,</string>
@@ -14,5 +15,8 @@
     <string name="Empty_Log_Description">
         Looks like you didn\'t log anything today. Go ahead and press the plus button below to get started.
     </string>
+
+    <!-- Settings Screen -->
+    <string name="Settings">Settings</string>
 
 </resources>

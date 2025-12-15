@@ -20,6 +20,13 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <!-- this is required for deepLinks!-->
+                <data
+                    android:scheme="app"
+                    android:host="Main"
+                />
+
             </intent-filter>
         </activity>
     </application>
