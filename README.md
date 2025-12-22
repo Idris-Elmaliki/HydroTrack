@@ -1,7 +1,13 @@
-I am currently developing with app with the ROOM library that logs the amount of water you drank that day!
+App Overview
+============
 
-With features like: 
-	* Allowing you to log in water in any liquid measurement and see your past days and how much you logged
-	* Pushing notifications to the user to remind them to drink water with the FCM library
+I am currently developing with app with the ROOM library that logs the amount of water you drink.
 
-With the use of the MVVM architecture to ensure more sustainable code in mind!
+Main Features
+-------------
+
+1. Be able to log in your water intake in real time.
+2. Store user preferences, goals and daily progress.  
+3. Pushing notifications to the user for reminders and motivation (with FireBase Cloud Messaging {FCM}).
+
+All with the use of the **MVVM** architecture to ensure more sustainable code in mind!
