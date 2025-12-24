@@ -24,7 +24,7 @@
                 <!-- this is required for deepLinks!-->
                 <data
                     android:scheme="app"
-                    android:host="Main"
+                    android:host="main"
                 />
 
             </intent-filter>

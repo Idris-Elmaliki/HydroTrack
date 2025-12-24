@@ -14,6 +14,7 @@ enum class UiNavigationRoutesEnum() {
     Home,
     Setting,
     History,
+    // will be created soon!
     AddWater
 }
 
@@ -72,6 +73,7 @@ fun UiNavigationRoutes(
             exitTransition = {
                 slideOutOfContainer(
                     towards = AnimatedContentTransitionScope.SlideDirection.Left
+
                 )
             }
         ) {
