@@ -2,7 +2,7 @@ package com.example.water_logging_app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.water_logging_app.data.water_repository.WaterRepository
+import com.example.water_logging_app.data.repository.WaterRepository
 import com.example.water_logging_app.viewmodel.dataclasses.WaterLogDataUiState
 import com.example.water_logging_app.viewmodel.dataclasses.WaterLogDataList
 import kotlinx.coroutines.flow.MutableStateFlow

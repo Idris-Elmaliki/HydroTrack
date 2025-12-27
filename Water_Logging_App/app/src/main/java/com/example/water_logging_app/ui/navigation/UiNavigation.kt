@@ -20,10 +20,14 @@ import com.example.water_logging_app.ui.mainpage.main_screens.SettingScreen
 const val TWEEN_AMOUNT = 550
 
 enum class UiNavigationRoutesEnum() {
-    Home,
-        AddWater,
-    Setting,
-    History,
+
+    LoadingScreen,
+
+    MainPage,
+        Home,
+            AddWater,
+        Setting,
+        History,
 
 }
 
