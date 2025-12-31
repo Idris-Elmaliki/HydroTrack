@@ -1,24 +1,16 @@
 package com.example.water_logging_app.ui.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-<<<<<<< Updated upstream
-import com.example.water_logging_app.ui.screens.HistoryScreen
-import com.example.water_logging_app.ui.screens.HomeScreen
-import com.example.water_logging_app.ui.screens.SettingScreen
-
-enum class UiNavigationRoutesEnum() {
-    Home,
-    Setting,
-    History,
-    AddWater
-}
-
-=======
 import androidx.navigation.compose.navigation
 import com.example.water_logging_app.ui.mainpage.WaterLogUiLayout
 import com.example.water_logging_app.ui.mainpage.main_screens.HistoryScreen
@@ -47,7 +39,6 @@ enum class UiNavigationRoutesEnum() {
 * Solved!
  */
 
->>>>>>> Stashed changes
 @Composable
 fun UiNavigationRoutes(
     navController : NavHostController,
@@ -112,8 +103,6 @@ fun NavGraphBuilder.homeGraph(
             arguments = listOf(/*this will be very useful for loading the users data!*/),
             deepLinks = listOf(/*I will need to implement this soon, will be useful for push notifications!*/),
             enterTransition = {
-<<<<<<< Updated upstream
-=======
                 when (initialState.destination.route) {
                     UiNavigationRoutesEnum.Setting.name -> {
                         slideIntoContainer(
@@ -179,42 +168,15 @@ fun NavGraphBuilder.homeGraph(
         composable(
             route = UiNavigationRoutesEnum.Setting.name,
             enterTransition = {
->>>>>>> Stashed changes
                 slideIntoContainer(
-                    towards = if(initialState.destination.route == UiNavigationRoutesEnum.Setting.name) {
-                        AnimatedContentTransitionScope.SlideDirection.Left
-                    }
-                    else {
-                        AnimatedContentTransitionScope.SlideDirection.Right
-                    }
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(TWEEN_AMOUNT)
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
-                    towards = if(targetState.destination.route == UiNavigationRoutesEnum.Setting.name) {
-                        AnimatedContentTransitionScope.SlideDirection.Right
-                    } else {
-                        AnimatedContentTransitionScope.SlideDirection.Left
-                    }
-                )
-            }
-        ) {
-            HomeScreen(
-                onButtonClick = {
-                    // navController.navigate(UiNavigationRoutesEnum.AddWater.name)
-                }
-            )
-        }
-        composable(
-            route = UiNavigationRoutesEnum.Setting.name,
-            enterTransition = {
-                slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(TWEEN_AMOUNT)
                 )
             }
         ) {
@@ -226,12 +188,14 @@ fun NavGraphBuilder.homeGraph(
             route = UiNavigationRoutesEnum.History.name,
             enterTransition = {
                 slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left
+                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                    animationSpec = tween(TWEEN_AMOUNT)
                 )
             },
             exitTransition = {
                 slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right
+                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                    animationSpec = tween(TWEEN_AMOUNT)
                 )
             }
         ) {
@@ -242,8 +206,6 @@ fun NavGraphBuilder.homeGraph(
     }
 }
 
-<<<<<<< Updated upstream
-=======
 fun NavGraphBuilder.addWater(
     navController : NavController,
     modifier : Modifier = Modifier
@@ -265,4 +227,3 @@ fun NavGraphBuilder.addWater(
     ) {
     }
 }
->>>>>>> Stashed changes
