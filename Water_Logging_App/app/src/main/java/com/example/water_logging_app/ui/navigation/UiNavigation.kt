@@ -12,10 +12,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.water_logging_app.ui.mainpage.WaterLogUiLayout
-import com.example.water_logging_app.ui.mainpage.main_screens.HistoryScreen
-import com.example.water_logging_app.ui.mainpage.main_screens.HomeScreen
-import com.example.water_logging_app.ui.mainpage.main_screens.SettingScreen
+import com.example.water_logging_app.ui.homepage.HomePageUiLayout
+import com.example.water_logging_app.ui.homepage.homescreens.HistoryScreen
+import com.example.water_logging_app.ui.homepage.homescreens.HomeScreen
+
 
 
 const val TWEEN_AMOUNT = 550
@@ -29,7 +29,6 @@ enum class UiNavigationRoutesEnum() {
                 AddWater,
             Setting,
             History,
-
 }
 
 /*
@@ -56,7 +55,7 @@ fun UiNavigationRoutes(
         composable(
             route = UiNavigationRoutesEnum.MainPage.name,
         ) {
-            WaterLogUiLayout(
+            HomePageUiLayout(
                 rootNavController = navController,
                 modifier = modifier
             )

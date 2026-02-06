@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.screens.homepage
+package com.example.water_logging_app.ui.homepage.homescreens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text

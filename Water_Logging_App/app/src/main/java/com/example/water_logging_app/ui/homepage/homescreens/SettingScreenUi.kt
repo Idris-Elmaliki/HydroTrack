@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.screens.homepage
+package com.example.water_logging_app.ui.mainpage.mainScreens
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme

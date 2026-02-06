@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.screens.homepage
+package com.example.water_logging_app.ui.homepage.homescreens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -30,11 +30,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.example.water_logging_app.R
+import com.example.water_logging_app.time.currentDate
+import com.example.water_logging_app.time.currentTime
 import com.example.water_logging_app.ui.theme.Cyan
 import kotlinx.coroutines.delay
-import java.text.DateFormat
-import java.util.Calendar
-
 
 /*
 * What I have so far is just the shell for the home page ui!
@@ -107,7 +106,8 @@ private fun CurrentGoalCard(
             Spacer(
                 modifier = Modifier
                     .padding(
-                        top = dimensionResource(R.dimen.container_padding))
+                        top = dimensionResource(R.dimen.container_padding)
+                    )
             )
             // Placeholder (will need to query the data from the Sqlite database)
             Text(
@@ -141,7 +141,8 @@ private fun CurrentGoalAmountMatched(
             Spacer(
                 modifier = Modifier
                     .padding(
-                        top = dimensionResource(R.dimen.container_padding))
+                        top = dimensionResource(R.dimen.container_padding)
+                    )
             )
 
             // Placeholder (will need to query the data from the Sqlite database)
@@ -212,8 +213,8 @@ private fun GreetingText() {
     var date by remember { mutableStateOf(currentDate()) }
 
     LaunchedEffect(Unit) {
-        while(true) {
-            if(date != currentDate()) {
+        while (true) {
+            if (date != currentDate()) {
                 date = currentDate()
             }
             delay(3_600_000)
@@ -221,8 +222,8 @@ private fun GreetingText() {
     }
 
     LaunchedEffect(Unit) {
-        while(true) {
-            if(time != currentDate()) {
+        while (true) {
+            if (time != currentDate()) {
                 time = currentDate()
             }
             delay(600_000)
@@ -251,18 +252,3 @@ private fun GreetingText() {
         )
     }
 }
-
-private fun currentDate() : String {
-    val date = Calendar.getInstance().time
-    val dateFormat = DateFormat.getDateInstance().format(date)
-
-    return dateFormat
-}
-
-private fun currentTime() : String {
-    val time = Calendar.getInstance().time
-    val timeFormat = DateFormat.getTimeInstance().format(time)
-
-    return timeFormat
-}
-
