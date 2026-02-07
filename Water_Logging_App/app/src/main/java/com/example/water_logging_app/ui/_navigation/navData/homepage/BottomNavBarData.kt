@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.navigation.navData.homepage
+package com.example.water_logging_app.ui._navigation.navData.homepage
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -8,7 +8,7 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.water_logging_app.ui.navigation.UiNavigationRoutesEnum
+import com.example.water_logging_app.ui._navigation.UiNavigationRoutesEnum
 
 sealed class BottomNavBarData(
     val name : String,

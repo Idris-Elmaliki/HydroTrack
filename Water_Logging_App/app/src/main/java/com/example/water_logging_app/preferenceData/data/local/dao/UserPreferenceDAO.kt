@@ -14,12 +14,7 @@ interface UserPreferenceDAO {
     @Delete
     suspend fun deleteUserPreference(userPreference : UserPreferenceEntity)
 
-    @Query("SELECT preferredMeasurement FROM user_preference_table LIMIT 1")
-    suspend fun getPreferredMeasurement() : String
-
-    @Query("SELECT dailyGoal FROM user_preference_table LIMIT 1")
-    suspend fun getUsersDailyGoal() : Long
-
-    @Query("SELECT name FROM user_preference_table LIMIT 1")
-    suspend fun getUserName() : String
+    // we can just simliy update the viewModel, no need for each individual field to be updated
+    @Query("SELECT * FROM user_preference_table")
+    suspend fun getUserPreference() : UserPreferenceEntity
 }

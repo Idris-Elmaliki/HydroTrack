@@ -10,5 +10,5 @@ import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenc
     version  = 1
 )
 abstract class UserPreferenceDatabase : RoomDatabase() {
-    abstract fun userPreferenceDao() : UserPreferenceDAO
+    abstract fun getUserPreferenceDao() : UserPreferenceDAO
 }

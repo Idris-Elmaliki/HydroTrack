@@ -2,11 +2,9 @@ package com.example.water_logging_app.ui.homepage
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -20,9 +18,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.example.water_logging_app.ui.navigation.navData.homepage.BottomNavList
-import com.example.water_logging_app.ui.navigation.UiNavigationRoutesEnum
-import com.example.water_logging_app.ui.navigation.homeGraph
+import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavList
+import com.example.water_logging_app.ui._navigation.UiNavigationRoutesEnum
+import com.example.water_logging_app.ui._navigation.homeGraph
 
 
 @OptIn(ExperimentalMaterial3Api::class)

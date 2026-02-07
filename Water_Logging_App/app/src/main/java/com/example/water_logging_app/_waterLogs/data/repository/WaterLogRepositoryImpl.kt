@@ -8,7 +8,19 @@ class WaterLogRepositoryImpl(
     private val waterLogDao: WaterLogDAO
 ) : WaterLogRepository {
     override suspend fun upsertLoggedWaterData(waterData: WaterLogEntity) {
-        return TODO()
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getWaterDataASC(): List<WaterLogEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getWaterDataDSC(): List<WaterLogEntity> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getWaterDataByDate(date: String): List<WaterLogEntity> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun deleteLoggedWaterData(waterData: WaterLogEntity) {

@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.navigation
+package com.example.water_logging_app.ui._navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition

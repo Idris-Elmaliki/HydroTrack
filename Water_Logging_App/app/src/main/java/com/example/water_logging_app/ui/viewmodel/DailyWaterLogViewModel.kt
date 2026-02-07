@@ -2,9 +2,10 @@ package com.example.water_logging_app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.water_logging_app._waterLogs.data.repository.WaterRepository
-import com.example.water_logging_app.ui.viewmodel.dataclasses.WaterLogDataUiState
-import com.example.water_logging_app.ui.viewmodel.dataclasses.WaterLogDataList
+import com.example.water_logging_app._waterLogs.data.repository.WaterLogRepositoryImpl
+import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataUiState
+import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataList
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,8 +13,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
+@HiltViewModel
 class DailyWaterLogViewModel(
-    val repository : WaterRepository
+    val repository : WaterLogRepositoryImpl
 ) : ViewModel() {
     private var _uistate = MutableStateFlow(
         WaterLogDataList()
