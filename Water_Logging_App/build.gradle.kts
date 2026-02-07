@@ -6,5 +6,6 @@ plugins {
 
     // must include this in order to be able to use ksp for libraries like ROOM
     // (check libs.versions.toml for ksp version)
-    id("com.google.devtools.ksp") version libs.versions.ksp apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.hilt) apply false
 }

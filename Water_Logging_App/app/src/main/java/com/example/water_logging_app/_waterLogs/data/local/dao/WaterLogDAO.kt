@@ -4,23 +4,23 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.water_logging_app._waterLogs.data.local.entity.WaterInfoEntity
+import com.example.water_logging_app._waterLogs.data.local.entity.WaterLogEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
-* This is the Data Access Object for the WaterInfoEntity
+* This is the Data Access Object for the WaterLogEntity
 *
 * This essentially hosts the database Logic
 */
 
 @Dao
-interface WaterInfoDAO {
+interface WaterLogDAO {
     // inserts AND updates data
     @Upsert
-    suspend fun insertWaterLogData(waterInfo : WaterInfoEntity)
+    suspend fun insertLoggedWaterData(waterInfo : WaterLogEntity)
 
     @Delete
-    suspend fun deleteWaterData(waterInfo : WaterInfoEntity)
+    suspend fun deleteWaterData(waterInfo : WaterLogEntity)
 
     // The type to be a Flow<List> ensures any changes in the table gets updated in the Ui
     // + it keeps it a sync
@@ -31,10 +31,10 @@ interface WaterInfoDAO {
     */
 
     @Query("SELECT * FROM water_info_table ORDER BY timeOfInput ASC")
-    fun getWaterDataByTimeListASC() : Flow<List<WaterInfoEntity>>
+    fun getWaterDataByTimeListASC() : Flow<List<WaterLogEntity>>
 
     @Query("SELECT * FROM water_info_table ORDER BY timeOfInput DESC")
-    fun getWaterDataByTimeListDSC() : Flow<List<WaterInfoEntity>>
+    fun getWaterDataByTimeListDSC() : Flow<List<WaterLogEntity>>
 
     /*
     * With the power of ISOs we can do something like this!
@@ -47,5 +47,5 @@ interface WaterInfoDAO {
     * ISO strings are a VERY powerful tool!
     */
     @Query("SELECT * FROM water_info_table WHERE timeOfInput LIKE :today || '%' ORDER BY timeOfInput ASC")
-    fun getWaterDataByDay(today : String) : Flow<List<WaterInfoEntity>>
+    fun getWaterDataByDay(today : String) : Flow<List<WaterLogEntity>>
 }

@@ -3,8 +3,8 @@ package com.example.water_logging_app._waterLogs.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "Water_Info_Table")
-data class WaterInfoEntity(
+@Entity(tableName = "Water_Log_Table")
+data class WaterLogEntity(
     @PrimaryKey(autoGenerate = true)
     val id : Long? = null,
 

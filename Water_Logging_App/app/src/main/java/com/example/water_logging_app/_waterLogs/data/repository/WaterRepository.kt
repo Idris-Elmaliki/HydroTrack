@@ -3,7 +3,7 @@ package com.example.water_logging_app._waterLogs.data.repository
 import android.content.Context
 import com.example.water_logging_app._waterLogs.data.local.database.WaterInfoDatabase
 import androidx.room.Room
-import com.example.water_logging_app._waterLogs.data.local.entity.WaterInfoEntity
+import com.example.water_logging_app._waterLogs.data.local.entity.WaterLogEntity
 import kotlinx.coroutines.flow.Flow
 
 /*
@@ -29,7 +29,7 @@ class WaterRepository(
     }
 
     // call the singleton!
-    private val waterDao = waterDatabase.waterLogDao()
+    private val waterDao = waterDatabase.getWaterLogDao()
 
     // below are the functions for the database!
     suspend fun insertWaterData(
@@ -37,28 +37,28 @@ class WaterRepository(
         measurementType : String,
         currentTime : String,
     ) {
-        val waterInfo = WaterInfoEntity(
+        val waterInfo = WaterLogEntity(
             amountOfWater = waterAmount,
             measurement = measurementType,
             // now has a proper value
             timeOfInput = currentTime,
         )
 
-        waterDao.insertWaterLogData(waterInfo)
+        waterDao.insertLoggedWaterData(waterInfo)
     }
 
      fun getDailyWaterLogInfo(todaysDate : String)
-     : Flow<List<WaterInfoEntity>> {
+     : Flow<List<WaterLogEntity>> {
         return waterDao.getWaterDataByDay(
             today = todaysDate
         )
     }
 
-    fun getWaterLogInfoHistoryASC() : Flow<List<WaterInfoEntity>> {
+    fun getWaterLogInfoHistoryASC() : Flow<List<WaterLogEntity>> {
         return waterDao.getWaterDataByTimeListASC()
     }
 
-    fun getWaterLogInfoHistoryDSC() : Flow<List<WaterInfoEntity>> {
+    fun getWaterLogInfoHistoryDSC() : Flow<List<WaterLogEntity>> {
         return waterDao.getWaterDataByTimeListDSC()
     }
 }

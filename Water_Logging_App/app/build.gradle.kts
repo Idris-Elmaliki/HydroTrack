@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+
+    id("com.google.dagger.hilt.android")
     // also must include it within your plugins here
     id("com.google.devtools.ksp")
 }
@@ -65,12 +67,24 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Room dependencies
-    implementation("androidx.room:room-ktx:2.8.4")
-    ksp("androidx.room:room-compiler:2.8.4")
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation(libs.kotlinx.coroutines.android)
+
+    // dagger hilt
+    ksp(libs.dagger.hilt.android.compiler)
+    ksp(libs.dagger.hilt.android.compiler)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.dagger.hilt.android)
+
+    // viewModel
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.9.6")
+    implementation(libs.androidx.navigation.compose.v297)
 }
