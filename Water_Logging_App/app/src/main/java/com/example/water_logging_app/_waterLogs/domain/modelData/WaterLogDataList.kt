@@ -6,5 +6,5 @@ data class WaterLogDataList(
     val isLoading : Boolean = true,
     val error : String? = null,
 
-    val waterInfoList : Map<LocalDate, WaterLogDataUiState> = mapOf()
+    val waterInfoList : Map<LocalDate, WaterLogData> = mapOf()
 )

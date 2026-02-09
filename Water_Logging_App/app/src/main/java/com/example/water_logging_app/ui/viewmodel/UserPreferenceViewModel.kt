@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
 class UserPreferenceViewModel(
     val preferenceRepository : UserPreferenceRepositoryImpl
 ) : ViewModel() {
-    var _uiState = MutableStateFlow(UserPreferenceData())
+    var _preferenceState = MutableStateFlow(UserPreferenceData())
 
-    val uiState : StateFlow<UserPreferenceData> = _uiState.asStateFlow()
+    val uiState : StateFlow<UserPreferenceData> = _preferenceState.asStateFlow()
 
     init {
         loadUserPreferenceInfo()
@@ -27,11 +27,9 @@ class UserPreferenceViewModel(
     fun loadUserPreferenceInfo() {
         viewModelScope.launch {
             try {
-                val name = async {  preferenceRepository.getName() }
-                val dailyGoal = async { preferenceRepository.getDailyGoal() }
-                val preferredMeasurement = async { preferenceRepository.getPreferredMeasurement() }
 
-                _uiState.update { currentState ->
+
+                _preferenceState.update { currentState ->
                     currentState.copy(
                         name = name.await(),
                         dailyGoal = dailyGoal.await(),
@@ -40,7 +38,7 @@ class UserPreferenceViewModel(
                 }
 
             } catch (e: Exception) {
-                _uiState.update { currentState ->
+                _preferenceState.update { currentState ->
                     currentState.copy(
                         error = e.message
                     )
@@ -62,7 +60,7 @@ class UserPreferenceViewModel(
                     usersPreferredMeasurement = usersPreferredMeasurement
                 )
 
-                _uiState.update { currentState ->
+                _preferenceState.update { currentState ->
                     currentState.copy(
                         name = usersName,
                         dailyGoal = usersDailyGoal,
@@ -71,7 +69,7 @@ class UserPreferenceViewModel(
                 }
             }
             catch (e : Exception) {
-                _uiState.update { currentState ->
+                _preferenceState.update { currentState ->
                     currentState.copy(
                         error = e.message
                     )
