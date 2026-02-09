@@ -8,7 +8,7 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.water_logging_app.ui._navigation.UiNavigationRoutesEnum
+import com.example.water_logging_app.ui._navigation.routes.HomePageRoutes
 
 sealed class BottomNavBarData(
     val name : String,
@@ -17,27 +17,27 @@ sealed class BottomNavBarData(
     val navHostName : String
 )
 
-object home : BottomNavBarData(
+object Home : BottomNavBarData(
     name = "Home",
     selectedIcon = Icons.Filled.Home,
     unselectedIcon = Icons.Outlined.Home,
-    navHostName = UiNavigationRoutesEnum.Home.name
+    navHostName = HomePageRoutes.Home.name
 )
 
-object settings : BottomNavBarData(
+object Settings : BottomNavBarData(
     name = "Settings",
     selectedIcon = Icons.Filled.Settings,
     unselectedIcon = Icons.Outlined.Settings,
-    navHostName = UiNavigationRoutesEnum.Setting.name
+    navHostName = HomePageRoutes.Setting.name
 )
 
-object history : BottomNavBarData(
+object History : BottomNavBarData(
     name = "History",
     selectedIcon = Icons.Filled.DateRange,
     unselectedIcon = Icons.Outlined.DateRange,
-    navHostName = UiNavigationRoutesEnum.History.name
+    navHostName = HomePageRoutes.History.name
 )
 
 val BottomNavList =  listOf(
-    settings, home, history
+    Settings, Home, History
 )
