@@ -14,20 +14,18 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavList
-import com.example.water_logging_app.ui._navigation.UiNavigationRoutesEnum
-import com.example.water_logging_app.ui._navigation.homeGraph
+import com.example.water_logging_app.ui._navigation.navGraphs.homeGraph
+import com.example.water_logging_app.ui._navigation.routes.HomePageRoutes
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePageUiLayout(
-    modifier : Modifier = Modifier,
-    rootNavController : NavController,
+    modifier : Modifier = Modifier
 ) {
     // here I made the nav Controller for ONLY the bottom navigation bar
     // This allows me to have full control of the Nav Graph, while having nested nav graphs!
@@ -71,12 +69,12 @@ fun HomePageUiLayout(
     ) { innerpadding ->
         NavHost(
             navController = bottomNavController,
-            startDestination = UiNavigationRoutesEnum.Home.name,
+            startDestination = HomePageRoutes.Home.name,
             modifier = Modifier
                 .padding(innerpadding)
         ) {
             homeGraph(
-                navController = rootNavController,
+                navController = bottomNavController,
                 modifier = modifier
             )
         }

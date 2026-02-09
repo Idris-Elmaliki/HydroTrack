@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.example.water_logging_app.ui.MainAppFunc
+import androidx.compose.ui.platform.LocalContext
+import com.example.water_logging_app.ui._navigation.UiNavigationRoutes
 import com.example.water_logging_app.ui.theme.Water_Logging_AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -17,11 +20,18 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Water_Logging_AppTheme {
-                MainAppFunc(
-                    modifier = Modifier
-                        .fillMaxSize()
+                UiNavigationRoutes(
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
     }
+}
+
+// for hilt viewModels
+// This ensures we get the same instance of a hiltViewModel across different screens!
+@Composable
+fun rememberActivity() : ComponentActivity {
+    val context = LocalContext.current
+    return remember(context) { context as ComponentActivity }
 }
