@@ -3,7 +3,7 @@ package com.example.water_logging_app.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app._waterLogs.data.repository.WaterLogRepositoryImpl
-import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataUiState
+import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
 import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,10 +46,10 @@ class DailyWaterLogViewModel(
 
                 /*
                 * The repository function returns a WaterInfoEntityList
-                * So we need to use .map{} to everything into a list of WaterLogDataUiState
+                * So we need to use .map{} to everything into a list of WaterLogData
                 */
                     val uiStateList = waterInfoList.map { info ->
-                        WaterLogDataUiState(
+                        WaterLogData(
                             amountOfWater = info.amountOfWater,
                             measurementType = info.measurement,
                             timeOfInput = info.timeOfInput
@@ -93,7 +93,7 @@ class DailyWaterLogViewModel(
                 _uistate.update { currentState ->
                     currentState.copy(
                         isLoading = false,
-                        waterInfoList = currentState.waterInfoList + WaterLogDataUiState(
+                        waterInfoList = currentState.waterInfoList + WaterLogData(
                             amountOfWater = waterAmount,
                             measurementType = measurementType,
                             timeOfInput = currentTime,

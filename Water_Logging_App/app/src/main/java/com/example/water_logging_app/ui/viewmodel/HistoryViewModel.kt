@@ -3,7 +3,7 @@ package com.example.water_logging_app.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataList
-import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataUiState
+import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,7 +31,7 @@ class HistoryViewModel(
             viewModelScope.launch {
                 repository.getWaterLogInfoHistoryASC().collect { waterInfoList ->
                     val uiStateList = waterInfoList.map { info ->
-                        WaterLogDataUiState(
+                        WaterLogData(
                             amountOfWater = info.amountOfWater,
                             measurementType = info.measurement,
                             timeOfInput = info.timeOfInput,
@@ -61,7 +61,7 @@ class HistoryViewModel(
             viewModelScope.launch {
                 repository.getWaterLogInfoHistoryDSC().collect { waterInfoList ->
                     val uiStateList = waterInfoList.map { info ->
-                        WaterLogDataUiState(
+                        WaterLogData(
                             amountOfWater = info.amountOfWater,
                             measurementType = info.measurement,
                             timeOfInput = info.timeOfInput,
