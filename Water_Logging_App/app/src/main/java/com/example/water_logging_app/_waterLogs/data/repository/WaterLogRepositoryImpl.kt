@@ -4,6 +4,7 @@ import com.example.water_logging_app._waterLogs.data.local.dao.WaterLogDAO
 import com.example.water_logging_app._waterLogs.data.local.entity.WaterLogEntity
 import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
 import com.example.water_logging_app._waterLogs.domain.repository.WaterLogRepository
+import com.example.water_logging_app.time.TimeConversion
 
 class WaterLogRepositoryImpl(
     private val waterLogDao: WaterLogDAO
@@ -20,11 +21,11 @@ class WaterLogRepositoryImpl(
         return waterLogDao.getWaterDataDSC().toWaterLogDataList()
     }
 
+
     override suspend fun getWaterDataByDate(date: String): List<WaterLogData> {
-        // return waterLogDao.getWaterDataByDate(date).toWaterLogDataList()
-        // I wanted to have a search up / filter option for this (Will be made soon)
-        TODO("Not yet implemented")
+        return waterLogDao.getWaterDataByDay(date).toWaterLogDataList()
     }
+
 
     override suspend fun deleteLoggedWaterData(waterData: WaterLogData) {
         waterLogDao.deleteWaterData(waterData.toWaterLogEntity())
@@ -32,14 +33,15 @@ class WaterLogRepositoryImpl(
 }
 
 private fun List<WaterLogEntity>.toWaterLogDataList(): List<WaterLogData> {
-    val waterDataList = mutableListOf<WaterLogData>()
+    val conversion = TimeConversion
 
+    val waterDataList = mutableListOf<WaterLogData>()
     forEach { index ->
         waterDataList.add(
             WaterLogData(
                 amountOfWater = index.amountOfWater,
                 measurementType = index.measurement,
-                timeOfInput = index.timeOfInput
+                timeOfInput = conversion.getLocalDateTimeFromStringR(index.timeOfInput)
             )
         )
     }
@@ -49,9 +51,11 @@ private fun List<WaterLogEntity>.toWaterLogDataList(): List<WaterLogData> {
 
 
 private fun WaterLogData.toWaterLogEntity(): WaterLogEntity {
+    val conversion = TimeConversion
+
     return WaterLogEntity(
         amountOfWater = amountOfWater,
         measurement = measurementType,
-        timeOfInput = timeOfInput
+        timeOfInput = conversion.getStringFromLocalDateTimeR(timeOfInput)
     )
 }

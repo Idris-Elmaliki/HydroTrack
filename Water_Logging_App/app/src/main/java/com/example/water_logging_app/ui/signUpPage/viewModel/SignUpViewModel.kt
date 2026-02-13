@@ -47,7 +47,7 @@ class SignUpViewModel @Inject constructor(
             } catch (e: Exception) {
                 _signUpData.update { data ->
                     data.copy(
-                        error = e.message.toString()
+                        error = e.message
                     )
                 }
             }
