@@ -42,7 +42,7 @@ interface WaterLogDAO {
     * I was able to compare today (the currentDay) to the new ISO string format within the database.
     * What the Query is saying is to find the timeOfInput that is == to current Day
     * And what the % does is actually different, it is NOT the modulus operator!
-    * Instead it tells ROOM to ignore all the data pass the data we called for in today parameter!
+    * Instead, it tells ROOM to ignore all the data pass the data we called for in today parameter!
     *
     * ISO strings are a VERY powerful tool!
     */

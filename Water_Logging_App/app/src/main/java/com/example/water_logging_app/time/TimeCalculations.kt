@@ -3,6 +3,7 @@ package com.example.water_logging_app.time
 import java.text.DateFormat
 import java.util.Calendar
 
+// LocalTime wil be used soon...
 fun currentDate() : String {
     // localDate is so much better, it is NOT even a joke
     val date = Calendar.getInstance().time
