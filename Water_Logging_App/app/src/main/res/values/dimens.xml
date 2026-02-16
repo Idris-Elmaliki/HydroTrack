@@ -6,6 +6,9 @@
 
     <!-- Containers padding -->
     <dimen name="icon_padding">8dp</dimen>
+    <dimen name="extra_container_padding">48dp</dimen>
     <dimen name="container_padding">16dp</dimen>
     <dimen name="text_bubble_size">55dp</dimen>
+    <dimen name="jumpingValue">15dp</dimen>
+    <dimen name="loadingDotSize">10dp</dimen>
 </resources>

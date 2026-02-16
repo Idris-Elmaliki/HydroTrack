@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui._navigation.actions
+package com.example.water_logging_app.ui._navigation.navActions
 
 import androidx.navigation.NavHostController
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
@@ -6,10 +6,11 @@ import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
 class AppNavActions(
     private val navController: NavHostController
 ) {
+    fun navigateToHomePage() {
+        navController.navigate(AppNavRoutes.HomePage.name)
+    }
+
     fun navigateBackToSignUpScreen() {
-        navController.popBackStack(
-            route = AppNavRoutes.SignUpScreen.name,
-            inclusive = false
-        )
+        navController.popBackStack()
     }
 }

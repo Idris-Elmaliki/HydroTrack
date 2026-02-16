@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.water_logging_app.ui._navigation.actions.AppNavActions
+import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
 import com.example.water_logging_app.ui.homepage.HomePageUiLayout
 import com.example.water_logging_app.ui.signUpPage.SignUpPageLayout
@@ -16,14 +16,14 @@ import com.example.water_logging_app.ui.signUpPage.SignUpPageLayout
 
 /*
 * This is the main NavHost,
-* it controls the navigation between the Sign Up and HomePage!
+* it controls the navigation between the Sign-Up and HomePage!
 */
 @Composable
 fun UiNavigationRoutes(
     modifier: Modifier = Modifier,
     navController : NavHostController = rememberNavController()
 ) {
-    val mainNav = rememberSaveable(navController) {
+    val mainNav = remember(navController) {
         AppNavActions(navController)
     }
 
