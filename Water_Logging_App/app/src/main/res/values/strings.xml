@@ -1,22 +1,29 @@
 <resources>
     <string name="app_name">Water_Logging_App</string>
 
+    <!-- Main Loading Screen-->
+        <string name="HydroTrack">HydroTrack</string>
+
     <!-- Home Screen -->
-    <string name="Good_Morning">Good Morning,</string>
-    <string name="Good_Afternoon">Good Afternoon,"></string>
-    <string name="Good_Evening">Good Evening,</string>
+        <string name="Good_Morning">Good Morning,</string>
+        <string name="Good_Afternoon">Good Afternoon,"></string>
+        <string name="Good_Evening">Good Evening,</string>
 
-    <string name="Target">Target</string>
+        <string name="Target">Target</string>
 
-    <string name="Amount_of_water_drank">Goal</string>
+        <string name="Amount_of_water_drank">Goal</string>
 
-    <string name="Goal_amount_reached">Of your goal has been reached.</string>
+        <string name="Goal_amount_reached">Of your goal has been reached.</string>
 
-    <string name="Empty_Log_Description">
-        Looks like you didn\'t log anything today. Go ahead and press the plus button below to get started.
-    </string>
+        <string name="Empty_Log_Description">
+            Looks like you didn\'t log anything today. Go ahead and press the plus button below to get started.
+        </string>
 
     <!-- Settings Screen -->
-    <string name="Settings">Settings</string>
+        <string name="Settings">Settings</string>
+    <string name="loading_text1">Stay hydrated and track your daily water intake with us</string>
+    <string name="loading_text2">Prioritize your wellness and build\na healthy habit, one sip at a time.</string>
+    <string name="loading_text3">We\'re here to make your water goals as easy as 1, 2, 3!</string>
+    <string name="loading_text4">Hello :)</string>
 
 </resources>

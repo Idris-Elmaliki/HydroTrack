@@ -9,18 +9,61 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.water_logging_app.ui.theme.BrilliantAzure
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,
+
+    surfaceVariant = BrilliantAzure
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
+
+    surfaceVariant = BrilliantAzure,
+    onSurfaceVariant = Color.White,
+
+    /*
+    onPrimary = TODO(),
+    primaryContainer = TODO(),
+    onPrimaryContainer = TODO(),
+    inversePrimary = TODO(),
+    onSecondary = TODO(),
+    secondaryContainer = TODO(),
+    onSecondaryContainer = TODO(),
+    onTertiary = TODO(),
+    tertiaryContainer = TODO(),
+    onTertiaryContainer = TODO(),
+    background = TODO(),
+    onBackground = TODO(),
+    surface = TODO(),
+    onSurface = TODO(),
+    surfaceVariant = TODO(),
+    onSurfaceVariant = TODO(),
+    surfaceTint = TODO(),
+    inverseSurface = TODO(),
+    inverseOnSurface = TODO(),
+    error = TODO(),
+    onError = TODO(),
+    errorContainer = TODO(),
+    onErrorContainer = TODO(),
+    outline = TODO(),
+    outlineVariant = TODO(),
+    scrim = TODO(),
+    surfaceBright = TODO(),
+    surfaceContainer = TODO(),
+    surfaceContainerHigh = TODO(),
+    surfaceContainerHighest = TODO(),
+    surfaceContainerLow = TODO(),
+    surfaceContainerLowest = TODO(),
+    surfaceDim = TODO()
+    */
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

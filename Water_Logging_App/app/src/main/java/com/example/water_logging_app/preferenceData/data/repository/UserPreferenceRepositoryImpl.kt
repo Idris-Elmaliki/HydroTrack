@@ -4,8 +4,9 @@ import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenc
 import com.example.water_logging_app.preferenceData.data.local.entity.UserPreferenceEntity
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.repository.UserPreferenceRepository
+import javax.inject.Inject
 
-class UserPreferenceRepositoryImpl(
+class UserPreferenceRepositoryImpl @Inject constructor(
     private val dao : UserPreferenceDAO
 ) : UserPreferenceRepository {
     override suspend fun insertUserPreference(userPreference: UserPreferenceData) {

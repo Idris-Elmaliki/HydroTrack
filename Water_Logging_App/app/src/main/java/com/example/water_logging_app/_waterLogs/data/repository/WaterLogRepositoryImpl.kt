@@ -5,8 +5,9 @@ import com.example.water_logging_app._waterLogs.data.local.entity.WaterLogEntity
 import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
 import com.example.water_logging_app._waterLogs.domain.repository.WaterLogRepository
 import com.example.water_logging_app.time.TimeConversion
+import javax.inject.Inject
 
-class WaterLogRepositoryImpl(
+class WaterLogRepositoryImpl @Inject constructor(
     private val waterLogDao: WaterLogDAO
 ) : WaterLogRepository {
     override suspend fun upsertLoggedWaterData(waterData: WaterLogData) {

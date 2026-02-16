@@ -1,30 +1,34 @@
 package com.example.water_logging_app.ui._navigation.navGraphs
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import com.example.water_logging_app.ui._navigation.actions.AppNavActions
-import com.example.water_logging_app.ui._navigation.actions.SignUpPageActions
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
+import com.example.water_logging_app.ui._navigation.navActions.SignUpPageActions
+import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
+import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
 
-@Composable
-fun NavGraphBuilder.SignUpGraph(
+fun NavGraphBuilder.signUpGraph(
     modifier: Modifier,
     navController: NavHostController,
     mainNavActions : AppNavActions
 ) {
-    val actions = rememberSaveable(navController) {
-        SignUpPageActions(navController)
-    }
+    val actions = SignUpPageActions(navController)
 
-    NavHost(
-        navController = navController,
-        startDestination = "sign_up",
-        modifier = modifier
+    navigation(
+        route = "sign_up",
+        startDestination = SignUpPageRoutes.MainLoadingScreen.name,
     ) {
+        composable(
+            route = SignUpPageRoutes.MainLoadingScreen.name
+        ) {
+            MainLoadingScreenUi(
+                modifier = modifier
+            )
+        }
+
         // insert the ui (will complete soon!)
     }
 }
