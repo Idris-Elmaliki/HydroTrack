@@ -16,11 +16,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val repo : UserPreferenceRepositoryImpl
 ) : ViewModel() {
-    private var _settingsData = MutableStateFlow(UserPreferenceData(
-        name = "",
-        dailyGoal = 0,
-        preferredMeasurement = ""
-    ))
+    private var _settingsData = MutableStateFlow(UserPreferenceData())
     val settingsData : StateFlow<UserPreferenceData> = _settingsData.asStateFlow()
 
     init {
@@ -30,12 +26,17 @@ class SettingsViewModel @Inject constructor(
     fun loadSettingsData() {
         viewModelScope.launch {
             try {
-                val userData = repo.getUserPreference()
+                val userData = repo.getUserPreference()?: UserPreferenceData()
+
                 _settingsData.update { data ->
                     data.copy(
                         name = userData.name,
+                        age = userData.age,
+                        gender = userData.gender,
+                        height = userData.height,
+                        weight = userData.weight,
                         dailyGoal = userData.dailyGoal,
-                        preferredMeasurement = userData.preferredMeasurement
+                        isMetric = userData.isMetric
                     )
                 }
 

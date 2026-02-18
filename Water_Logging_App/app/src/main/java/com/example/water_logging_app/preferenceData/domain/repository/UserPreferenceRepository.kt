@@ -7,5 +7,5 @@ interface UserPreferenceRepository {
 
     suspend fun deleteUserPreference(userPreference: UserPreferenceData)
 
-    suspend fun getUserPreference() : UserPreferenceData
+    suspend fun getUserPreference() : UserPreferenceData?
 }

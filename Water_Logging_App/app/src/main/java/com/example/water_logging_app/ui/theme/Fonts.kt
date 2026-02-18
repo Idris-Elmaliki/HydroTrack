@@ -14,3 +14,8 @@ val averiaSerifLibre = FontFamily(
     Font(font.averia_serif_libre_light, weight = FontWeight.Light),
     Font(font.averia_serif_libre_light_italic, weight = FontWeight.Light, style = FontStyle.Italic)
 )
+
+val poppins = FontFamily(
+    Font(font.poppins_regular, weight = FontWeight.Normal),
+    Font(font.poppins_bold, weight = FontWeight.Bold),
+)

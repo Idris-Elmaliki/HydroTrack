@@ -25,5 +25,9 @@
     <string name="loading_text2">Prioritize your wellness and build\na healthy habit, one sip at a time.</string>
     <string name="loading_text3">We\'re here to make your water goals as easy as 1, 2, 3!</string>
     <string name="loading_text4">Hello :)</string>
+    <string name="CreateAnAccount">Create an Account</string>
+    <string name="FirstTimeHere">Looks like this is your first time here.</string>
+    <string name="CreateToContinue">Create an Account to continue!</string>
+    <string name="CreateAccount">Create Account\n</string>
 
 </resources>

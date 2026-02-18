@@ -7,7 +7,13 @@ package com.example.water_logging_app.preferenceData.domain.modelData
 */
 data class UserPreferenceData(
     val error : String? = null,
+    val isLoading : Boolean = true,
+
     val name : String? = null,
+    val age : Int? = null,
+    val gender : String? = null,
+    val height : Float? = null,
+    val weight : Float? = null,
     val dailyGoal : Long? = null,
-    val preferredMeasurement : String? = null
+    val isMetric : Boolean? = null,
 )
