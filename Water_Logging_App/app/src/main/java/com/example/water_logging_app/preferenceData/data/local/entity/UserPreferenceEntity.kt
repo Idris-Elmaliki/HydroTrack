@@ -8,8 +8,11 @@ data class UserPreferenceEntity(
     @PrimaryKey
     val id : Int = 1,
 
-    // will probably include more data (height, weight, age, etc...) 
     val name : String,
+    val age : Int,
+    val gender : String,
+    val height : Float,
+    val weight : Float,
     val dailyGoal : Long,
-    val preferredMeasurement : String,
+    val isMetric : Boolean,
 )

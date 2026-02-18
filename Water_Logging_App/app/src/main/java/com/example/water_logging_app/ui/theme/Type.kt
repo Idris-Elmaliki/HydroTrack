@@ -1,6 +1,11 @@
 package com.example.water_logging_app.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -18,9 +23,29 @@ val Typography = Typography(
         fontWeight = FontWeight.Bold,
         letterSpacing = 0.5.sp
     ),
+    titleSmall = TextStyle(
+        fontFamily = poppins,
+        fontSize = 24.sp,
+        lineHeight = 24.sp,
+        fontStyle = FontStyle.Normal,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Center
+    ),
+
+
+    displaySmall = TextStyle(
+        fontFamily = poppins,
+        fontSize = 24.sp,
+        lineHeight = 24.sp,
+        fontStyle = FontStyle.Normal,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Center
+    ),
 
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = FontFamily.Serif,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
@@ -29,18 +54,27 @@ val Typography = Typography(
     ),
 
     labelMedium = TextStyle(
-        fontFamily = FontFamily.Monospace,
+        fontFamily = poppins,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Center,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false
+        ),
     ),
+
     labelSmall = TextStyle(
-        fontFamily = FontFamily.Monospace,
+        fontFamily = poppins,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        lineHeight = 12.sp,
-        letterSpacing = 0.5.sp
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Center,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false
+        ),
     ),
 
     headlineLarge = TextStyle(

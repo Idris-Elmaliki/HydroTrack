@@ -14,7 +14,7 @@ interface UserPreferenceDAO {
     @Delete
     suspend fun deleteUserPreference(userPreference : UserPreferenceEntity)
 
-    // we can just simliy update the viewModel, no need for each individual field to be updated
+    // I changed this function to pass UserPreferenceData? in order to have O(1) null check instead of O(n)
     @Query("SELECT * FROM user_preference_table")
-    suspend fun getUserPreference() : UserPreferenceEntity
+    suspend fun getUserPreference() : UserPreferenceEntity?
 }

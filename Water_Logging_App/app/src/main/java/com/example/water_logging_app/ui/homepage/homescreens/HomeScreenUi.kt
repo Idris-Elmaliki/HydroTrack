@@ -32,7 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.water_logging_app.R
 import com.example.water_logging_app.time.currentDate
 import com.example.water_logging_app.time.currentTime
-import com.example.water_logging_app.ui.theme.Cyan
+import com.example.water_logging_app.ui.theme.VividCobalt
 import kotlinx.coroutines.delay
 
 /*
@@ -190,7 +190,7 @@ private fun AddNewDate(
             onClick = onButtonClick,
             modifier = Modifier
                 .background(
-                    color = Cyan,
+                    color = VividCobalt,
                     shape = MaterialTheme.shapes.extraLarge,
                 )
                 .size(dimensionResource(R.dimen.text_bubble_size))

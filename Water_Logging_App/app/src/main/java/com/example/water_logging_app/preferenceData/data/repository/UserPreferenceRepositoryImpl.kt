@@ -17,23 +17,37 @@ class UserPreferenceRepositoryImpl @Inject constructor(
         dao.deleteUserPreference(userPreference.toUserPreferenceEntity())
     }
 
-    override suspend fun getUserPreference(): UserPreferenceData {
-        return dao.getUserPreference().toUserPreferenceData()
+    /*
+    * I changed this function to pass UserPreferenceData? in order to have O(1) null check instead of O(n)
+    * What I mean is that since I am using this function in both before and after sign Up, I have to check whether the table is empty
+    *
+    * So instead of looping through each variable in UserPreferenceData, I can use the exception thrown when I call an empty table row!
+    */
+    override suspend fun getUserPreference(): UserPreferenceData? {
+        return dao.getUserPreference()?.toUserPreferenceData()
     }
 }
 
 private fun UserPreferenceEntity.toUserPreferenceData() : UserPreferenceData {
     return UserPreferenceData(
         name = name,
+        age = age,
+        gender = gender,
+        height = height,
+        weight = weight,
         dailyGoal = dailyGoal,
-        preferredMeasurement = preferredMeasurement,
+        isMetric = isMetric
     )
 }
 
 private fun UserPreferenceData.toUserPreferenceEntity() : UserPreferenceEntity {
     return UserPreferenceEntity(
-        name = name!!,
-        dailyGoal = dailyGoal!!,
-        preferredMeasurement = preferredMeasurement!!,
+        name = name?: "User",
+        age = age?: -1,
+        gender = gender?: "Not specified",
+        height = height?: -1f,
+        weight = weight?: -1f,
+        dailyGoal = dailyGoal?: -1,
+        isMetric = isMetric?: true
     )
 }
