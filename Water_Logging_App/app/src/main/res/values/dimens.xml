@@ -16,4 +16,5 @@
     <dimen name="BorderStroke">8dp</dimen>
     <dimen name="card_shadow_elevation">8dp</dimen>
     <dimen name="ClickableCardHeight">50dp</dimen>
+    <dimen name="PageIndicatorIconSize">4dp</dimen>
 </resources>

@@ -11,6 +11,7 @@ import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.navActions.SignUpPageActions
 import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
 import com.example.water_logging_app.ui.signUpPage.screens.BeginSignUpPageUi
+import com.example.water_logging_app.ui.signUpPage.screens.InfoScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 
@@ -51,7 +52,11 @@ fun NavGraphBuilder.signUpGraph(
         composable(
             route = SignUpPageRoutes.InfoScreens.name
         ) {
-
+            InfoScreenUi(
+                modifier = modifier
+            ) {
+                actions.navigateToUsersNamePage()
+            }
         }
 
         composable(
