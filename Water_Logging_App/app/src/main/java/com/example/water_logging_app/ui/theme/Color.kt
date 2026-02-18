@@ -15,3 +15,5 @@ val BrilliantAzure = Color(0xFF_5DCCFC)
 val Aquamarine = Color(0xFF_62CDFA)
 
 val MetallicGray = Color(0xFF_8E8E8E)
+
+val LightGray = Color(0xFF_F2F2F2)

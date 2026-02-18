@@ -29,5 +29,13 @@
     <string name="FirstTimeHere">Looks like this is your first time here.</string>
     <string name="CreateToContinue">Create an Account to continue!</string>
     <string name="CreateAccount">Create Account\n</string>
+    <string name="Next">NEXT</string>
+    <string name="GetStarted">GET STARTED</string>
+    <string name="TrackWithUs">Track your daily water intake with Us.</string>
+    <string name="SmartReminders">Smart Reminders Tailored to You!</string>
+    <string name="EasyToUse">Easy to Use – Drink, Tap, Repeat!</string>
+    <string name="AchieveYourGoals">Achieve your hydration goals with a simple tap!</string>
+    <string name="QuickAndEasy"><![CDATA[Quick and easy to set your hydration goal & then track your daily water intake progress.]]></string>
+    <string name="StayingHydrated">Staying hydrated every day is easy with HydroTrack.</string>
 
 </resources>
