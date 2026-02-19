@@ -19,3 +19,7 @@ val poppins = FontFamily(
     Font(font.poppins_regular, weight = FontWeight.Normal),
     Font(font.poppins_bold, weight = FontWeight.Bold),
 )
+
+val inter24 = FontFamily(
+    Font(font.inter_24pt_bold, weight = FontWeight.Bold)
+)

@@ -15,7 +15,6 @@ import com.example.water_logging_app.ui.homepage.homescreens.HistoryScreen
 import com.example.water_logging_app.ui.homepage.homescreens.HomeScreen
 import com.example.water_logging_app.ui.mainpage.mainScreens.SettingScreen
 
-
 const val TWEEN_AMOUNT = 550
 fun NavGraphBuilder.homeGraph(
     navController : NavHostController,
