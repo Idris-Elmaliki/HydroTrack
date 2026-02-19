@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Text padding -->
+    <dimen name="extra_mini_text_padding">2dp</dimen>
     <dimen name="mini_text_padding">4dp</dimen>
     <dimen name="text_padding">8dp</dimen>
 
@@ -12,9 +13,9 @@
     <dimen name="jumpingValue">15dp</dimen>
     <dimen name="loadingDotSize">8dp</dimen>
     <dimen name="shadow_elevation">4dp</dimen>
-    <dimen name="extra_mini_text_padding">2dp</dimen>
     <dimen name="BorderStroke">8dp</dimen>
     <dimen name="card_shadow_elevation">8dp</dimen>
     <dimen name="ClickableCardHeight">50dp</dimen>
     <dimen name="PageIndicatorIconSize">4dp</dimen>
+    <dimen name="ArrowBackIconSize">30dp</dimen>
 </resources>
