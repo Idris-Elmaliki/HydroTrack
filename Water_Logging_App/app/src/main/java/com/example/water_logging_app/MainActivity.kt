@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.example.water_logging_app.ui._navigation.UiNavigationRoutes
+import com.example.water_logging_app.ui._navigation.AppRoute
 import com.example.water_logging_app.ui.theme.Water_Logging_AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Water_Logging_AppTheme {
-                UiNavigationRoutes(
+                AppRoute(
                     modifier = Modifier.fillMaxSize()
                 )
             }

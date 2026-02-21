@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -117,7 +120,12 @@ fun InfoScreenUi(
         bottomBar = {
             Column(
                 modifier = Modifier
-                    .padding(all = dimensionResource(R.dimen.container_padding)),
+                    .padding(
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding),
+                        top = dimensionResource(R.dimen.container_padding),
+                        bottom = dimensionResource(R.dimen.extra_container_padding)
+                    ),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -178,16 +186,21 @@ fun InfoScreenUi(
         },
         modifier = modifier
     ) { innerPadding ->
-        HorizontalPager(
-            state = pagerState,
+        Box(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(dimensionResource(R.dimen.container_padding))
                 .padding(innerPadding)
-        ) { page ->
-            OnboardingPageContent(
-                modifier = Modifier.padding(dimensionResource(R.dimen.container_padding)),
-                page = OnboardingPageList[page]
-            )
+        ) {
+            HorizontalPager(
+                state = pagerState
+            ) { page ->
+                OnboardingPageContent(
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.container_padding)),
+                    page = OnboardingPageList[page]
+                )
+            }
         }
     }
 }
@@ -224,6 +237,7 @@ private fun OnboardingPageContent(
         Text(
             text = stringResource(page.description),
             style = MaterialTheme.typography.labelSmall.copy(
+                fontSize = 14.sp,
                 lineHeight = 12.sp
             )
         )

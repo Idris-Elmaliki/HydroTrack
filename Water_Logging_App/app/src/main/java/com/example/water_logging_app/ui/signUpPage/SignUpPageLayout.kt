@@ -12,20 +12,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.navGraphs.signUpGraph
 import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
-import com.example.water_logging_app.ui.signUpPage.viewModel.BackHandlerViewModel
+import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 
 @Composable
 fun SignUpPageLayout(
     mainNavActions: AppNavActions,
-    viewModel : BackHandlerViewModel,
     modifier: Modifier
 ) {
     val signUpNavController : NavHostController = rememberNavController()
-
-    // what these lines of code create is a global Back-handler for all the screens I desire for the sign-up pages!
-    // This ensures that I don't need to include Back-handler in each screen's main func I want it for
-
-    BackHandler(enabled = true) { viewModel.onBackPressed(signUpNavController)}
 
     Surface(
         modifier = modifier
@@ -41,4 +35,10 @@ fun SignUpPageLayout(
             )
         }
     }
+
+    val entry by signUpNavController.currentBackStackEntryAsState()
+
+    BackHandler(
+        enabled = isABlockedScreen(entry?.destination),
+    ) { }
 }
