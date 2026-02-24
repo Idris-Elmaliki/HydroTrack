@@ -16,6 +16,7 @@ fun isABlockedScreen(
     if(destination == null)
         return false
 
+    // just simply add the blocked Screen into this set!
     val blockedRoutes = setOf(
         AppNavRoutes.SignUpScreen.name,
         SignUpPageRoutes.MainLoadingScreen.name,
@@ -25,5 +26,5 @@ fun isABlockedScreen(
         AppNavRoutes.HomePage.name,
     )
 
-    return destination.hierarchy.any { it.route in blockedRoutes }
+    return blockedRoutes.contains(destination.route)
 }
