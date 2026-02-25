@@ -37,5 +37,12 @@
     <string name="AchieveYourGoals">Achieve your hydration goals with a simple tap!</string>
     <string name="QuickAndEasy"><![CDATA[Quick and easy to set your hydration goal & then track your daily water intake progress.]]></string>
     <string name="StayingHydrated">Staying hydrated every day is easy with HydroTrack.</string>
+    <string name="CreateProfile">Create your Profile</string>
+    <string name="Continue">Continue\n</string>
+    <string name="FirstName">First Name\n</string>
+    <string name="lastName">Last Name</string>
+    <string name="UserName">User Name</string>
+    <string name="EditProfilePicture">Edit Profile Picture</string>
+    <string name="TellAboutYourself">Tell me About Yourself</string>
 
 </resources>

@@ -20,16 +20,16 @@ class SignUpPageActions(
         navController.navigate(SignUpPageRoutes.InfoScreens.name)
     }
 
-    fun navigateToUsersNamePage() {
-        navController.navigate(SignUpPageRoutes.GetUsersNamePage.name)
+    fun navigateToUsersProfilePage() {
+        navController.navigate(SignUpPageRoutes.GetUsersProfilePage.name)
     }
 
     fun navigateToUserDetailsPage() {
         navController.navigate(SignUpPageRoutes.GetUserDataPage.name)
     }
 
-    fun navigateToGoalsPage() {
-        navController.navigate(SignUpPageRoutes.Goals.name)
+    fun navigateToUsersGoalsPage() {
+        navController.navigate(SignUpPageRoutes.GetUsersGoalPage.name)
     }
 
     fun navigateToLoadingPage() {

@@ -13,6 +13,7 @@ import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
 import com.example.water_logging_app.ui.signUpPage.screens.BeginSignUpPageUi
 import com.example.water_logging_app.ui.signUpPage.screens.InfoScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
+import com.example.water_logging_app.ui.signUpPage.screens.UsersNamePageUi
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 
 fun NavGraphBuilder.signUpGraph(
@@ -55,18 +56,28 @@ fun NavGraphBuilder.signUpGraph(
             InfoScreenUi(
                 modifier = modifier
             ) {
-                actions.navigateToUsersNamePage()
+                actions.navigateToUsersProfilePage()
             }
         }
 
         composable(
-            route = SignUpPageRoutes.GetUsersNamePage.name
+            route = SignUpPageRoutes.GetUsersProfilePage.name
+        ) {
+            UsersNamePageUi(
+                modifier = modifier,
+                signUpVM = hiltViewModel(rememberActivity()),
+                currentNavAction = { actions.navigateToUserDetailsPage() }
+            )
+        }
+
+        composable(
+            route = SignUpPageRoutes.GetUserDataPage.name
         ) {
 
         }
 
         composable(
-            route = SignUpPageRoutes.GetUserDataPage.name
+            route = SignUpPageRoutes.GetUsersGoalPage.name
         ) {
 
         }

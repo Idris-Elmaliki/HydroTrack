@@ -30,7 +30,9 @@ class UserPreferenceRepositoryImpl @Inject constructor(
 
 private fun UserPreferenceEntity.toUserPreferenceData() : UserPreferenceData {
     return UserPreferenceData(
-        name = name,
+        firstName = firstName,
+        lastName = lastName,
+        userName = userName,
         age = age,
         gender = gender,
         height = height,
@@ -42,12 +44,14 @@ private fun UserPreferenceEntity.toUserPreferenceData() : UserPreferenceData {
 
 private fun UserPreferenceData.toUserPreferenceEntity() : UserPreferenceEntity {
     return UserPreferenceEntity(
-        name = name?: "User",
-        age = age?: -1,
-        gender = gender?: "Not specified",
-        height = height?: -1f,
-        weight = weight?: -1f,
-        dailyGoal = dailyGoal?: -1,
-        isMetric = isMetric?: true
+        firstName = firstName,
+        lastName = lastName,
+        userName = userName,
+        age = age,
+        gender = gender,
+        height = height,
+        weight = weight,
+        dailyGoal = dailyGoal,
+        isMetric = isMetric
     )
 }

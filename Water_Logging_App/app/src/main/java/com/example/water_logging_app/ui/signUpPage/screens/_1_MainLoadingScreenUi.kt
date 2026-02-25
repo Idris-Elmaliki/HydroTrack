@@ -35,6 +35,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
@@ -82,7 +83,9 @@ fun MainLoadingScreenUi(
                 text = stringResource(R.string.HydroTrack),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
-                    .padding(bottom = dimensionResource(R.dimen.container_padding))
+                    .padding(
+                        bottom = dimensionResource(R.dimen.container_padding)
+                    )
             )
             Image(
                 painter = painterResource(R.drawable.dropicon),
@@ -190,6 +193,7 @@ private fun RandomTextPrompt() {
                 offset = Offset(3f, 6f),
                 blurRadius = 3f
             ),
+            textAlign = TextAlign.Center
         ),
         modifier = Modifier
             .alpha(0.5f)
