@@ -30,7 +30,9 @@ class SettingsViewModel @Inject constructor(
 
                 _settingsData.update { data ->
                     data.copy(
-                        name = userData.name,
+                        firstName = userData.firstName,
+                        lastName = userData.lastName,
+                        userName = userData.userName,
                         age = userData.age,
                         gender = userData.gender,
                         height = userData.height,
@@ -43,7 +45,7 @@ class SettingsViewModel @Inject constructor(
             } catch (e: Exception) {
                 _settingsData.update { data ->
                     data.copy(
-                        error = e.message.toString()
+                        error = e.message
                     )
                 }
             }

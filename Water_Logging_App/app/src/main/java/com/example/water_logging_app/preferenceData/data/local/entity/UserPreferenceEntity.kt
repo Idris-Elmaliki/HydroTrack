@@ -8,7 +8,9 @@ data class UserPreferenceEntity(
     @PrimaryKey
     val id : Int = 1,
 
-    val name : String,
+    val firstName : String,
+    val lastName : String,
+    val userName : String ,
     val age : Int,
     val gender : String,
     val height : Float,

@@ -4,8 +4,8 @@ enum class SignUpPageRoutes {
     MainLoadingScreen,
     BeginSignUpPage,
     InfoScreens,
-    GetUsersNamePage,
+    GetUsersProfilePage,
     GetUserDataPage,
-    Goals,
+    GetUsersGoalPage,
     LoadingScreen,
 }

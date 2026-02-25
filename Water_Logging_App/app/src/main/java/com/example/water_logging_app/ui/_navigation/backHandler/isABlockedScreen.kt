@@ -1,7 +1,6 @@
 package com.example.water_logging_app.ui._navigation.backHandler
 
 import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
 import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
 
@@ -22,7 +21,7 @@ fun isABlockedScreen(
         SignUpPageRoutes.MainLoadingScreen.name,
         SignUpPageRoutes.BeginSignUpPage.name,
         SignUpPageRoutes.InfoScreens.name,
-        SignUpPageRoutes.GetUsersNamePage.name,
+        SignUpPageRoutes.GetUsersProfilePage.name,
         AppNavRoutes.HomePage.name,
     )
 

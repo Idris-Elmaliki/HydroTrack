@@ -51,6 +51,91 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun updateUserProfile(
+        firstName : String? = null,
+        lastName : String? = null,
+        userName : String? = null,
+    ) {
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        firstName = firstName ?: data.firstName,
+                        lastName = lastName ?: data.lastName,
+                        userName = userName ?: data.userName,
+                    )
+                }
+
+            }
+            catch (e : Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateUserData(
+        age : Int? = null,
+        gender : String? = null,
+        height : Float? = null,
+        weight : Float? = null,
+    ) {
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        age = age ?: data.age,
+                        gender = gender ?: data.gender,
+                        height = height ?: data.height,
+                        weight = weight ?: data.weight
+                    )
+                }
+            }
+            catch (e : Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
+            }
+        }
+    }
+
+    fun updateUsersPreferences(
+        dailyGoal : Long? = null,
+        isMetric : Boolean? = null,
+    ) {
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        dailyGoal = dailyGoal ?: data.dailyGoal,
+                        isMetric = isMetric ?: data.isMetric
+                    )
+                }
+            }
+            catch (e : Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
+            }
+        }
+    }
+
+    // we might still need this function in the future (I'm too lazy to rewrite it...)
+/*
     fun addUserData(
         userData : UserPreferenceData
     ) {
@@ -64,7 +149,9 @@ class SignUpViewModel @Inject constructor(
 
                 repo.insertUserPreference(
                     UserPreferenceData(
-                        name = userData.name,
+                        firstName = userData.firstName,
+                        lastName = userData.lastName,
+                        userName = userData.userName,
                         age = userData.age,
                         gender = userData.gender,
                         height = userData.height,
@@ -78,7 +165,9 @@ class SignUpViewModel @Inject constructor(
                     data.copy(
                         isLoading = false,
 
-                        name = userData.name,
+                        firstName = userData.firstName,
+                        lastName = userData.lastName,
+                        userName = userData.userName,
                         age = userData.age,
                         gender = userData.gender,
                         height = userData.height,
@@ -96,4 +185,5 @@ class SignUpViewModel @Inject constructor(
             }
         }
     }
+ */
 }
