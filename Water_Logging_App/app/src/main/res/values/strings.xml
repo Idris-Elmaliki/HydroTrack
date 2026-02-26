@@ -44,5 +44,9 @@
     <string name="UserName">User Name</string>
     <string name="EditProfilePicture">Edit Profile Picture</string>
     <string name="TellAboutYourself">Tell me About Yourself</string>
+    <string name="Gender">Gender</string>
+    <string name="Names">Names</string>
+    <string name="MissingData">There is Missing Data</string>
+    <string name="InOrderToContinue">In order to continue you must fix the following issue(s): </string>
 
 </resources>

@@ -63,6 +63,17 @@ val Typography = Typography(
             includeFontPadding = false
         ),
     ),
+    labelSmall = TextStyle(
+        fontFamily = poppins,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 24.sp,
+        letterSpacing = 0.5.sp,
+        textAlign = TextAlign.Center,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false
+        ),
+    ),
 
     headlineLarge = TextStyle(
         fontFamily = FontFamily.Monospace,
@@ -84,18 +95,6 @@ val Typography = Typography(
         fontSize = 18.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-    ),
-
-    labelSmall = TextStyle(
-        fontFamily = poppins,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp,
-        textAlign = TextAlign.Center,
-        platformStyle = PlatformTextStyle(
-            includeFontPadding = false
-        ),
     ),
 
     /* Other default text styles to override
