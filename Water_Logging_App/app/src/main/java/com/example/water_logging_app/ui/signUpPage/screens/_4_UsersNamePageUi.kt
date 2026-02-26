@@ -1,34 +1,39 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
-import android.media.Image
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +44,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
+import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
+import com.example.water_logging_app.ui.theme.poppins
+
+
+private val currentErrorList = listOf(
+    "First Name",
+    "Last Name",
+    "User Name",
+    "Gender"
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +67,41 @@ fun UsersNamePageUi(
     signUpVM : SignUpViewModel,
     currentNavAction : () -> Unit,
 ) {
-    val signUpData = signUpVM.signUpData.collectAsStateWithLifecycle()
+    val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
+
+    var clicked by rememberSaveable { mutableStateOf(false) }
+
+    if(clicked) {
+        var checking by rememberSaveable { mutableStateOf(true) }
+        var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
+
+        LaunchedEffect(Unit) {
+            errorList = signUpVM.checkIfDataIsComplete1()
+            checking = false
+        }
+
+        if(signUpData.error == null) {
+            clicked = !clicked
+            currentNavAction()
+        }
+
+        if(!checking && !errorList.isEmpty()) {
+            ShowAlertDialogUi(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = dimensionResource(R.dimen.extra_container_padding),
+                        bottom = dimensionResource(R.dimen.extra_container_padding),
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding)
+                    ),
+                errorList = errorList,
+                onDismiss = {
+                    clicked = !clicked
+                }
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -83,6 +133,14 @@ fun UsersNamePageUi(
                     .fillMaxWidth(),
             ) {
                 Row(
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.text_padding))
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable(
+                            onClick = {
+                                clicked = !clicked
+                            }
+                        ),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -93,19 +151,13 @@ fun UsersNamePageUi(
                         modifier = Modifier
                             .padding(end = dimensionResource(R.dimen.mini_text_padding))
                     )
-                    IconButton(
-                        onClick = {
-                            currentNavAction()
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .size(dimensionResource(R.dimen.NavIconSize)),
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = Aquamarine
-                        )
-                    }
+                    Icon(
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.NavIconSize)),
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = Aquamarine
+                    )
                 }
             }
         },
@@ -116,8 +168,56 @@ fun UsersNamePageUi(
                .padding(dimensionResource(R.dimen.container_padding))
                .padding(innerpadding),
            signUpVM = signUpVM,
-           signUpData = signUpData.value,
+           signUpData = signUpData,
        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ShowAlertDialogUi(
+    modifier : Modifier,
+    errorList : List<String>,
+    onDismiss : () -> Unit,
+) {
+    BasicAlertDialog(
+        onDismissRequest = {
+            onDismiss()
+        },
+    ) {
+        Card(
+            modifier = modifier
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.container_padding))
+            ) {
+                Text(
+                    text = stringResource(R.string.MissingData),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins
+                    ),
+                    modifier = Modifier
+                        .padding(top = dimensionResource(R.dimen.text_padding))
+                )
+                Text(
+                    text = stringResource(R.string.InOrderToContinue),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier
+                        .padding(top = dimensionResource(R.dimen.text_padding))
+                )
+                Spacer(modifier = Modifier.padding(top = dimensionResource(R.dimen.text_padding)))
+                errorList.forEach { error ->
+                    Text(
+                        text = error,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -144,7 +244,7 @@ private fun UserNamesUi(
                 .clip(CircleShape)
                 .border(
                     width = dimensionResource(R.dimen.BorderStroke),
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = BrilliantAzure,
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center,
@@ -172,7 +272,51 @@ private fun UserNamesUi(
             )
         }
 
+        UserNameTextFieldsUi(
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(R.dimen.container_padding),
+                    bottom = dimensionResource(R.dimen.container_padding)
+                )
+                .fillMaxWidth(),
+            signUpVM = signUpVM,
+            signUpData = signUpData
+        )
 
+        GenderSelectionUi(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = dimensionResource(R.dimen.container_padding),
+                    end = dimensionResource(R.dimen.container_padding),
+                    top = dimensionResource(R.dimen.container_padding)
+                ),
+            viewModel = signUpVM,
+            signUpData = signUpData
+        )
+    }
+}
+
+@Composable
+private fun UserNameTextFieldsUi(
+    modifier : Modifier,
+    signUpVM: SignUpViewModel,
+    signUpData : UserPreferenceData
+) {
+    Column {
+        Text(
+            text = stringResource(R.string.Names),
+            style = MaterialTheme.typography.headlineSmall.copy(
+                fontWeight = FontWeight.Bold,
+                fontFamily = poppins
+            ),
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(R.dimen.container_padding),
+                    top = dimensionResource(R.dimen.container_padding),
+                    bottom = dimensionResource(R.dimen.container_padding)
+                )
+        )
 
         OutlinedTextField(
             value = signUpData.firstName,
@@ -183,25 +327,32 @@ private fun UserNamesUi(
                 )
             },
             label = {
-                Text(
-                    text = stringResource(R.string.FirstName).trim(), // it worked, I don't know how
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.FirstName).trim(), // don't ask why this works
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Text(
+                        text = "*",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             },
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.colors(
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.background,
+                unfocusedBorderColor = MaterialTheme.colorScheme.background,
                 focusedContainerColor = MistyBlue,
                 unfocusedContainerColor = MistyBlue
             ),
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(R.dimen.container_padding),
-                    bottom = dimensionResource(R.dimen.container_padding)
-                )
-                .fillMaxWidth(),
+            modifier = modifier
+
         )
 
         OutlinedTextField(
@@ -213,25 +364,31 @@ private fun UserNamesUi(
                 )
             },
             label = {
-                Text(
-                    text = stringResource(R.string.lastName),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.lastName),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
+                    Text(
+                        text = "*",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             },
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.colors(
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.background,
+                unfocusedBorderColor = MaterialTheme.colorScheme.background,
                 focusedContainerColor = MistyBlue,
                 unfocusedContainerColor = MistyBlue
             ),
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(R.dimen.container_padding),
-                    bottom = dimensionResource(R.dimen.container_padding)
-                )
-                .fillMaxWidth(),
+            modifier = modifier
         )
 
         OutlinedTextField(
@@ -243,25 +400,92 @@ private fun UserNamesUi(
                 )
             },
             label = {
-                Text(
-                    text = stringResource(R.string.UserName),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.UserName),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Text(
+                        text = "*",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             },
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            colors = TextFieldDefaults.colors(
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.background,
+                unfocusedBorderColor = MaterialTheme.colorScheme.background,
                 focusedContainerColor = MistyBlue,
                 unfocusedContainerColor = MistyBlue
             ),
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(R.dimen.container_padding),
-                    bottom = dimensionResource(R.dimen.container_padding)
-                )
-                .fillMaxWidth(),
+            modifier = modifier,
         )
+    }
+}
+@Composable
+private fun GenderSelectionUi(
+    modifier : Modifier,
+    viewModel: SignUpViewModel,
+    signUpData : UserPreferenceData
+) {
+    val genders = listOf(
+        Genders.Male.name,
+        Genders.Female.name
+    )
+
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.Gender),
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppins
+                )
+            )
+            Text(
+                text = "*",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            genders.forEach { gender ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RadioButton(
+                        selected = gender == signUpData.gender,
+                        onClick = {
+                            viewModel.updateUserProfile(
+                                gender = gender
+                            )
+                        },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = Aquamarine,
+                            unselectedColor = Aquamarine
+                        )
+                    )
+                    Text(
+                        text = gender,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+        }
     }
 }

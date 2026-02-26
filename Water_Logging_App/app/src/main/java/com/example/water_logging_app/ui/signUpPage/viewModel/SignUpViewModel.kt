@@ -55,6 +55,7 @@ class SignUpViewModel @Inject constructor(
         firstName : String? = null,
         lastName : String? = null,
         userName : String? = null,
+        gender : String? = null,
     ) {
         viewModelScope.launch {
             try {
@@ -70,9 +71,9 @@ class SignUpViewModel @Inject constructor(
                         firstName = firstName ?: data.firstName,
                         lastName = lastName ?: data.lastName,
                         userName = userName ?: data.userName,
+                        gender = gender ?: data.gender
                     )
                 }
-
             }
             catch (e : Exception) {
                 _signUpData.update { data ->
@@ -86,7 +87,6 @@ class SignUpViewModel @Inject constructor(
 
     fun updateUserData(
         age : Int? = null,
-        gender : String? = null,
         height : Float? = null,
         weight : Float? = null,
     ) {
@@ -94,8 +94,14 @@ class SignUpViewModel @Inject constructor(
             try {
                 _signUpData.update { data ->
                     data.copy(
+                        isLoading = true
+                    )
+                }
+
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
                         age = age ?: data.age,
-                        gender = gender ?: data.gender,
                         height = height ?: data.height,
                         weight = weight ?: data.weight
                     )
@@ -132,6 +138,56 @@ class SignUpViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun checkIfDataIsComplete1() : List<String> { // for screen 1 (UserNameScreen)
+        val errorList = mutableListOf<String>()
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                when {
+                    _signUpData.value.firstName.isBlank() -> {
+                        errorList.add("First Name is Empty.")
+                    }
+                    _signUpData.value.lastName.isBlank() -> {
+                        errorList.add("Last Name is Empty.")
+                    }
+                    _signUpData.value.userName.isBlank() -> {
+                        errorList.add("User Name is Empty.")
+                    }
+                    _signUpData.value.gender == null -> {
+                        errorList.add("Gender is Empty.")
+                    }
+                }
+
+                if(errorList.isNotEmpty()) {
+                    throw Exception("Missing Data Found")
+                }
+                else {
+                    _signUpData.update { data ->
+                        data.copy(
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                }
+            }
+            catch (e : Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
+                }
+            }
+        }
+
+        return errorList
     }
 
     // we might still need this function in the future (I'm too lazy to rewrite it...)

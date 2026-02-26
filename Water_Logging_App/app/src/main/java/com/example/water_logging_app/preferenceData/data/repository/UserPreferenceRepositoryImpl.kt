@@ -2,6 +2,7 @@ package com.example.water_logging_app.preferenceData.data.repository
 
 import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenceDAO
 import com.example.water_logging_app.preferenceData.data.local.entity.UserPreferenceEntity
+import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.repository.UserPreferenceRepository
 import javax.inject.Inject
@@ -48,7 +49,7 @@ private fun UserPreferenceData.toUserPreferenceEntity() : UserPreferenceEntity {
         lastName = lastName,
         userName = userName,
         age = age,
-        gender = gender,
+        gender = gender?: Genders.Male.name,
         height = height,
         weight = weight,
         dailyGoal = dailyGoal,
