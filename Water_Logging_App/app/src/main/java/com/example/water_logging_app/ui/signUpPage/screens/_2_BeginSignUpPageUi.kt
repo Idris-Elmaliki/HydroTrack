@@ -22,6 +22,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import com.example.water_logging_app.R
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.MetallicGray
@@ -108,12 +109,9 @@ fun BeginSignUpPageUi(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        // fix soon (this is a bruteforce method to get the text aligned)
-                        modifier = Modifier
-                            .padding(top = dimensionResource(R.dimen.text_padding)),
                         text = stringResource(R.string.CreateAccount),
                         style = MaterialTheme.typography.labelMedium.copy(
-                            lineHeight = MaterialTheme.typography.labelMedium.fontSize, // sets line height to font size
+                            lineHeight = 0.sp,
                             shadow = Shadow(
                                 color = if (isSystemInDarkTheme())
                                     MaterialTheme.colorScheme.onBackground
@@ -121,8 +119,8 @@ fun BeginSignUpPageUi(
                                     MaterialTheme.colorScheme.background,
                                 offset = Offset(x = 0f, y = 4f),
                                 blurRadius = 4f
-                            )
-                        )
+                            ),
+                        ),
                     )
                 }
             }

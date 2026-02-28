@@ -28,6 +28,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -51,15 +53,6 @@ import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
 import com.example.water_logging_app.ui.theme.poppins
-
-
-private val currentErrorList = listOf(
-    "First Name",
-    "Last Name",
-    "User Name",
-    "Gender"
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsersNamePageUi(
@@ -68,16 +61,13 @@ fun UsersNamePageUi(
     currentNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
-
     var clicked by rememberSaveable { mutableStateOf(false) }
 
     if(clicked) {
-        var checking by rememberSaveable { mutableStateOf(true) }
         var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
         LaunchedEffect(Unit) {
             errorList = signUpVM.checkIfDataIsComplete1()
-            checking = false
         }
 
         if(signUpData.error == null) {
@@ -85,7 +75,7 @@ fun UsersNamePageUi(
             currentNavAction()
         }
 
-        if(!checking && !errorList.isEmpty()) {
+        if(!errorList.isEmpty()) {
             ShowAlertDialogUi(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,40 +116,44 @@ fun UsersNamePageUi(
             )
         },
         bottomBar = {
-            Box(
-                contentAlignment = Alignment.TopEnd,
+            TopAppBar(
+                title = {},
+                actions = {
+                    Row(
+                        modifier = Modifier
+                            .padding(dimensionResource(R.dimen.text_padding))
+                            .clip(MaterialTheme.shapes.medium)
+                            .clickable(
+                                onClick = {
+                                    clicked = !clicked
+                                }
+                            ),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.Next),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = Aquamarine,
+                            modifier = Modifier
+                                .padding(end = dimensionResource(R.dimen.mini_text_padding))
+                        )
+                        Icon(
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.NavIconSize)),
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = Aquamarine
+                        )
+                    }
+                },
                 modifier = Modifier
-                    .padding(dimensionResource(R.dimen.container_padding))
-                    .fillMaxWidth(),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.text_padding))
-                        .clip(MaterialTheme.shapes.medium)
-                        .clickable(
-                            onClick = {
-                                clicked = !clicked
-                            }
-                        ),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(R.string.Next),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Aquamarine,
-                        modifier = Modifier
-                            .padding(end = dimensionResource(R.dimen.mini_text_padding))
+                    .padding(
+                        start = dimensionResource(R.dimen.text_padding),
+                        end = dimensionResource(R.dimen.text_padding),
+                        bottom = dimensionResource(R.dimen.text_padding)
                     )
-                    Icon(
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.NavIconSize)),
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        tint = Aquamarine
-                    )
-                }
-            }
+            )
         },
         modifier = modifier
     ) { innerpadding ->
@@ -303,6 +297,14 @@ private fun UserNameTextFieldsUi(
     signUpVM: SignUpViewModel,
     signUpData : UserPreferenceData
 ) {
+    val outlinedColors = OutlinedTextFieldDefaults.colors(
+        focusedBorderColor = Aquamarine,
+        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+        focusedContainerColor = MistyBlue,
+        unfocusedContainerColor = MistyBlue,
+        unfocusedTextColor = BrilliantAzure
+    )
+
     Column {
         Text(
             text = stringResource(R.string.Names),
@@ -320,7 +322,9 @@ private fun UserNameTextFieldsUi(
 
         OutlinedTextField(
             value = signUpData.firstName,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = Color.Black
+            ),
             onValueChange = { data ->
                 signUpVM.updateUserProfile(
                     firstName = data
@@ -345,19 +349,16 @@ private fun UserNameTextFieldsUi(
             },
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.background,
-                unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MistyBlue,
-                unfocusedContainerColor = MistyBlue
-            ),
+            colors = outlinedColors,
             modifier = modifier
 
         )
 
         OutlinedTextField(
             value = signUpData.lastName,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = Color.Black
+            ),
             onValueChange = { data ->
                 signUpVM.updateUserProfile(
                     lastName = data
@@ -371,7 +372,7 @@ private fun UserNameTextFieldsUi(
                         text = stringResource(R.string.lastName),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
                     )
                     Text(
                         text = "*",
@@ -382,18 +383,15 @@ private fun UserNameTextFieldsUi(
             },
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.background,
-                unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MistyBlue,
-                unfocusedContainerColor = MistyBlue
-            ),
+            colors = outlinedColors,
             modifier = modifier
         )
 
         OutlinedTextField(
             value = signUpData.userName,
-            textStyle = MaterialTheme.typography.bodyLarge,
+            textStyle = MaterialTheme.typography.bodyLarge.copy(
+                color = Color.Black
+            ),
             onValueChange = { data ->
                 signUpVM.updateUserProfile(
                     userName = data
@@ -418,12 +416,7 @@ private fun UserNameTextFieldsUi(
             },
             singleLine = true,
             shape = MaterialTheme.shapes.medium,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = MaterialTheme.colorScheme.background,
-                unfocusedBorderColor = MaterialTheme.colorScheme.background,
-                focusedContainerColor = MistyBlue,
-                unfocusedContainerColor = MistyBlue
-            ),
+            colors = outlinedColors,
             modifier = modifier,
         )
     }
