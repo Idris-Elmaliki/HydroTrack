@@ -48,5 +48,7 @@
     <string name="Names">Names</string>
     <string name="MissingData">There is Missing Data</string>
     <string name="InOrderToContinue">In order to continue you must fix the following issue(s): </string>
+    <string name="GoBack">GO BACK</string>
+    <string name="Finish">FINISH</string>
 
 </resources>
