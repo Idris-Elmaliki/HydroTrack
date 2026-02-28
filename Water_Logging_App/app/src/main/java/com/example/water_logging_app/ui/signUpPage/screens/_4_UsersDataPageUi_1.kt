@@ -7,14 +7,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -48,14 +46,26 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowAlertDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
 import com.example.water_logging_app.ui.theme.poppins
+
+/*
+* Hopefully the name is self-explanatory but this is the ui for the first page of the profile creation process
+*
+* Here we are gathering 5 things:
+*   1. A profile picture
+*   2. The users first name
+*   3. The users last name
+*   4. A username for the users profile
+*   5. The users gender
+*/
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsersNamePageUi(
+fun UsersDataPageUi1(
     modifier : Modifier, // just passes in .fillMaxSize()
     signUpVM : SignUpViewModel,
     currentNavAction : () -> Unit,
@@ -167,54 +177,6 @@ fun UsersNamePageUi(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ShowAlertDialogUi(
-    modifier : Modifier,
-    errorList : List<String>,
-    onDismiss : () -> Unit,
-) {
-    BasicAlertDialog(
-        onDismissRequest = {
-            onDismiss()
-        },
-    ) {
-        Card(
-            modifier = modifier
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.container_padding))
-            ) {
-                Text(
-                    text = stringResource(R.string.MissingData),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = poppins
-                    ),
-                    modifier = Modifier
-                        .padding(top = dimensionResource(R.dimen.text_padding))
-                )
-                Text(
-                    text = stringResource(R.string.InOrderToContinue),
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .padding(top = dimensionResource(R.dimen.text_padding))
-                )
-                Spacer(modifier = Modifier.padding(top = dimensionResource(R.dimen.text_padding)))
-                errorList.forEach { error ->
-                    Text(
-                        text = error,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-        }
-    }
-}
-
 @Composable
 private fun UserNamesUi(
     modifier : Modifier,
@@ -310,7 +272,6 @@ private fun UserNameTextFieldsUi(
             text = stringResource(R.string.Names),
             style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Bold,
-                fontFamily = poppins
             ),
             modifier = Modifier
                 .padding(
@@ -442,8 +403,7 @@ private fun GenderSelectionUi(
                 text = stringResource(R.string.Gender),
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    fontFamily = poppins
-                )
+                ),
             )
             Text(
                 text = "*",

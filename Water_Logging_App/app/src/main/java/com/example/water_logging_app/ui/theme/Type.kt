@@ -90,7 +90,7 @@ val Typography = Typography(
         letterSpacing = 0.5.sp
     ),
     headlineSmall = TextStyle(
-        fontFamily = FontFamily.Monospace,
+        fontFamily = poppins,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
         lineHeight = 24.sp,
