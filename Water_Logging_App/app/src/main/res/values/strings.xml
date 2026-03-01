@@ -50,5 +50,7 @@
     <string name="InOrderToContinue">In order to continue you must fix the following issue(s): </string>
     <string name="GoBack">GO BACK</string>
     <string name="Finish">FINISH</string>
+    <string name="Height">Height</string>
+    <string name="Weight">Weight</string>
 
 </resources>
