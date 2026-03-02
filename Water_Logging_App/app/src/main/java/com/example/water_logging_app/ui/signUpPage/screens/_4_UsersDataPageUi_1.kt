@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,6 +54,7 @@ import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
 import com.example.water_logging_app.ui.theme.poppins
+import kotlinx.coroutines.launch
 
 /*
 * Hopefully the name is self-explanatory but this is the ui for the first page of the profile creation process
@@ -72,18 +75,17 @@ fun UsersDataPageUi1(
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
     var clicked by rememberSaveable { mutableStateOf(false) }
+    var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
     if(clicked) {
-        var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
-
-        LaunchedEffect(Unit) {
-            errorList = signUpVM.checkIfDataIsComplete1()
-        }
+        Log.d("Testing", "Error list is: $errorList")
 
         if(signUpData.error == null) {
             clicked = !clicked
             currentNavAction()
         }
+
+        Log.d("Testing", "Before Empty check -> Error list is empty: ${errorList.isEmpty()}")
 
         if(!errorList.isEmpty()) {
             ShowAlertDialogUi(
@@ -101,8 +103,11 @@ fun UsersDataPageUi1(
                 }
             )
         }
+
+        Log.d("Testing", "After Empty check -> Error list is empty: ${errorList.isEmpty()}")
     }
 
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -135,6 +140,9 @@ fun UsersDataPageUi1(
                             .clip(MaterialTheme.shapes.medium)
                             .clickable(
                                 onClick = {
+                                    coroutineScope.launch {
+                                        errorList = signUpVM.checkIfDataIsComplete1()
+                                    }
                                     clicked = !clicked
                                 }
                             ),
@@ -267,6 +275,8 @@ private fun UserNameTextFieldsUi(
         unfocusedTextColor = BrilliantAzure
     )
 
+    val coroutineScope = rememberCoroutineScope()
+
     Column {
         Text(
             text = stringResource(R.string.Names),
@@ -287,9 +297,11 @@ private fun UserNameTextFieldsUi(
                 color = Color.Black
             ),
             onValueChange = { data ->
-                signUpVM.updateUserProfile(
-                    firstName = data
-                )
+                coroutineScope.launch {
+                    signUpVM.updateUserProfile(
+                        firstName = data
+                    )
+                }
             },
             label = {
                 Row(
@@ -321,9 +333,11 @@ private fun UserNameTextFieldsUi(
                 color = Color.Black
             ),
             onValueChange = { data ->
-                signUpVM.updateUserProfile(
-                    lastName = data
-                )
+                coroutineScope.launch {
+                    signUpVM.updateUserProfile(
+                        lastName = data
+                    )
+                }
             },
             label = {
                 Row(
@@ -354,9 +368,11 @@ private fun UserNameTextFieldsUi(
                 color = Color.Black
             ),
             onValueChange = { data ->
-                signUpVM.updateUserProfile(
-                    userName = data
-                )
+                coroutineScope.launch {
+                    signUpVM.updateUserProfile(
+                        userName = data
+                    )
+                }
             },
             label = {
                 Row(

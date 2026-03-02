@@ -16,6 +16,6 @@ data class UserPreferenceData(
     val gender : String? = null,
     val height : Float = 0.0f,
     val weight : Float = 0.0f,
+    val unitOfMeasurement : String? = null,
     val dailyGoal : Long = 0L,
-    val isMetric : Boolean = true,
 )

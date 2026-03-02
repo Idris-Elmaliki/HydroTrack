@@ -3,6 +3,7 @@ package com.example.water_logging_app.preferenceData.data.repository
 import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenceDAO
 import com.example.water_logging_app.preferenceData.data.local.entity.UserPreferenceEntity
 import com.example.water_logging_app.preferenceData.domain.modelData.Genders
+import com.example.water_logging_app.preferenceData.domain.modelData.UnitMeasurementType
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.repository.UserPreferenceRepository
 import javax.inject.Inject
@@ -39,7 +40,7 @@ private fun UserPreferenceEntity.toUserPreferenceData() : UserPreferenceData {
         height = height,
         weight = weight,
         dailyGoal = dailyGoal,
-        isMetric = isMetric
+        unitOfMeasurement = unitOfMeasurement
     )
 }
 
@@ -53,6 +54,6 @@ private fun UserPreferenceData.toUserPreferenceEntity() : UserPreferenceEntity {
         height = height,
         weight = weight,
         dailyGoal = dailyGoal,
-        isMetric = isMetric
+        unitOfMeasurement = unitOfMeasurement?: UnitMeasurementType.Metric.name
     )
 }

@@ -52,5 +52,10 @@
     <string name="Finish">FINISH</string>
     <string name="Height">Height</string>
     <string name="Weight">Weight</string>
+    <string name="UnitSystem">Unit System</string>
+    <string name="Metric" />
+    <string name="Imperial">Imperial</string>
+    <string name="Measurements">Measurements</string>
+    <string name="Age">Age</string>
 
 </resources>

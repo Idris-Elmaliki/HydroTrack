@@ -66,7 +66,7 @@ fun NavGraphBuilder.signUpGraph(
         ) {
             UsersDataPageUi1(
                 modifier = modifier,
-                signUpVM = hiltViewModel(rememberActivity()),
+                signUpVM = hiltViewModel<SignUpViewModel>(rememberActivity()),
                 currentNavAction = { actions.navigateToUserDetailsPage() }
             )
         }
