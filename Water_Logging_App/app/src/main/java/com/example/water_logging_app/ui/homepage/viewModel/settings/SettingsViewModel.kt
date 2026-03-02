@@ -38,7 +38,7 @@ class SettingsViewModel @Inject constructor(
                         height = userData.height,
                         weight = userData.weight,
                         dailyGoal = userData.dailyGoal,
-                        isMetric = userData.isMetric
+                        unitOfMeasurement = userData.unitOfMeasurement
                     )
                 }
 

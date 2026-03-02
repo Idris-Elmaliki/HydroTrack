@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
@@ -86,6 +87,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateUserData(
+        unitSystem : String? = null,
         age : Int? = null,
         height : Float? = null,
         weight : Float? = null,
@@ -101,6 +103,7 @@ class SignUpViewModel @Inject constructor(
                 _signUpData.update { data ->
                     data.copy(
                         isLoading = false,
+                        unitOfMeasurement = unitSystem ?: data.unitOfMeasurement,
                         age = age ?: data.age,
                         height = height ?: data.height,
                         weight = weight ?: data.weight
@@ -119,14 +122,12 @@ class SignUpViewModel @Inject constructor(
 
     fun updateUsersPreferences(
         dailyGoal : Long? = null,
-        isMetric : Boolean? = null,
     ) {
         viewModelScope.launch {
             try {
                 _signUpData.update { data ->
                     data.copy(
                         dailyGoal = dailyGoal ?: data.dailyGoal,
-                        isMetric = isMetric ?: data.isMetric
                     )
                 }
             }
@@ -142,6 +143,8 @@ class SignUpViewModel @Inject constructor(
 
     fun checkIfDataIsComplete1() : List<String> { // for screen 1 (UserNameScreen)
         val errorList = mutableListOf<String>()
+        Log.d("Testing", "First Name is: ${_signUpData.value.firstName}")
+
         viewModelScope.launch {
             try {
                 _signUpData.update { data ->
@@ -150,25 +153,22 @@ class SignUpViewModel @Inject constructor(
                     )
                 }
 
-                when {
-                    _signUpData.value.firstName.isBlank() -> {
-                        errorList.add("First Name is Empty.")
-                    }
-                    _signUpData.value.lastName.isBlank() -> {
-                        errorList.add("Last Name is Empty.")
-                    }
-                    _signUpData.value.userName.isBlank() -> {
-                        errorList.add("User Name is Empty.")
-                    }
-                    _signUpData.value.gender == null -> {
-                        errorList.add("Gender is Empty.")
-                    }
+                if (_signUpData.value.firstName.isBlank()) {
+                    errorList.add("First Name is Empty.")
+                }
+                if (_signUpData.value.lastName.isBlank()) {
+                    errorList.add("Last Name is Empty.")
+                }
+                if (_signUpData.value.userName.isBlank()) {
+                    errorList.add("User Name is Empty.")
+                }
+                if (_signUpData.value.gender == null) {
+                    errorList.add("Gender is Empty.")
                 }
 
-                if(errorList.isNotEmpty()) {
+                if (errorList.isNotEmpty()) {
                     throw Exception("Missing Data Found")
-                }
-                else {
+                } else {
                     _signUpData.update { data ->
                         data.copy(
                             isLoading = false,
@@ -176,8 +176,55 @@ class SignUpViewModel @Inject constructor(
                         )
                     }
                 }
+            } catch (e: Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
+                }
             }
-            catch (e : Exception) {
+        }
+
+        Log.d("Testing", "Error list is: $errorList")
+
+        return errorList
+    }
+
+    fun checkIfDataIsComplete2() : List<String> { // for screen 2 (UserDataScreen)
+        val errorList = mutableListOf<String>()
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                if(_signUpData.value.unitOfMeasurement == null) {
+                    errorList.add("User hasn't chosen a unit system.")
+                }
+                if(_signUpData.value.age == 0) {
+                    errorList.add("Age is Empty.")
+                }
+                if(_signUpData.value.height == 0.0f) {
+                    errorList.add("A height hasn't been added.")
+                }
+                if(_signUpData.value.weight == 0.0f) {
+                    errorList.add("A weight hasn't been added.")
+                }
+
+                if (errorList.isNotEmpty()) {
+                    throw Exception("Missing Data Found")
+                } else {
+                    _signUpData.update { data ->
+                        data.copy(
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                }
+            } catch (e: Exception) {
                 _signUpData.update { data ->
                     data.copy(
                         isLoading = false,
