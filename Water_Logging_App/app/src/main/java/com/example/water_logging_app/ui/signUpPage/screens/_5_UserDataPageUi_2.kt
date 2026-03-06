@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -59,6 +61,7 @@ import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
+import com.example.water_logging_app.ui.theme.poppins
 import com.example.water_logging_app.userInfoCalculations.heightCalculations
 import kotlinx.coroutines.launch
 
@@ -107,16 +110,6 @@ fun UserDataPageUi2(
             checkForError = false
             checkForConfirmation = true
         }
-    }
-
-    if(checkForConfirmation) {
-        ShowConfirmDialogUi(
-            modifier = Modifier,
-            onDismiss = {
-                checkForConfirmation = false
-            },
-            currentNavAction = currentNavAction
-        )
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -224,6 +217,16 @@ fun UserDataPageUi2(
             )
         }
     }
+
+    if(checkForConfirmation) {
+        ShowConfirmDialogUi(
+            modifier = Modifier,
+            onDismiss = {
+                checkForConfirmation = false
+            },
+            currentNavAction = currentNavAction
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -249,7 +252,56 @@ fun ShowConfirmDialogUi(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                Text(
+                    text = stringResource(R.string.Confirm),
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = poppins
+                    ),
+                    modifier = Modifier
+                        .padding(top = dimensionResource(R.dimen.text_padding))
+                )
+                Text(
+                    text = stringResource(R.string.ConfirmMessage),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier
+                        .padding(top = dimensionResource(R.dimen.text_padding), bottom = dimensionResource(R.dimen.text_padding))
+                )
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(
+                        shape = CircleShape,
+                        onClick = {
+                            onDismiss()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.Cancel).trim(),
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier
+                                .padding(dimensionResource(R.dimen.text_padding))
+                        )
+                    }
+
+                    TextButton(
+                        shape = CircleShape,
+                        onClick = {
+                            currentNavAction()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(R.string.Confirm).trim(),
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier
+                                .padding(dimensionResource(R.dimen.text_padding)),
+                        )
+                    }
+                }
             }
         }
     }
@@ -292,13 +344,22 @@ private fun UsersAgeUi(
                 keyboardType = KeyboardType.NumberPassword
             ),
             label = {
-                Text(
-                    text = stringResource(R.string.Age),
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = MaterialTheme.colorScheme.onBackground
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.Age),
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                    Text(
+                        text = "*",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
             },
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
