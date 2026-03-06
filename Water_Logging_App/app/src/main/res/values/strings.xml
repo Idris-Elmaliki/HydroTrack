@@ -57,5 +57,8 @@
     <string name="Imperial">Imperial</string>
     <string name="Measurements">Measurements</string>
     <string name="Age">Age</string>
+    <string name="Confirm">Confirm</string>
+    <string name="ConfirmMessage">Are you sure you are done with your profile? (You can change your profile data after setting up the app!)</string>
+    <string name="Cancel">Cancel\n</string>
 
 </resources>
