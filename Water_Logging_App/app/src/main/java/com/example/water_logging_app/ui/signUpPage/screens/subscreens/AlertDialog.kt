@@ -26,7 +26,7 @@ import com.example.water_logging_app.ui.theme.poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowAlertDialogUi(
+fun ShowErrorDialogUi(
     modifier : Modifier,
     errorList : List<String>,
     onDismiss : () -> Unit,

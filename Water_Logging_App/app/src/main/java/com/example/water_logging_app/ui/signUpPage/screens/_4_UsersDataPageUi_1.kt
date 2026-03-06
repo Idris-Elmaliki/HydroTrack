@@ -1,17 +1,21 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
@@ -27,9 +31,7 @@ import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,12 +50,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowAlertDialogUi
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
-import com.example.water_logging_app.ui.theme.poppins
 import kotlinx.coroutines.launch
 
 /*
@@ -74,21 +75,12 @@ fun UsersDataPageUi1(
     currentNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
-    var clicked by rememberSaveable { mutableStateOf(false) }
+    var checkForError by rememberSaveable { mutableStateOf(false) }
     var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
-    if(clicked) {
-        Log.d("Testing", "Error list is: $errorList")
-
-        if(signUpData.error == null) {
-            clicked = !clicked
-            currentNavAction()
-        }
-
-        Log.d("Testing", "Before Empty check -> Error list is empty: ${errorList.isEmpty()}")
-
+    if(checkForError) {
         if(!errorList.isEmpty()) {
-            ShowAlertDialogUi(
+            ShowErrorDialogUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -99,12 +91,14 @@ fun UsersDataPageUi1(
                     ),
                 errorList = errorList,
                 onDismiss = {
-                    clicked = !clicked
+                    checkForError = !checkForError
                 }
             )
         }
-
-        Log.d("Testing", "After Empty check -> Error list is empty: ${errorList.isEmpty()}")
+        else {
+            checkForError = false
+            currentNavAction()
+        }
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -127,66 +121,99 @@ fun UsersDataPageUi1(
                     }
                 },
                 modifier = Modifier
-                    .padding(dimensionResource(R.dimen.container_padding))
-            )
-        },
-        bottomBar = {
-            TopAppBar(
-                title = {},
-                actions = {
-                    Row(
-                        modifier = Modifier
-                            .padding(dimensionResource(R.dimen.text_padding))
-                            .clip(MaterialTheme.shapes.medium)
-                            .clickable(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        errorList = signUpVM.checkIfDataIsComplete1()
-                                    }
-                                    clicked = !clicked
-                                }
-                            ),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.Next),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = Aquamarine,
-                            modifier = Modifier
-                                .padding(end = dimensionResource(R.dimen.mini_text_padding))
-                        )
-                        Icon(
-                            modifier = Modifier
-                                .size(dimensionResource(R.dimen.NavIconSize)),
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = Aquamarine
-                        )
-                    }
-                },
-                modifier = Modifier
                     .padding(
-                        start = dimensionResource(R.dimen.text_padding),
-                        end = dimensionResource(R.dimen.text_padding),
-                        bottom = dimensionResource(R.dimen.text_padding)
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding)
                     )
             )
         },
+        bottomBar = {
+            Row(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .navigationBarsPadding()
+                    .fillMaxWidth()
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                )
+                Row(
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.text_padding))
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable(
+                            onClick = {
+                                coroutineScope.launch {
+                                    errorList = signUpVM.checkIfDataIsComplete1()
+                                }
+                                checkForError = !checkForError
+                            }
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.Next),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Aquamarine,
+                        modifier = Modifier
+                            .padding(end = dimensionResource(R.dimen.mini_text_padding))
+                    )
+                    Icon(
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.NavIconSize)),
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = Aquamarine
+                    )
+                }
+            }
+        },
         modifier = modifier
     ) { innerpadding ->
-       UserNamesUi(
-           modifier = Modifier
-               .padding(dimensionResource(R.dimen.container_padding))
-               .padding(innerpadding),
-           signUpVM = signUpVM,
-           signUpData = signUpData,
-       )
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(dimensionResource(R.dimen.container_padding))
+                .padding(innerpadding),
+        ) {
+            UserProfileUi(
+                modifier = Modifier
+                    .padding(
+                        dimensionResource(R.dimen.container_padding))
+                    .fillMaxWidth(),
+                signUpVM = signUpVM,
+                signUpData = signUpData,
+            )
+            UserNameTextFieldsUi(
+                modifier = Modifier
+                    .padding(
+                        start = dimensionResource(R.dimen.container_padding),
+                        bottom = dimensionResource(R.dimen.container_padding)
+                    )
+                    .fillMaxWidth(),
+                signUpVM = signUpVM,
+                signUpData = signUpData
+            )
+
+            GenderSelectionUi(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding),
+                        top = dimensionResource(R.dimen.container_padding)
+                    ),
+                viewModel = signUpVM,
+                signUpData = signUpData
+            )
+        }
     }
 }
 
 @Composable
-private fun UserNamesUi(
+private fun UserProfileUi(
     modifier : Modifier,
     signUpVM: SignUpViewModel,
     signUpData : UserPreferenceData
@@ -199,7 +226,6 @@ private fun UserNamesUi(
                 start = dimensionResource(R.dimen.container_padding),
                 end = dimensionResource(R.dimen.container_padding)
             ),
-
     ) {
         Box(
             modifier = Modifier
@@ -236,28 +262,7 @@ private fun UserNamesUi(
             )
         }
 
-        UserNameTextFieldsUi(
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(R.dimen.container_padding),
-                    bottom = dimensionResource(R.dimen.container_padding)
-                )
-                .fillMaxWidth(),
-            signUpVM = signUpVM,
-            signUpData = signUpData
-        )
 
-        GenderSelectionUi(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = dimensionResource(R.dimen.container_padding),
-                    end = dimensionResource(R.dimen.container_padding),
-                    top = dimensionResource(R.dimen.container_padding)
-                ),
-            viewModel = signUpVM,
-            signUpData = signUpData
-        )
     }
 }
 
@@ -269,7 +274,7 @@ private fun UserNameTextFieldsUi(
 ) {
     val outlinedColors = OutlinedTextFieldDefaults.colors(
         focusedBorderColor = Aquamarine,
-        unfocusedBorderColor = MaterialTheme.colorScheme.background,
+        unfocusedBorderColor = MaterialTheme.colorScheme.onBackground,
         focusedContainerColor = MistyBlue,
         unfocusedContainerColor = MistyBlue,
         unfocusedTextColor = BrilliantAzure
@@ -281,7 +286,7 @@ private fun UserNameTextFieldsUi(
         Text(
             text = stringResource(R.string.Names),
             style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold
             ),
             modifier = Modifier
                 .padding(
@@ -311,7 +316,8 @@ private fun UserNameTextFieldsUi(
                         text = stringResource(R.string.FirstName).trim(), // don't ask why this works
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
                         text = "*",
@@ -348,6 +354,7 @@ private fun UserNameTextFieldsUi(
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
                         ),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
                         text = "*",
@@ -382,7 +389,8 @@ private fun UserNameTextFieldsUi(
                         text = stringResource(R.string.UserName),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
-                        )
+                        ),
+                        color = MaterialTheme.colorScheme.onBackground
                     )
                     Text(
                         text = "*",
