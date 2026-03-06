@@ -12,7 +12,7 @@ data class UserPreferenceData(
     val firstName : String = "",
     val lastName : String = "",
     val userName : String = "",
-    val age : Int = 0,
+    val age : String = "",
     val gender : String? = null,
     val height : Float = 0.0f,
     val weight : Float = 0.0f,

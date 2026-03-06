@@ -21,7 +21,6 @@ fun isABlockedScreen(
         SignUpPageRoutes.MainLoadingScreen.name,
         SignUpPageRoutes.BeginSignUpPage.name,
         SignUpPageRoutes.InfoScreens.name,
-        SignUpPageRoutes.GetUsersProfilePage.name,
         AppNavRoutes.HomePage.name,
     )
 
