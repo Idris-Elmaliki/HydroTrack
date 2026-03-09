@@ -88,4 +88,7 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose.v297)
+
+    // coil
+    implementation(libs.coil.compose)
 }

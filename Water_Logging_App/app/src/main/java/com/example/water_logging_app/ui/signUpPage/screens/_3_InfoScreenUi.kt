@@ -124,8 +124,13 @@ fun InfoScreenUi(
         bottomBar = {
             Column(
                 modifier = Modifier
+                    .padding(
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding),
+                        bottom = dimensionResource(R.dimen.mini_text_padding)
+                    )
                     .navigationBarsPadding()
-                    .padding(dimensionResource(R.dimen.container_padding)),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -242,7 +247,7 @@ private fun OnboardingPageContent(
             text = stringResource(page.description),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 14.sp,
-                lineHeight = 12.sp
+                lineHeight = 14.sp
             )
         )
     }
