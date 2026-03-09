@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -291,6 +290,7 @@ fun ShowConfirmDialogUi(
                     TextButton(
                         shape = CircleShape,
                         onClick = {
+                            onDismiss()
                             currentNavAction()
                         }
                     ) {
@@ -452,6 +452,9 @@ private fun UsersMeasurementsUi(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
+    val metricHeightRange = 0f..250f; val imperialHeightRange = 0f..100f
+    val metricWeightRange = 0f..180f; val imperialWeightRange = 0f..400f
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -507,10 +510,10 @@ private fun UsersMeasurementsUi(
                 heightVal = data.toInt()
             },
             valueRange = if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
-                0f..250f
+                metricHeightRange
             }
             else {
-                0f..100f
+                imperialHeightRange
             },
             enabled = signUpData.unitOfMeasurement != null
         )
@@ -579,10 +582,10 @@ private fun UsersMeasurementsUi(
                 weightVal = data.toInt()
             },
             valueRange = if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
-                0f..180f
+                metricWeightRange
             }
             else {
-                0f..400f
+                imperialWeightRange
             },
             enabled = signUpData.unitOfMeasurement != null
         )

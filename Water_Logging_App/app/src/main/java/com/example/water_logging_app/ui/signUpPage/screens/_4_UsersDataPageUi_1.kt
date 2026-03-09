@@ -1,5 +1,8 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -47,10 +50,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
+import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
@@ -67,11 +72,13 @@ import kotlinx.coroutines.launch
 *   4. A username for the users profile
 *   5. The users gender
 */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UsersDataPageUi1(
     modifier : Modifier, // just passes in .fillMaxSize()
     signUpVM : SignUpViewModel,
+    profilePicVM : ProfilePictureViewModel,
     currentNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
@@ -178,13 +185,14 @@ fun UsersDataPageUi1(
                 .padding(dimensionResource(R.dimen.container_padding))
                 .padding(innerpadding),
         ) {
+            val pfpUri by profilePicVM.profilePictureUri.collectAsStateWithLifecycle()
             UserProfileUi(
                 modifier = Modifier
                     .padding(
                         dimensionResource(R.dimen.container_padding))
                     .fillMaxWidth(),
-                signUpVM = signUpVM,
-                signUpData = signUpData,
+                pfpVM = profilePicVM,
+                pfpData = pfpUri.uri
             )
             UserNameTextFieldsUi(
                 modifier = Modifier
@@ -196,7 +204,6 @@ fun UsersDataPageUi1(
                 signUpVM = signUpVM,
                 signUpData = signUpData
             )
-
             GenderSelectionUi(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -215,9 +222,22 @@ fun UsersDataPageUi1(
 @Composable
 private fun UserProfileUi(
     modifier : Modifier,
-    signUpVM: SignUpViewModel,
-    signUpData : UserPreferenceData
+    pfpVM: ProfilePictureViewModel,
+    pfpData : String?
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
+    val singlePhotoPickerLaunch = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            pfpVM.updateProfilePicture(
+                uri = uri.toString().ifEmpty {
+                    null
+                }
+            )
+        }
+    )
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -239,12 +259,22 @@ private fun UserProfileUi(
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            Image(
-                contentScale = ContentScale.Crop,
-                painter = painterResource(R.drawable.default_pfp_icon),
-                contentDescription = null,
-            )
+            if(pfpData == "") {
+                Image(
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(R.drawable.default_pfp_icon),
+                    contentDescription = null,
+                )
+            }
+            else {
+                AsyncImage(
+                    model = pfpData,
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit
+                )
+            }
         }
+
         Card(
             modifier = Modifier
                 .padding(bottom = dimensionResource(R.dimen.container_padding)),
@@ -252,7 +282,13 @@ private fun UserProfileUi(
                 containerColor = Aquamarine
             ),
             shape = ShapeDefaults.Large,
-            onClick = {}
+            onClick = {
+                coroutineScope.launch {
+                    singlePhotoPickerLaunch.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
+            }
         ) {
             Text(
                 text = stringResource(R.string.EditProfilePicture),
@@ -261,8 +297,6 @@ private fun UserProfileUi(
                     .padding(dimensionResource(R.dimen.mini_text_padding))
             )
         }
-
-
     }
 }
 

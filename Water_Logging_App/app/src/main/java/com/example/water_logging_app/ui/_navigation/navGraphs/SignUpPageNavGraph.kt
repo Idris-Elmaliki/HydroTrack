@@ -15,6 +15,7 @@ import com.example.water_logging_app.ui.signUpPage.screens.InfoScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi2
 import com.example.water_logging_app.ui.signUpPage.screens.UsersDataPageUi1
+import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 
 fun NavGraphBuilder.signUpGraph(
@@ -67,6 +68,7 @@ fun NavGraphBuilder.signUpGraph(
             UsersDataPageUi1(
                 modifier = modifier,
                 signUpVM = hiltViewModel<SignUpViewModel>(rememberActivity()),
+                profilePicVM = hiltViewModel<ProfilePictureViewModel>(rememberActivity()),
                 currentNavAction = { actions.navigateToUserDetailsPage() }
             )
         }
