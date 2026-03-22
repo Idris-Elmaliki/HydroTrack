@@ -186,8 +186,6 @@ class SignUpViewModel @Inject constructor(
             }
         }
 
-        Log.d("Testing", "Error list is: $errorList")
-
         return errorList
     }
 
@@ -236,57 +234,4 @@ class SignUpViewModel @Inject constructor(
 
         return errorList
     }
-
-    // we might still need this function in the future (I'm too lazy to rewrite it...)
-/*
-    fun addUserData(
-        userData : UserPreferenceData
-    ) {
-        viewModelScope.launch {
-            try {
-                _signUpData.update { data ->
-                    data.copy(
-                        isLoading = true
-                    )
-                }
-
-                repo.insertUserPreference(
-                    UserPreferenceData(
-                        firstName = userData.firstName,
-                        lastName = userData.lastName,
-                        userName = userData.userName,
-                        age = userData.age,
-                        gender = userData.gender,
-                        height = userData.height,
-                        weight = userData.weight,
-                        dailyGoal = userData.dailyGoal,
-                        isMetric = userData.isMetric,
-                    )
-                )
-
-                _signUpData.update { data ->
-                    data.copy(
-                        isLoading = false,
-
-                        firstName = userData.firstName,
-                        lastName = userData.lastName,
-                        userName = userData.userName,
-                        age = userData.age,
-                        gender = userData.gender,
-                        height = userData.height,
-                        weight = userData.weight,
-                        dailyGoal = userData.dailyGoal,
-                        isMetric = userData.isMetric,
-                    )
-                }
-            } catch (e: Exception) {
-                _signUpData.update { data ->
-                    data.copy(
-                        error = e.message
-                    )
-                }
-            }
-        }
-    }
- */
 }

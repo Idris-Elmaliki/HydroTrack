@@ -52,6 +52,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.water_logging_app.R
+import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
@@ -185,14 +186,14 @@ fun UsersDataPageUi1(
                 .padding(dimensionResource(R.dimen.container_padding))
                 .padding(innerpadding),
         ) {
-            val pfpUri by profilePicVM.profilePictureUri.collectAsStateWithLifecycle()
+            val pfpData by profilePicVM.profilePictureUri.collectAsStateWithLifecycle()
             UserProfileUi(
                 modifier = Modifier
                     .padding(
                         dimensionResource(R.dimen.container_padding))
                     .fillMaxWidth(),
                 pfpVM = profilePicVM,
-                pfpData = pfpUri.uri
+                pfpData = pfpData
             )
             UserNameTextFieldsUi(
                 modifier = Modifier
@@ -223,14 +224,14 @@ fun UsersDataPageUi1(
 private fun UserProfileUi(
     modifier : Modifier,
     pfpVM: ProfilePictureViewModel,
-    pfpData : String?
+    pfpData : PhotoData
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     val singlePhotoPickerLaunch = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            pfpVM.updateProfilePicture(
+            pfpVM.updateProfilePicturePath(
                 uri = uri.toString().ifEmpty {
                     null
                 }
@@ -250,7 +251,7 @@ private fun UserProfileUi(
         Box(
             modifier = Modifier
                 .padding(bottom = dimensionResource(R.dimen.extra_mini_text_padding))
-                .size(dimensionResource(R.dimen.pfpUpdateIconSize))
+                .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
                 .clip(CircleShape)
                 .border(
                     width = dimensionResource(R.dimen.BorderStroke),
@@ -259,7 +260,7 @@ private fun UserProfileUi(
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            if(pfpData == "") {
+            if(pfpData.filePath == "") {
                 Image(
                     contentScale = ContentScale.Crop,
                     painter = painterResource(R.drawable.default_pfp_icon),
@@ -268,9 +269,11 @@ private fun UserProfileUi(
             }
             else {
                 AsyncImage(
-                    model = pfpData,
+                    model = pfpData.filePath,
                     contentDescription = null,
-                    contentScale = ContentScale.Fit
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
                 )
             }
         }

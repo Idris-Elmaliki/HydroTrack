@@ -18,6 +18,6 @@
     <dimen name="ClickableCardHeight">50dp</dimen>
     <dimen name="PageIndicatorIconSize">4dp</dimen>
     <dimen name="ArrowBackIconSize">30dp</dimen>
-    <dimen name="pfpUpdateIconSize">150dp</dimen>
+    <dimen name="pfpUpdatedIconSize">150dp</dimen>
     <dimen name="NavIconSize">25dp</dimen>
 </resources>
