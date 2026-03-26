@@ -8,7 +8,8 @@ import com.example.water_logging_app._waterLogs.data.local.entity.WaterLogEntity
 
 @Database(
     entities = [WaterLogEntity::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 abstract class WaterInfoDatabase : RoomDatabase() {
     abstract fun getWaterLogDao() : WaterLogDAO
