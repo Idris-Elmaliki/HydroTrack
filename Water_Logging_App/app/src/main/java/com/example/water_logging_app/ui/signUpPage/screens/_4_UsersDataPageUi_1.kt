@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,6 +36,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -232,9 +234,18 @@ private fun UserProfileUi(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             pfpVM.updateProfilePicturePath(
-                uri = uri.toString().ifEmpty {
+                uri = uri.toString().ifBlank {
                     null
                 }
+            )
+
+            Log.d(
+                "ProfilePictureUi",
+                "pfpData.fileName is empty: ${pfpData.filePath.isEmpty()}"
+            )
+            Log.d(
+                "ProfilePictureUi",
+                "pfpData.fileName is blank: ${pfpData.filePath.isBlank()}"
             )
         }
     )
@@ -260,11 +271,14 @@ private fun UserProfileUi(
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            if(pfpData.filePath == "") {
+            if(pfpData.filePath.isBlank()) {
+                Log.d("ProfilePictureUi", "[In Image] pfpData.fileName is blank: ${pfpData.filePath.isBlank()}")
                 Image(
-                    contentScale = ContentScale.Crop,
                     painter = painterResource(R.drawable.default_pfp_icon),
+                    contentScale = ContentScale.Crop,
                     contentDescription = null,
+                    modifier = Modifier
+                        .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
                 )
             }
             else {
