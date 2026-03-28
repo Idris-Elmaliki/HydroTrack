@@ -35,6 +35,7 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +54,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.preferenceData.domain.modelData.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UnitMeasurementType
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
@@ -184,6 +186,17 @@ fun UserDataPageUi2(
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.container_padding)),
                 signUpVM = signUpVM,
+                signUpData = signUpData
+            )
+            GenderSelectionUi(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding),
+                        top = dimensionResource(R.dimen.container_padding)
+                    ),
+                viewModel = signUpVM,
                 signUpData = signUpData
             )
             UsersUnitSystemUi(
@@ -374,6 +387,67 @@ private fun UsersAgeUi(
 }
 
 @Composable
+private fun GenderSelectionUi(
+    modifier : Modifier,
+    viewModel: SignUpViewModel,
+    signUpData : UserPreferenceData
+) {
+    val genders = listOf(
+        Genders.Male.name,
+        Genders.Female.name
+    )
+
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.Gender),
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+            Text(
+                text = "*",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            genders.forEach { gender ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RadioButton(
+                        selected = gender == signUpData.gender,
+                        onClick = {
+                            viewModel.updateUserProfile(
+                                gender = gender
+                            )
+                        },
+                        colors = RadioButtonDefaults.colors(
+                            selectedColor = Aquamarine,
+                            unselectedColor = Aquamarine
+                        )
+                    )
+                    Text(
+                        text = gender,
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun UsersUnitSystemUi(
     modifier : Modifier,
     signUpVM : SignUpViewModel,
@@ -455,6 +529,17 @@ private fun UsersMeasurementsUi(
     val metricHeightRange = 0f..250f; val imperialHeightRange = 0f..100f
     val metricWeightRange = 0f..180f; val imperialWeightRange = 0f..400f
 
+    LaunchedEffect(signUpData.unitOfMeasurement) {
+        signUpVM.syncLimitWithMetric(
+            upperLimits = if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
+                metricHeightRange.endInclusive to metricWeightRange.endInclusive
+            }
+            else {
+                imperialHeightRange.endInclusive to imperialWeightRange.endInclusive
+            }
+        )
+    }
+
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -473,7 +558,7 @@ private fun UsersMeasurementsUi(
     ) {
         val sliderColors = SliderDefaults.colors()
 
-        var heightVal by rememberSaveable { mutableIntStateOf(signUpData.height.toInt()) }
+        val heightVal = signUpData.height.toInt()
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -507,7 +592,6 @@ private fun UsersMeasurementsUi(
                         height = data
                     )
                 }
-                heightVal = data.toInt()
             },
             valueRange = if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
                 metricHeightRange
@@ -545,7 +629,7 @@ private fun UsersMeasurementsUi(
             }
         }
 
-        var weightVal by rememberSaveable { mutableIntStateOf(signUpData.weight.toInt()) }
+        val weightVal = signUpData.weight.toInt()
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -579,7 +663,6 @@ private fun UsersMeasurementsUi(
                         weight = data
                     )
                 }
-                weightVal = data.toInt()
             },
             valueRange = if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
                 metricWeightRange

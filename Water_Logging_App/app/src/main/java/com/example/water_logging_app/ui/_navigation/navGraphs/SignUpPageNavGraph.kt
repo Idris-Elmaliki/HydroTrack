@@ -13,8 +13,9 @@ import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
 import com.example.water_logging_app.ui.signUpPage.screens.BeginSignUpPageUi
 import com.example.water_logging_app.ui.signUpPage.screens.InfoScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
+import com.example.water_logging_app.ui.signUpPage.screens.UserDailyGoalScreen
 import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi2
-import com.example.water_logging_app.ui.signUpPage.screens.UsersDataPageUi1
+import com.example.water_logging_app.ui.signUpPage.screens.UsersDataPageUi3
 import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 
@@ -65,7 +66,7 @@ fun NavGraphBuilder.signUpGraph(
         composable(
             route = SignUpPageRoutes.GetUsersProfilePage.name
         ) {
-            UsersDataPageUi1(
+            UsersDataPageUi3(
                 modifier = modifier,
                 signUpVM = hiltViewModel<SignUpViewModel>(rememberActivity()),
                 profilePicVM = hiltViewModel<ProfilePictureViewModel>(rememberActivity()),
@@ -87,7 +88,10 @@ fun NavGraphBuilder.signUpGraph(
         composable(
             route = SignUpPageRoutes.GetUsersGoalPage.name
         ) {
-
+            UserDailyGoalScreen(
+                modifier = modifier,
+                signUpVM = hiltViewModel(rememberActivity())
+            )
         }
 
         composable(

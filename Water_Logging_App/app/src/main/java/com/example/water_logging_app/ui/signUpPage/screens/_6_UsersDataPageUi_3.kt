@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,6 +36,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -76,7 +78,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsersDataPageUi1(
+fun UsersDataPageUi3(
     modifier : Modifier, // just passes in .fillMaxSize()
     signUpVM : SignUpViewModel,
     profilePicVM : ProfilePictureViewModel,
@@ -232,9 +234,16 @@ private fun UserProfileUi(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             pfpVM.updateProfilePicturePath(
-                uri = uri.toString().ifEmpty {
-                    null
-                }
+                uri = uri?.toString()
+            )
+
+            Log.d(
+                "ProfilePictureUi",
+                "pfpData.fileName is empty: ${pfpData.filePath.isEmpty()}"
+            )
+            Log.d(
+                "ProfilePictureUi",
+                "pfpData.fileName is blank: ${pfpData.filePath.isBlank()}"
             )
         }
     )
@@ -260,22 +269,15 @@ private fun UserProfileUi(
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            if(pfpData.filePath == "") {
-                Image(
-                    contentScale = ContentScale.Crop,
-                    painter = painterResource(R.drawable.default_pfp_icon),
-                    contentDescription = null,
-                )
-            }
-            else {
-                AsyncImage(
-                    model = pfpData.filePath,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
-                )
-            }
+            AsyncImage(
+                model = pfpData.filePath,
+                contentDescription = null,
+                placeholder = painterResource(R.drawable.default_pfp_icon),
+                error = painterResource(R.drawable.default_pfp_icon),
+                fallback = painterResource(R.drawable.default_pfp_icon), // If model is null
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(dimensionResource(R.dimen.pfpUpdatedIconSize))
+            )
         }
 
         Card(
