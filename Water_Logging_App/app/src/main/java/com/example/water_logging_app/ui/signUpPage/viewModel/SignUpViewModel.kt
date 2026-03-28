@@ -161,7 +161,6 @@ class SignUpViewModel @Inject constructor(
 
     fun checkIfDataIsComplete1() : List<String> { // for screen 1 (UserNameScreen)
         val errorList = mutableListOf<String>()
-        Log.d("Testing", "First Name is: ${_signUpData.value.firstName}")
 
         viewModelScope.launch {
             try {
@@ -217,11 +216,11 @@ class SignUpViewModel @Inject constructor(
                     )
                 }
 
-                if(_signUpData.value.unitOfMeasurement == null) {
-                    errorList.add("User hasn't chosen a unit system.")
-                }
                 if(_signUpData.value.age.isEmpty() || _signUpData.value.age.toIntOrNull() == 0) {
                     errorList.add("Age is invalid.")
+                }
+                if(_signUpData.value.unitOfMeasurement == null) {
+                    errorList.add("User hasn't chosen a unit system.")
                 }
                 if(_signUpData.value.height == 0.0f) {
                     errorList.add("A height hasn't been added.")
