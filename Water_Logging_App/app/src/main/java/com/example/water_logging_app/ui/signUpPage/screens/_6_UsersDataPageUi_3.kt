@@ -78,7 +78,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsersDataPageUi1(
+fun UsersDataPageUi3(
     modifier : Modifier, // just passes in .fillMaxSize()
     signUpVM : SignUpViewModel,
     profilePicVM : ProfilePictureViewModel,
@@ -234,9 +234,7 @@ private fun UserProfileUi(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             pfpVM.updateProfilePicturePath(
-                uri = uri.toString().ifBlank {
-                    null
-                }
+                uri = uri?.toString()
             )
 
             Log.d(
@@ -271,25 +269,15 @@ private fun UserProfileUi(
                 ),
             contentAlignment = Alignment.Center,
         ) {
-            if(pfpData.filePath.isBlank()) {
-                Log.d("ProfilePictureUi", "[In Image] pfpData.fileName is blank: ${pfpData.filePath.isBlank()}")
-                Image(
-                    painter = painterResource(R.drawable.default_pfp_icon),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
-                )
-            }
-            else {
-                AsyncImage(
-                    model = pfpData.filePath,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
-                )
-            }
+            AsyncImage(
+                model = pfpData.filePath,
+                contentDescription = null,
+                placeholder = painterResource(R.drawable.default_pfp_icon),
+                error = painterResource(R.drawable.default_pfp_icon),
+                fallback = painterResource(R.drawable.default_pfp_icon), // If model is null
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(dimensionResource(R.dimen.pfpUpdatedIconSize))
+            )
         }
 
         Card(

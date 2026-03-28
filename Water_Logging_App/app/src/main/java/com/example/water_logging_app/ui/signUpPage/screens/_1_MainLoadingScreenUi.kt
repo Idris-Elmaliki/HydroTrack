@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import kotlinx.coroutines.delay
@@ -69,106 +70,12 @@ fun MainLoadingScreenUi(
         }
     }
 
-    Surface (
-        color = BrilliantAzure, // will be changed soon! (Should be MaterialTheme.colorScheme.SurfaceVariant)
-        modifier = modifier
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.container_padding))
-        ) {
-            Text(
-                text = stringResource(R.string.HydroTrack),
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier
-                    .padding(
-                        bottom = dimensionResource(R.dimen.container_padding)
-                    )
-            )
-            Image(
-                painter = painterResource(R.drawable.dropicon),
-                contentScale = ContentScale.FillBounds,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(
-                        width = 157.dp,
-                        height = 171.dp
-                    )
-            )
-
-            Spacer(
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding))
-            )
-
-            LoadingAnimation()
-
-            Spacer(
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding))
-            )
-
+    LoadingScreen(
+        modifier = modifier,
+        currentUi = {
             RandomTextPrompt()
         }
-
-        Box {
-            Image(
-                painter = painterResource(R.drawable.watervector1),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-            )
-            Image(
-                painter = painterResource(R.drawable.watervector2),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoadingAnimation() {
-    val dots : List<Int> = listOf(4, 3, 2, 1, 0)
-
-    val transition = rememberInfiniteTransition(label = "Bouncing_Dots")
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.icon_padding)),
-    ) {
-        dots.forEach { index ->
-            val offset by transition.animateFloat(
-                initialValue = 0f,
-                targetValue = dimensionResource(R.dimen.jumpingValue).value,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        durationMillis = 1000,
-                        easing = FastOutSlowInEasing
-                    ),
-                    repeatMode = RepeatMode.Reverse,
-                    initialStartOffset = StartOffset(
-                        offsetMillis = index * 300,
-                        offsetType = StartOffsetType.FastForward
-                    ),
-                ),
-                label = "Bouncing_Dots",
-            )
-            Box(
-                modifier = Modifier
-                    .size(dimensionResource(R.dimen.loadingDotSize))
-                    .graphicsLayer {
-                        translationY = offset // Applies the animated height
-                    }
-                    .background(color = MaterialTheme.colorScheme.onBackground, shape = MaterialTheme.shapes.extraLarge)
-            )
-        }
-    }
+    )
 }
 
 @Composable

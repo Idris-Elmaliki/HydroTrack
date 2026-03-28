@@ -120,14 +120,32 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun updateUsersPreferences(
-        dailyGoal : Long? = null,
+    fun syncLimitWithMetric(
+        upperLimits: Pair<Float, Float>, // height, weight
     ) {
         viewModelScope.launch {
             try {
                 _signUpData.update { data ->
                     data.copy(
-                        dailyGoal = dailyGoal ?: data.dailyGoal,
+                        isLoading = true
+                    )
+                }
+
+                val info = _signUpData.value
+
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        height = if(info.height > upperLimits.first) {
+                            upperLimits.first
+                        } else {
+                            info.height
+                        },
+                        weight = if(info.weight > upperLimits.second) {
+                            upperLimits.second
+                        } else {
+                            info.weight
+                        }
                     )
                 }
             }
@@ -232,5 +250,40 @@ class SignUpViewModel @Inject constructor(
         }
 
         return errorList
+    }
+
+    fun uploadUserData() {
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                val info = _signUpData.value
+
+                repo.insertUserPreference(
+                    UserPreferenceData(
+                        firstName = info.firstName,
+                        lastName = info.lastName,
+                        userName = info.userName,
+                        age = info.age,
+                        gender = info.gender,
+                        height = info.height,
+                        weight = info.weight,
+                        unitOfMeasurement = info.unitOfMeasurement,
+                        dailyGoal = TODO() // this needs to be calculated (we need exercise data)
+                    )
+                )
+            }
+            catch (e : Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
+            }
+        }
     }
 }

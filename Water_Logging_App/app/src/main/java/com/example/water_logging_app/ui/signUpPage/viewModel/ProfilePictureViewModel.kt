@@ -49,7 +49,7 @@ class ProfilePictureViewModel @Inject constructor(
             try {
                 _profilePictureUri.update { data ->
                     data.copy(
-                        filePath = uri ?: ""
+                        filePath = uri ?: _profilePictureUri.value.filePath
                     )
                 }
             }
