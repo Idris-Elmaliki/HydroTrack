@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -36,7 +35,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,7 +53,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
-import com.example.water_logging_app.preferenceData.domain.modelData.Genders
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
@@ -83,6 +81,7 @@ fun UsersDataPageUi3(
     signUpVM : SignUpViewModel,
     profilePicVM : ProfilePictureViewModel,
     currentNavAction : () -> Unit,
+    previousNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
     var checkForError by rememberSaveable { mutableStateOf(false) }
@@ -207,17 +206,17 @@ fun UsersDataPageUi3(
                 signUpVM = signUpVM,
                 signUpData = signUpData
             )
-            GenderSelectionUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = dimensionResource(R.dimen.container_padding),
-                        end = dimensionResource(R.dimen.container_padding),
-                        top = dimensionResource(R.dimen.container_padding)
-                    ),
-                viewModel = signUpVM,
-                signUpData = signUpData
-            )
+//            GenderSelectionUi(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(
+//                        start = dimensionResource(R.dimen.container_padding),
+//                        end = dimensionResource(R.dimen.container_padding),
+//                        top = dimensionResource(R.dimen.container_padding)
+//                    ),
+//                viewModel = signUpVM,
+//                signUpData = signUpData
+//            )
         }
     }
 }
@@ -445,63 +444,63 @@ private fun UserNameTextFieldsUi(
         )
     }
 }
-@Composable
-private fun GenderSelectionUi(
-    modifier : Modifier,
-    viewModel: SignUpViewModel,
-    signUpData : UserPreferenceData
-) {
-    val genders = listOf(
-        Genders.Male.name,
-        Genders.Female.name
-    )
-
-    Column(
-        modifier = modifier
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.Gender),
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-            Text(
-                text = "*",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            genders.forEach { gender ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    RadioButton(
-                        selected = gender == signUpData.gender,
-                        onClick = {
-                            viewModel.updateUserProfile(
-                                gender = gender
-                            )
-                        },
-                        colors = RadioButtonDefaults.colors(
-                            selectedColor = Aquamarine,
-                            unselectedColor = Aquamarine
-                        )
-                    )
-                    Text(
-                        text = gender,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                }
-            }
-        }
-    }
-}
+//@Composable
+//private fun GenderSelectionUi(
+//    modifier : Modifier,
+//    viewModel: SignUpViewModel,
+//    signUpData : UserPreferenceData
+//) {
+//    val genders = listOf(
+//        Genders.Male.name,
+//        Genders.Female.name
+//    )
+//
+//    Column(
+//        modifier = modifier
+//    ) {
+//        Row(
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+//            Text(
+//                text = stringResource(R.string.Gender),
+//                style = MaterialTheme.typography.headlineSmall.copy(
+//                    fontWeight = FontWeight.Bold,
+//                ),
+//            )
+//            Text(
+//                text = "*",
+//                style = MaterialTheme.typography.labelMedium,
+//                color = MaterialTheme.colorScheme.error
+//            )
+//        }
+//        Row(
+//            modifier = Modifier
+//                .fillMaxWidth(),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.SpaceEvenly
+//        ) {
+//            genders.forEach { gender ->
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                ) {
+//                    RadioButton(
+//                        selected = gender == signUpData.gender,
+//                        onClick = {
+//                            viewModel.updateUserData(
+//                                gender = gender
+//                            )
+//                        },
+//                        colors = RadioButtonDefaults.colors(
+//                            selectedColor = Aquamarine,
+//                            unselectedColor = Aquamarine
+//                        )
+//                    )
+//                    Text(
+//                        text = gender,
+//                        style = MaterialTheme.typography.labelMedium
+//                    )
+//                }
+//            }
+//        }
+//    }
+//}

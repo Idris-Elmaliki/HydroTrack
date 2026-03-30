@@ -14,9 +14,8 @@ import com.example.water_logging_app.ui.signUpPage.screens.BeginSignUpPageUi
 import com.example.water_logging_app.ui.signUpPage.screens.InfoScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.UserDailyGoalScreen
+import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi1
 import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi2
-import com.example.water_logging_app.ui.signUpPage.screens.UsersDataPageUi3
-import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 
 fun NavGraphBuilder.signUpGraph(
@@ -49,7 +48,7 @@ fun NavGraphBuilder.signUpGraph(
             BeginSignUpPageUi(
                 modifier = modifier,
             ) {
-                actions.navigateToInfoPage1()
+                actions.navigateToInfoPage()
             }
         }
 
@@ -59,39 +58,47 @@ fun NavGraphBuilder.signUpGraph(
             InfoScreenUi(
                 modifier = modifier
             ) {
-                actions.navigateToUsersProfilePage()
+                actions.navigateToUserDetailsPage()
             }
+        }
+
+        // Updated the navigation routes for the sign-up page!
+        composable(
+            route = SignUpPageRoutes.GetUserDataPage.name
+        ) {
+            UserDataPageUi1(
+                modifier = modifier,
+                signUpVM = hiltViewModel<SignUpViewModel>(rememberActivity()),
+                currentNavAction = { actions.navigateToUsersActivityLevelPage() }
+            )
+        }
+
+        composable(
+            route = SignUpPageRoutes.GetUsersActivityLevelPage.name
+        ) {
+            UserDataPageUi2(
+                modifier = modifier,
+                signUpVM = hiltViewModel(rememberActivity()),
+                previousNavAction = { actions.navigateToUserDetailsPage() },
+                currentNavAction = { actions.navigateToUsersGoalsPage() }
+            )
+        }
+
+        // will need to fix the nav path from here:
+        composable(
+            route = SignUpPageRoutes.GetUsersGoalPage.name
+        ) {
+
+            UserDailyGoalScreen(
+                modifier = modifier,
+                signUpVM = hiltViewModel(rememberActivity())
+            )
         }
 
         composable(
             route = SignUpPageRoutes.GetUsersProfilePage.name
         ) {
-            UsersDataPageUi3(
-                modifier = modifier,
-                signUpVM = hiltViewModel<SignUpViewModel>(rememberActivity()),
-                profilePicVM = hiltViewModel<ProfilePictureViewModel>(rememberActivity()),
-                currentNavAction = { actions.navigateToUserDetailsPage() }
-            )
-        }
 
-        composable(
-            route = SignUpPageRoutes.GetUserDataPage.name
-        ) {
-            UserDataPageUi2(
-                modifier = modifier,
-                signUpVM = hiltViewModel(rememberActivity()),
-                previousNavAction = { actions.navigateToUsersProfilePage() },
-                currentNavAction = { actions.navigateToUsersGoalsPage() }
-            )
-        }
-
-        composable(
-            route = SignUpPageRoutes.GetUsersGoalPage.name
-        ) {
-            UserDailyGoalScreen(
-                modifier = modifier,
-                signUpVM = hiltViewModel(rememberActivity())
-            )
         }
 
         composable(

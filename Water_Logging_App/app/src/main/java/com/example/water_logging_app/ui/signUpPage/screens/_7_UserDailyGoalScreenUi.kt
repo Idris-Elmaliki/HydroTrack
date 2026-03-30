@@ -19,7 +19,6 @@ fun UserDailyGoalScreen(
         signUpVM.uploadUserData()
     }
 
-
     LoadingScreen(
         modifier = modifier,
     ) {}

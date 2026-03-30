@@ -17,5 +17,6 @@ data class UserPreferenceData(
     val height : Float = 0.0f,
     val weight : Float = 0.0f,
     val unitOfMeasurement : String? = null,
+    val activityLevel : String? = null,
     val dailyGoal : Long = 0L,
 )

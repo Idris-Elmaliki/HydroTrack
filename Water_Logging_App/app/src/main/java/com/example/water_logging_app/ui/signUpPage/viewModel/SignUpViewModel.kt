@@ -1,6 +1,5 @@
 package com.example.water_logging_app.ui.signUpPage.viewModel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
@@ -56,7 +55,6 @@ class SignUpViewModel @Inject constructor(
         firstName : String? = null,
         lastName : String? = null,
         userName : String? = null,
-        gender : String? = null,
     ) {
         viewModelScope.launch {
             try {
@@ -72,7 +70,6 @@ class SignUpViewModel @Inject constructor(
                         firstName = firstName ?: data.firstName,
                         lastName = lastName ?: data.lastName,
                         userName = userName ?: data.userName,
-                        gender = gender ?: data.gender
                     )
                 }
             }
@@ -88,9 +85,11 @@ class SignUpViewModel @Inject constructor(
 
     fun updateUserData(
         unitSystem : String? = null,
+        gender : String? = null,
         age : String? = null,
         height : Float? = null,
         weight : Float? = null,
+        activityLevel : String? = null,
     ) {
         viewModelScope.launch {
             try {
@@ -106,7 +105,9 @@ class SignUpViewModel @Inject constructor(
                         unitOfMeasurement = unitSystem ?: data.unitOfMeasurement,
                         age = age ?: data.age,
                         height = height ?: data.height,
-                        weight = weight ?: data.weight
+                        weight = weight ?: data.weight,
+                        gender = gender ?: data.gender,
+                        activityLevel = activityLevel ?: data.activityLevel
                     )
                 }
             }
@@ -273,7 +274,7 @@ class SignUpViewModel @Inject constructor(
                         height = info.height,
                         weight = info.weight,
                         unitOfMeasurement = info.unitOfMeasurement,
-                        dailyGoal = TODO() // this needs to be calculated (we need exercise data)
+                        dailyGoal = 1L // this needs to be calculated later
                     )
                 )
             }

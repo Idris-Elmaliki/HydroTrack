@@ -1,6 +1,6 @@
 package com.example.water_logging_app.userInfoCalculations
 
-import com.example.water_logging_app.preferenceData.domain.modelData.UnitMeasurementType
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 
 /*
 * This is just a simple helper function we use to convert cm/in into meters/feet and pass it as a string
