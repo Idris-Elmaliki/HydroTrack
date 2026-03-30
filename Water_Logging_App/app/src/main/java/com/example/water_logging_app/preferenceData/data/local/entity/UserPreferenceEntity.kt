@@ -15,6 +15,7 @@ data class UserPreferenceEntity(
     val gender : String,
     val height : Float,
     val weight : Float,
+    val activityLevel : String,
     val dailyGoal : Long,
     val unitOfMeasurement : String,
 )

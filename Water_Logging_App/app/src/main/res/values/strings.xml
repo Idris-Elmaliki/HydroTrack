@@ -60,5 +60,9 @@
     <string name="Confirm">Confirm</string>
     <string name="ConfirmMessage">Are you sure you are done with your profile? (You can change your profile data after setting up the app!)</string>
     <string name="Cancel">Cancel\n</string>
+    <string name="CouchPotatoDescription">You barely exercise, at most you would walk to your car or around your house.</string>
+    <string name="WalkerDescription">"You are somewhat active. You tend to walk a lot and go on strolls, but you never go beyond walking. "</string>
+    <string name="GymBroDescription">You are active, you go to the gym routinely (3 - 4 times a week) but nothing more outside of walking.</string>
+    <string name="AthleteDescription">You are very active, you go the gym alongside intense training for your sport.</string>
 
 </resources>

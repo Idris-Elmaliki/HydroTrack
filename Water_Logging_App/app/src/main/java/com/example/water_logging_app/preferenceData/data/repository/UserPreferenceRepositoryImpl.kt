@@ -2,9 +2,10 @@ package com.example.water_logging_app.preferenceData.data.repository
 
 import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenceDAO
 import com.example.water_logging_app.preferenceData.data.local.entity.UserPreferenceEntity
-import com.example.water_logging_app.preferenceData.domain.modelData.Genders
-import com.example.water_logging_app.preferenceData.domain.modelData.UnitMeasurementType
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.ActivityLevel
 import com.example.water_logging_app.preferenceData.domain.repository.UserPreferenceRepository
 import javax.inject.Inject
 
@@ -40,7 +41,8 @@ private fun UserPreferenceEntity.toUserPreferenceData() : UserPreferenceData {
         height = height,
         weight = weight,
         dailyGoal = dailyGoal,
-        unitOfMeasurement = unitOfMeasurement
+        unitOfMeasurement = unitOfMeasurement,
+        activityLevel = activityLevel
     )
 }
 
@@ -54,6 +56,7 @@ private fun UserPreferenceData.toUserPreferenceEntity() : UserPreferenceEntity {
         height = height,
         weight = weight,
         dailyGoal = dailyGoal,
-        unitOfMeasurement = unitOfMeasurement?: UnitMeasurementType.Metric.name
+        unitOfMeasurement = unitOfMeasurement?: UnitMeasurementType.Metric.name,
+        activityLevel = activityLevel?: ActivityLevel.Walker.name
     )
 }
