@@ -160,9 +160,8 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun checkIfDataIsComplete1() : List<String> { // for screen 1 (UserNameScreen)
+    fun checkIfDataIsComplete1() : List<String> { // for screen 1 (UserDataScreen)
         val errorList = mutableListOf<String>()
-
         viewModelScope.launch {
             try {
                 _signUpData.update { data ->
@@ -171,17 +170,20 @@ class SignUpViewModel @Inject constructor(
                     )
                 }
 
-                if (_signUpData.value.firstName.isBlank()) {
-                    errorList.add("First Name is Empty.")
-                }
-                if (_signUpData.value.lastName.isBlank()) {
-                    errorList.add("Last Name is Empty.")
-                }
-                if (_signUpData.value.userName.isBlank()) {
-                    errorList.add("User Name is Empty.")
+                if(_signUpData.value.age.isEmpty() || _signUpData.value.age.toIntOrNull() == 0) {
+                    errorList.add("Age is invalid.")
                 }
                 if (_signUpData.value.gender == null) {
                     errorList.add("Gender is Empty.")
+                }
+                if(_signUpData.value.unitOfMeasurement == null) {
+                    errorList.add("User hasn't chosen a unit system.")
+                }
+                if(_signUpData.value.height == 0.0f) {
+                    errorList.add("A height hasn't been added.")
+                }
+                if(_signUpData.value.weight == 0.0f) {
+                    errorList.add("A weight hasn't been added.")
                 }
 
                 if (errorList.isNotEmpty()) {
@@ -207,8 +209,9 @@ class SignUpViewModel @Inject constructor(
         return errorList
     }
 
-    fun checkIfDataIsComplete2() : List<String> { // for screen 2 (UserDataScreen)
-        val errorList = mutableListOf<String>()
+    fun checkIfDataIsComplete2() : String { // for screen 2 (ActivityScreen)
+        var error = ""
+
         viewModelScope.launch {
             try {
                 _signUpData.update { data ->
@@ -217,17 +220,47 @@ class SignUpViewModel @Inject constructor(
                     )
                 }
 
-                if(_signUpData.value.age.isEmpty() || _signUpData.value.age.toIntOrNull() == 0) {
-                    errorList.add("Age is invalid.")
+                if(_signUpData.value.activityLevel == "") {
+                    error = "Activity Level is Empty."
                 }
-                if(_signUpData.value.unitOfMeasurement == null) {
-                    errorList.add("User hasn't chosen a unit system.")
+
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        error = null
+                    )
                 }
-                if(_signUpData.value.height == 0.0f) {
-                    errorList.add("A height hasn't been added.")
+            }
+            catch (e : Exception) {
+                _signUpData.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
                 }
-                if(_signUpData.value.weight == 0.0f) {
-                    errorList.add("A weight hasn't been added.")
+            }
+        }
+        return error
+    }
+
+    fun checkIfDataIsComplete3() : List<String> { // for screen 3 (UserProfileScreen)
+        val errorList = mutableListOf<String>()
+
+        viewModelScope.launch {
+            try {
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                if (_signUpData.value.firstName.isBlank()) {
+                    errorList.add("First Name is Empty.")
+                }
+                if (_signUpData.value.lastName.isBlank()) {
+                    errorList.add("Last Name is Empty.")
+                }
+                if (_signUpData.value.userName.isBlank()) {
+                    errorList.add("User Name is Empty.")
                 }
 
                 if (errorList.isNotEmpty()) {

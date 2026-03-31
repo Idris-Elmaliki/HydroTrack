@@ -29,8 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
@@ -53,7 +51,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
-import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
@@ -80,8 +77,8 @@ fun UsersDataPageUi3(
     modifier : Modifier, // just passes in .fillMaxSize()
     signUpVM : SignUpViewModel,
     profilePicVM : ProfilePictureViewModel,
-    currentNavAction : () -> Unit,
     previousNavAction : () -> Unit,
+    currentNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
     var checkForError by rememberSaveable { mutableStateOf(false) }
@@ -154,7 +151,7 @@ fun UsersDataPageUi3(
                         .clickable(
                             onClick = {
                                 coroutineScope.launch {
-                                    errorList = signUpVM.checkIfDataIsComplete1()
+                                    errorList = signUpVM.checkIfDataIsComplete3()
                                 }
                                 checkForError = !checkForError
                             }

@@ -12,16 +12,15 @@ import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 fun UserDailyGoalScreen(
     modifier : Modifier,
     signUpVM : SignUpViewModel,
+    currentNavAction : () -> Unit,
 ) {
-    val state by signUpVM.signUpData.collectAsStateWithLifecycle()
-
-    LaunchedEffect(state.isLoading) {
-        signUpVM.uploadUserData()
-    }
+//    val state by signUpVM.signUpData.collectAsStateWithLifecycle()
+//
+//    LaunchedEffect(state.isLoading) {
+//        signUpVM.uploadUserData()
+//    }
 
     LoadingScreen(
         modifier = modifier,
     ) {}
-
-
 }

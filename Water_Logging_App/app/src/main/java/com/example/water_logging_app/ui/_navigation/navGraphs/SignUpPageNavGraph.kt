@@ -88,10 +88,10 @@ fun NavGraphBuilder.signUpGraph(
         composable(
             route = SignUpPageRoutes.GetUsersGoalPage.name
         ) {
-
             UserDailyGoalScreen(
                 modifier = modifier,
-                signUpVM = hiltViewModel(rememberActivity())
+                signUpVM = hiltViewModel(rememberActivity()),
+                currentNavAction = { actions.navigateToUsersProfilePage() }
             )
         }
 

@@ -20,4 +20,5 @@
     <dimen name="ArrowBackIconSize">30dp</dimen>
     <dimen name="pfpUpdatedIconSize">150dp</dimen>
     <dimen name="NavIconSize">25dp</dimen>
+    <dimen name="ActivityLevelImageSize">75dp</dimen>
 </resources>
