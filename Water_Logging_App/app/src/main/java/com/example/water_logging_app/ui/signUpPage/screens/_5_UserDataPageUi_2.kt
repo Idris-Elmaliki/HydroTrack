@@ -2,6 +2,7 @@ package com.example.water_logging_app.ui.signUpPage.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,8 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -28,9 +35,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
@@ -40,6 +50,7 @@ import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDataPageUi2(
     modifier : Modifier,
@@ -50,10 +61,10 @@ fun UserDataPageUi2(
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
 
     var checkForError by rememberSaveable { mutableStateOf(false) }
-    var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
+    var error by rememberSaveable { mutableStateOf("") }
 
     if(checkForError) {
-        if(!errorList.isEmpty()) {
+        if(!error.isEmpty()) {
             ShowErrorDialogUi(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -63,7 +74,7 @@ fun UserDataPageUi2(
                         start = dimensionResource(R.dimen.container_padding),
                         end = dimensionResource(R.dimen.container_padding)
                     ),
-                errorList = errorList,
+                errorList = listOf(error),
                 onDismiss = {
                     checkForError = !checkForError
                 }
@@ -78,6 +89,25 @@ fun UserDataPageUi2(
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = modifier,
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = stringResource(R.string.CreateProfile),
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                        Text(
+                            text = stringResource(R.string.ChooseYourActivityLevel),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
+            )
+        },
         bottomBar = {
             Row(
                 modifier = Modifier
@@ -85,6 +115,32 @@ fun UserDataPageUi2(
                     .navigationBarsPadding()
                     .fillMaxWidth()
             ) {
+                Row(
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.text_padding))
+                        .clip(MaterialTheme.shapes.medium)
+                        .clickable(
+                            onClick = {
+                                previousNavAction()
+                            }
+                        ),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.NavIconSize))
+                            .padding(end = dimensionResource(R.dimen.mini_text_padding)),
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                        contentDescription = null,
+                        tint = Aquamarine
+                    )
+                    Text(
+                        text = stringResource(R.string.GoBack),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = Aquamarine,
+                    )
+                }
                 Spacer(
                     modifier = Modifier
                         .weight(1f)
@@ -96,7 +152,7 @@ fun UserDataPageUi2(
                         .clickable(
                             onClick = {
                                 coroutineScope.launch {
-                                    errorList = signUpVM.checkIfDataIsComplete1()
+                                    error = signUpVM.checkIfDataIsComplete2()
                                 }
                                 checkForError = !checkForError
                             }
@@ -125,12 +181,8 @@ fun UserDataPageUi2(
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(all = dimensionResource(R.dimen.container_padding))
+                .padding(dimensionResource(R.dimen.container_padding))
         ) {
-            Text(
-                text = stringResource(R.string.CreateProfile),
-                style = MaterialTheme.typography.titleSmall
-            )
             ChooseActivityLevelUi(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -189,52 +241,78 @@ private fun ChooseActivityLevelUi(
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    Column(
+    LazyColumn(
         modifier = modifier
     ) {
-        ActivityLevelList.forEach { level ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                RadioButton(
-                    selected = level.activityLevel == signUpData.activityLevel,
-                    onClick = {
-                        coroutineScope.launch {
-                            signUpVM.updateUserData(
-                                activityLevel = level.activityLevel
-                            )
-                        }
-                    },
-                    colors = RadioButtonDefaults.colors(
-                        selectedColor = Aquamarine,
-                        unselectedColor = Aquamarine
-                    )
-                )
-                Image(
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.text_padding)),
-                    painter = painterResource(id = level.levelImage),
-                    contentDescription = null,
-                )
-                Column(
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.text_padding)),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = level.activityLevel,
-                        style = MaterialTheme.typography.labelMedium
-                    )
-                    Text(
-                        text = stringResource(id = level.description),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-        }
+       items(
+           count = ActivityLevelList.size,
+       ) { level ->
+           Card(
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .padding(bottom = dimensionResource(R.dimen.text_padding))
+                   .border(
+                       width = if (signUpData.activityLevel == ActivityLevelList[level].activityLevel) { 2.dp } else { 0.dp },
+                       color = if (signUpData.activityLevel == ActivityLevelList[level].activityLevel) { Aquamarine } else { Color.Transparent },
+                       shape = MaterialTheme.shapes.medium
+                   ),
+               colors = CardDefaults.cardColors(
+                   containerColor = Color.White
+               ),
+               shape = MaterialTheme.shapes.medium,
+           ) {
+               Row(
+                   modifier = Modifier
+                       .padding(dimensionResource(R.dimen.text_padding))
+                       .fillMaxWidth(),
+                   verticalAlignment = Alignment.CenterVertically,
+                   horizontalArrangement = Arrangement.Center
+               ) {
+                   RadioButton(
+                       selected = ActivityLevelList[level].activityLevel == signUpData.activityLevel,
+                       onClick = {
+                           coroutineScope.launch {
+                               signUpVM.updateUserData(
+                                   activityLevel = ActivityLevelList[level].activityLevel
+                               )
+                           }
+                       },
+                       colors = RadioButtonDefaults.colors(
+                           selectedColor = Aquamarine,
+                           unselectedColor = Aquamarine
+                       )
+                   )
+                   Image(
+                       modifier = Modifier
+                           .size(dimensionResource(R.dimen.ActivityLevelImageSize))
+                           .clip(MaterialTheme.shapes.medium)
+                           .padding(dimensionResource(R.dimen.text_padding)),
+                       painter = painterResource(id = ActivityLevelList[level].levelImage),
+                       contentDescription = null,
+                   )
+                   Column(
+                       modifier = Modifier
+                           .padding(dimensionResource(R.dimen.text_padding)),
+                       horizontalAlignment = Alignment.CenterHorizontally,
+                       verticalArrangement = Arrangement.Center
+                   ) {
+                       Text(
+                           text = when (ActivityLevelList[level].activityLevel) {
+                               ActivityLevel.CouchPotato.name -> stringResource(R.string.CouchPotato)
+                               ActivityLevel.GymBro.name -> stringResource(R.string.GymBro)
+                               else -> ActivityLevelList[level].activityLevel
+                           },
+                           style = MaterialTheme.typography.labelMedium.copy(
+                               fontWeight = FontWeight.Bold
+                           )
+                       )
+                       Text(
+                           text = stringResource(id = ActivityLevelList[level].description),
+                           style = MaterialTheme.typography.labelSmall
+                       )
+                   }
+               }
+           }
+       }
     }
 }

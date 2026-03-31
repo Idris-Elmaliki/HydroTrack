@@ -19,7 +19,6 @@ class SignUpPageActions(
     fun navigateToInfoPage() {
         navController.navigate(SignUpPageRoutes.InfoScreens.name)
     }
-    // this will be the nav pipeline
     fun navigateToUserDetailsPage() {
         navController.navigate(SignUpPageRoutes.GetUserDataPage.name)
     }

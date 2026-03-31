@@ -85,7 +85,7 @@ fun UserDataPageUi1(
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
 
     var checkForError by rememberSaveable { mutableStateOf(false) } // for error dialog
-    var checkForConfirmation by rememberSaveable { mutableStateOf(false) } // for confirmation dialog
+//    var checkForConfirmation by rememberSaveable { mutableStateOf(false) } // for confirmation dialog
 
     var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
@@ -107,8 +107,7 @@ fun UserDataPageUi1(
             )
         }
         else {
-            checkForError = false
-            checkForConfirmation = true
+            currentNavAction()
         }
     }
 
@@ -146,21 +145,24 @@ fun UserDataPageUi1(
                     .navigationBarsPadding()
                     .fillMaxWidth()
             ) {
+                Spacer(
+                    modifier = Modifier
+                        .weight(1f)
+                )
                 Row(
                     modifier = Modifier
                         .padding(dimensionResource(R.dimen.text_padding))
                         .clip(CircleShape)
                         .clickable(
                             onClick = {
-                                currentNavAction()
+                                coroutineScope.launch {
+                                    errorList = signUpVM.checkIfDataIsComplete1()
+                                }
+                                checkForError = !checkForError
                             }
                         ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(
-                        modifier = Modifier
-                            .weight(1f)
-                    )
                     Text(
                         text = stringResource(R.string.Next),
                         color = Aquamarine,
@@ -242,84 +244,84 @@ fun UserDataPageUi1(
 //    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ShowConfirmDialogUi(
-    modifier : Modifier,
-    onDismiss : () -> Unit,
-    currentNavAction: () -> Unit
-) {
-    BasicAlertDialog(
-        modifier = modifier,
-        onDismissRequest = {
-            onDismiss()
-        }
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.container_padding)),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = stringResource(R.string.Confirm),
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = poppins
-                    ),
-                    modifier = Modifier
-                        .padding(top = dimensionResource(R.dimen.text_padding))
-                )
-                Text(
-                    text = stringResource(R.string.ConfirmMessage),
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .padding(top = dimensionResource(R.dimen.text_padding), bottom = dimensionResource(R.dimen.text_padding))
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    TextButton(
-                        shape = CircleShape,
-                        onClick = {
-                            onDismiss()
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.Cancel).trim(),
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier
-                                .padding(dimensionResource(R.dimen.text_padding))
-                        )
-                    }
-
-                    TextButton(
-                        shape = CircleShape,
-                        onClick = {
-                            onDismiss()
-                            currentNavAction()
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.Confirm).trim(),
-                            style = MaterialTheme.typography.labelMedium,
-                            modifier = Modifier
-                                .padding(dimensionResource(R.dimen.text_padding)),
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun ShowConfirmDialogUi(
+//    modifier : Modifier,
+//    onDismiss : () -> Unit,
+//    currentNavAction: () -> Unit
+//) {
+//    BasicAlertDialog(
+//        modifier = modifier,
+//        onDismissRequest = {
+//            onDismiss()
+//        }
+//    ) {
+//        Card(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .padding(dimensionResource(R.dimen.container_padding)),
+//                verticalArrangement = Arrangement.Center,
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//            ) {
+//                Text(
+//                    text = stringResource(R.string.Confirm),
+//                    style = MaterialTheme.typography.headlineSmall.copy(
+//                        fontWeight = FontWeight.Bold,
+//                        fontFamily = poppins
+//                    ),
+//                    modifier = Modifier
+//                        .padding(top = dimensionResource(R.dimen.text_padding))
+//                )
+//                Text(
+//                    text = stringResource(R.string.ConfirmMessage),
+//                    style = MaterialTheme.typography.labelMedium,
+//                    modifier = Modifier
+//                        .padding(top = dimensionResource(R.dimen.text_padding), bottom = dimensionResource(R.dimen.text_padding))
+//                )
+//
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.SpaceBetween
+//                ) {
+//                    TextButton(
+//                        shape = CircleShape,
+//                        onClick = {
+//                            onDismiss()
+//                        }
+//                    ) {
+//                        Text(
+//                            text = stringResource(R.string.Cancel).trim(),
+//                            style = MaterialTheme.typography.labelMedium,
+//                            modifier = Modifier
+//                                .padding(dimensionResource(R.dimen.text_padding))
+//                        )
+//                    }
+//
+//                    TextButton(
+//                        shape = CircleShape,
+//                        onClick = {
+//                            onDismiss()
+//                            currentNavAction()
+//                        }
+//                    ) {
+//                        Text(
+//                            text = stringResource(R.string.Confirm).trim(),
+//                            style = MaterialTheme.typography.labelMedium,
+//                            modifier = Modifier
+//                                .padding(dimensionResource(R.dimen.text_padding)),
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 private fun UsersAgeUi(
@@ -399,7 +401,9 @@ private fun GenderSelectionUi(
     )
 
     Column(
-        modifier = modifier
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
