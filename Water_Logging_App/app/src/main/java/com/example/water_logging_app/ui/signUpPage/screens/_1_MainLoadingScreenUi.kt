@@ -9,7 +9,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -23,9 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -77,41 +73,6 @@ fun MainLoadingScreenUi(
 }
 
 @Composable
-private fun RandomTextPrompt() {
-    val textList : List<Int> = listOf(
-        R.string.loading_text1,
-        R.string.loading_text2,
-        R.string.loading_text3,
-        R.string.loading_text4,
-    )
-
-    val rand : Int = Random.nextInt(textList.size)
-
-    Text(
-        text = stringResource(textList[rand]),
-        style = MaterialTheme.typography.bodyLarge.copy(
-            shadow = Shadow(
-                color = if(isSystemInDarkTheme())
-                        MaterialTheme.colorScheme.onBackground
-                    else
-                        MaterialTheme.colorScheme.background,
-                offset = Offset(3f, 6f),
-                blurRadius = 3f
-            ),
-            textAlign = TextAlign.Center
-        ),
-        modifier = Modifier
-            .alpha(0.5f)
-            .padding(
-                top = dimensionResource(R.dimen.container_padding),
-                start = dimensionResource(R.dimen.extra_container_padding),
-                end = dimensionResource(R.dimen.extra_container_padding),
-                bottom = dimensionResource(R.dimen.container_padding)
-            )
-    )
-}
-
-@Composable
 private fun LoadingAnimation() {
     val dots : List<Int> = listOf(4, 3, 2, 1, 0)
 
@@ -138,6 +99,7 @@ private fun LoadingAnimation() {
                 ),
                 label = "Bouncing_Dots",
             )
+
             Box(
                 modifier = Modifier
                     .size(dimensionResource(R.dimen.loadingDotSize))
@@ -148,4 +110,31 @@ private fun LoadingAnimation() {
             )
         }
     }
+}
+
+@Composable
+private fun RandomTextPrompt() {
+    val textList : List<Int> = listOf(
+        R.string.loading_text1,
+        R.string.loading_text2,
+        R.string.loading_text3,
+        R.string.loading_text4,
+    )
+
+    val rand : Int = Random.nextInt(textList.size)
+
+    Text(
+        text = stringResource(textList[rand]),
+        style = MaterialTheme.typography.bodyLarge.copy(
+            textAlign = TextAlign.Center
+        ),
+        modifier = Modifier
+            .padding(
+                top = dimensionResource(R.dimen.container_padding),
+                start = dimensionResource(R.dimen.container_padding),
+                end = dimensionResource(R.dimen.container_padding),
+                bottom = dimensionResource(R.dimen.container_padding)
+            )
+
+    )
 }
