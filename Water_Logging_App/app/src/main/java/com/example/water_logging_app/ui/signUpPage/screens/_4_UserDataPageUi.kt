@@ -52,9 +52,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
-import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
@@ -62,8 +62,9 @@ import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
 import com.example.water_logging_app.userInfoCalculations.heightCalculations
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-
 
 /*
 * This page is a continuation of the profile creation process, we collect the rest of the data here!
@@ -75,7 +76,7 @@ import kotlinx.coroutines.launch
 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserDataPageUi1(
+fun UserDataPageUi(
     modifier : Modifier,
     signUpVM : SignUpViewModel,
     currentNavAction : () -> Unit,
@@ -327,7 +328,6 @@ private fun UsersAgeUi(
     signUpVM : SignUpViewModel,
     signUpData : UserPreferenceData
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val regexFilter = Regex("^[0-9]+$") // this regex checks that the inputted string is only
 
     Box(
@@ -341,7 +341,7 @@ private fun UsersAgeUi(
                 textAlign = TextAlign.Center
             ),
             onValueChange = { data ->
-                coroutineScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     if(data.contains(regexFilter)) {
                         signUpVM.updateUserData(
                             age = data
@@ -431,9 +431,11 @@ private fun GenderSelectionUi(
                     RadioButton(
                         selected = gender == signUpData.gender,
                         onClick = {
-                            viewModel.updateUserData(
-                                gender = gender
-                            )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                viewModel.updateUserData(
+                                    gender = gender
+                                )
+                            }
                         },
                         colors = RadioButtonDefaults.colors(
                             selectedColor = Aquamarine,
@@ -456,8 +458,6 @@ private fun UsersUnitSystemUi(
     signUpVM : SignUpViewModel,
     signUpData : UserPreferenceData
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     val unitSystems = listOf(
         UnitMeasurementType.Metric.name,
         UnitMeasurementType.Imperial.name
@@ -496,14 +496,10 @@ private fun UsersUnitSystemUi(
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = unit,
-                        style = MaterialTheme.typography.labelSmall
-                    )
                     RadioButton(
                         selected = unit == signUpData.unitOfMeasurement,
                         onClick = {
-                            coroutineScope.launch {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 signUpVM.updateUserData(
                                     unitSystem = unit
                                 )
@@ -513,6 +509,10 @@ private fun UsersUnitSystemUi(
                             selectedColor = Aquamarine,
                             unselectedColor = Aquamarine
                         )
+                    )
+                    Text(
+                        text = unit,
+                        style = MaterialTheme.typography.labelMedium
                     )
                 }
             }
@@ -527,8 +527,6 @@ private fun UsersMeasurementsUi(
     signUpVM : SignUpViewModel,
     signUpData : UserPreferenceData
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     val metricHeightRange = 0f..250f; val imperialHeightRange = 0f..100f
     val metricWeightRange = 0f..180f; val imperialWeightRange = 0f..400f
 
@@ -590,7 +588,7 @@ private fun UsersMeasurementsUi(
                 ){}
             },
             onValueChange = { data ->
-                coroutineScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     signUpVM.updateUserData(
                         height = data
                     )
@@ -661,7 +659,7 @@ private fun UsersMeasurementsUi(
                 ){}
             },
             onValueChange = { data ->
-                coroutineScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     signUpVM.updateUserData(
                         weight = data
                     )
@@ -694,8 +692,6 @@ private fun ConfirmButtonUi(
     currentVMAction : () -> Unit,
     currentNavAction: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -717,7 +713,7 @@ private fun ConfirmButtonUi(
         shape = MaterialTheme.shapes.medium,
         onClick = {
             // will set up a system similar to UserNamePage
-            coroutineScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 currentVMAction()
             }
             currentNavAction()
