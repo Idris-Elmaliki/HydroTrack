@@ -53,8 +53,9 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
-import com.example.water_logging_app.ui.signUpPage.viewModel.ProfilePictureViewModel
-import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
+import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
+import com.example.water_logging_app.ui.signUpPage.viewModels.parent.ProfilePictureViewModel
+import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
@@ -151,7 +152,7 @@ fun UsersDataPageUi3(
                         .clickable(
                             onClick = {
                                 coroutineScope.launch {
-                                    errorList = signUpVM.checkIfDataIsComplete3()
+                                    errorList = UserValidator(signUpData).validateUserProfile()
                                 }
                                 checkForError = !checkForError
                             }

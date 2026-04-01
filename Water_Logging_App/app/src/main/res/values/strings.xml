@@ -67,5 +67,6 @@
     <string name="ChooseYourActivityLevel">Choose Your Activity Level</string>
     <string name="CouchPotato">Couch Potato</string>
     <string name="GymBro">Gym Bro</string>
+    <string name="CalculatingRecommendedGoal">Calculating your recommended daily goal.</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.signUpPage.viewModel
+package com.example.water_logging_app.ui.signUpPage.viewModels.parent
 
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel

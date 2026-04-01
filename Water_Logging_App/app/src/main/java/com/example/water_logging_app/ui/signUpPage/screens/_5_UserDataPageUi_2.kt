@@ -46,7 +46,8 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.ActivityLevel
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
-import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
+import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
+import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import kotlinx.coroutines.launch
 
@@ -152,7 +153,7 @@ fun UserDataPageUi2(
                         .clickable(
                             onClick = {
                                 coroutineScope.launch {
-                                    error = signUpVM.checkIfDataIsComplete2()
+                                    error = UserValidator(signUpData).validateActivityData()
                                 }
                                 checkForError = !checkForError
                             }
@@ -272,7 +273,7 @@ private fun ChooseActivityLevelUi(
                        selected = ActivityLevelList[level].activityLevel == signUpData.activityLevel,
                        onClick = {
                            coroutineScope.launch {
-                               signUpVM.updateUserData(
+                               signUpVM.updateActivityData(
                                    activityLevel = ActivityLevelList[level].activityLevel
                                )
                            }
