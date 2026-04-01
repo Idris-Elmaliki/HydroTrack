@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -34,7 +33,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -58,11 +56,11 @@ import com.example.water_logging_app.preferenceData.domain.modelData.enums.Gende
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
-import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
+import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
+import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
-import com.example.water_logging_app.ui.theme.poppins
 import com.example.water_logging_app.userInfoCalculations.heightCalculations
 import kotlinx.coroutines.launch
 
@@ -84,12 +82,12 @@ fun UserDataPageUi1(
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
 
-    var checkForError by rememberSaveable { mutableStateOf(false) } // for error dialog
+    var checkForIncompletion by rememberSaveable { mutableStateOf(false) } // for error dialog
 //    var checkForConfirmation by rememberSaveable { mutableStateOf(false) } // for confirmation dialog
 
     var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
-    if(checkForError) {
+    if(checkForIncompletion) {
         if(!errorList.isEmpty()) {
             ShowErrorDialogUi(
                 modifier = Modifier
@@ -100,9 +98,9 @@ fun UserDataPageUi1(
                         start = dimensionResource(R.dimen.container_padding),
                         end = dimensionResource(R.dimen.container_padding)
                     ),
-                errorList = errorList,
+                errorList = errorList, // nothing will be null
                 onDismiss = {
-                    checkForError = !checkForError
+                    checkForIncompletion = !checkForIncompletion
                 }
             )
         }
@@ -156,9 +154,9 @@ fun UserDataPageUi1(
                         .clickable(
                             onClick = {
                                 coroutineScope.launch {
-                                    errorList = signUpVM.checkIfDataIsComplete1()
+                                    errorList = UserValidator(signUpData).validateUserData()
                                 }
-                                checkForError = !checkForError
+                                checkForIncompletion = !checkForIncompletion
                             }
                         ),
                     verticalAlignment = Alignment.CenterVertically

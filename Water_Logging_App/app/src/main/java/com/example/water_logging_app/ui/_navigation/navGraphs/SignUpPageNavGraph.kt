@@ -16,7 +16,7 @@ import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.UserDailyGoalScreen
 import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi1
 import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi2
-import com.example.water_logging_app.ui.signUpPage.viewModel.SignUpViewModel
+import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 
 fun NavGraphBuilder.signUpGraph(
     modifier: Modifier, // we just passed in .fillMaxSize()

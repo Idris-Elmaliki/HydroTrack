@@ -71,17 +71,6 @@ fun LoadingScreen(
                         height = 171.dp
                     )
             )
-
-            Spacer(
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding))
-            )
-
-            LoadingAnimation()
-
-            Spacer(
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding))
-            )
-
             currentUi()
         }
 
@@ -101,45 +90,6 @@ fun LoadingScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-            )
-        }
-    }
-}
-
-@Composable
-private fun LoadingAnimation() {
-    val dots : List<Int> = listOf(4, 3, 2, 1, 0)
-
-    val transition = rememberInfiniteTransition(label = "Bouncing_Dots")
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.icon_padding)),
-    ) {
-        dots.forEach { index ->
-            val offset by transition.animateFloat(
-                initialValue = 0f,
-                targetValue = dimensionResource(R.dimen.jumpingValue).value,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(
-                        durationMillis = 1000,
-                        easing = FastOutSlowInEasing
-                    ),
-                    repeatMode = RepeatMode.Reverse,
-                    initialStartOffset = StartOffset(
-                        offsetMillis = index * 300,
-                        offsetType = StartOffsetType.FastForward
-                    ),
-                ),
-                label = "Bouncing_Dots",
-            )
-            Box(
-                modifier = Modifier
-                    .size(dimensionResource(R.dimen.loadingDotSize))
-                    .graphicsLayer {
-                        translationY = offset // Applies the animated height
-                    }
-                    .background(color = MaterialTheme.colorScheme.onBackground, shape = MaterialTheme.shapes.extraLarge)
             )
         }
     }

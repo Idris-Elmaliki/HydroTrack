@@ -63,7 +63,7 @@ fun ShowErrorDialogUi(
                 Spacer(modifier = Modifier.padding(top = dimensionResource(R.dimen.text_padding)))
                 errorList.forEach { error ->
                     Text(
-                        text = error,
+                        text = error, // probably doesn't work?
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
