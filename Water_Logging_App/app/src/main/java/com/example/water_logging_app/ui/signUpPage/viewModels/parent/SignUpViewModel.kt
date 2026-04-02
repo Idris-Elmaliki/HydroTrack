@@ -137,6 +137,24 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun calculateDailyGoal() { // we use the other details to get the recommended goal
+        viewModelScope.launch {
+
+        }
+    }
+
+    fun updateDailyGoal(
+        dailyGoal : Long? = null,
+    ) {
+        viewModelScope.launch {
+            _signUpData.update { data ->
+                data.copy(
+                    dailyGoal = dailyGoal ?: data.dailyGoal
+                )
+            }
+        }
+    }
+
     fun uploadUserData() {
         viewModelScope.launch {
             try {

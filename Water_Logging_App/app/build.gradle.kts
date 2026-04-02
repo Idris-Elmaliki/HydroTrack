@@ -91,4 +91,7 @@ dependencies {
 
     // coil
     implementation(libs.coil.compose)
+
+    // Konfetti
+    implementation(libs.konfetti.compose)
 }

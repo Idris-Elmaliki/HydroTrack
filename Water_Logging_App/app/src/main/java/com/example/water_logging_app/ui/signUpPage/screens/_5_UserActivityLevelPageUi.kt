@@ -87,7 +87,6 @@ fun UserActivityLevelPageUi(
         }
     }
 
-    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -152,9 +151,7 @@ fun UserActivityLevelPageUi(
                         .clip(MaterialTheme.shapes.medium)
                         .clickable(
                             onClick = {
-                                coroutineScope.launch {
-                                    error = UserValidator(signUpData).validateActivityData()
-                                }
+                                error = UserValidator(signUpData).validateActivityData()
                                 checkForError = !checkForError
                             }
                         ),
