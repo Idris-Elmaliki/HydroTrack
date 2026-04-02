@@ -10,24 +10,20 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsBottomHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,7 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -51,6 +46,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.water_logging_app.R
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.LightGray
 import com.example.water_logging_app.ui.theme.inter24
@@ -141,6 +137,7 @@ fun InfoScreenUi(
                             bottom = dimensionResource(R.dimen.container_padding)
                         )
                         .fillMaxWidth(),
+                    pagerList = OnboardingPageList,
                     pagerState = pagerState
                 )
                 Card(
@@ -250,50 +247,5 @@ private fun OnboardingPageContent(
                 lineHeight = 14.sp
             )
         )
-    }
-}
-
-@Composable
-private fun PaginationSystemUi(
-    modifier : Modifier,
-    pagerState : PagerState
-) {
-    HorizontalPager(
-        state = pagerState
-    ) {
-        Row(
-            modifier = modifier,
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            repeat(OnboardingPageList.size) { iteration ->
-                val isSelected = (pagerState.currentPage == iteration)
-
-                val width by animateDpAsState(
-                    targetValue = if (isSelected) 35.dp else 25.dp,
-                    animationSpec = tween(durationMillis = 300),
-                    label = "width"
-                )
-
-                val color by animateColorAsState(
-                    targetValue = if (isSelected) {
-                        Aquamarine
-                    } else {
-                        LightGray
-                    },
-                    animationSpec = tween(durationMillis = 300),
-                    label = "color"
-                )
-
-                Box(
-                    modifier = Modifier
-                        .padding(dimensionResource(R.dimen.PageIndicatorIconSize))
-                        .height(10.dp)
-                        .width(width)
-                        .clip(CircleShape)
-                        .background(color)
-                ) {}
-            }
-        }
     }
 }
