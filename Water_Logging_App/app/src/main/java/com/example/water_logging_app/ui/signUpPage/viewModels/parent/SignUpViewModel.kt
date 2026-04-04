@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
+import com.example.water_logging_app.userInfoCalculations.dailyGoalCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -121,6 +122,18 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun calculateDailyGoal() { // we use the other details to get the recommended goal
+        viewModelScope.launch {
+            _signUpData.update { data ->
+                data.copy(
+                    dailyGoal = dailyGoalCalculation(
+                        userData = data
+                    )
+                )
+            }
+        }
+    }
+
     fun updateUserProfile(
         firstName : String? = null,
         lastName : String? = null,
@@ -134,12 +147,6 @@ class SignUpViewModel @Inject constructor(
                     userName = userName ?: data.userName,
                 )
             }
-        }
-    }
-
-    fun calculateDailyGoal() { // we use the other details to get the recommended goal
-        viewModelScope.launch {
-
         }
     }
 
