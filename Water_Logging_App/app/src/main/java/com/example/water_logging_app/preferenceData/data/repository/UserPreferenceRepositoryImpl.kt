@@ -7,6 +7,8 @@ import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitM
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.ActivityLevel
 import com.example.water_logging_app.preferenceData.domain.repository.UserPreferenceRepository
+import com.example.water_logging_app.userInfoCalculations.heightMetricConversion
+import com.example.water_logging_app.userInfoCalculations.weightMetricConversion
 import javax.inject.Inject
 
 class UserPreferenceRepositoryImpl @Inject constructor(
@@ -53,8 +55,9 @@ private fun UserPreferenceData.toUserPreferenceEntity() : UserPreferenceEntity {
         userName = userName,
         age = age.toInt(),
         gender = gender?: Genders.Male.name,
-        height = height,
-        weight = weight,
+        // I want to ensure that all the data is in metric inside the ROOM database!!!!
+        height = heightMetricConversion(unitOfMeasurement.toString(), height),
+        weight = weightMetricConversion(unitOfMeasurement.toString(), weight),
         dailyGoal = dailyGoal,
         unitOfMeasurement = unitOfMeasurement?: UnitMeasurementType.Metric.name,
         activityLevel = activityLevel?: ActivityLevel.Walker.name

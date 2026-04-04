@@ -160,6 +160,14 @@ fun UserDailyGoalScreen(
                 }
             }
         }
+
+        if(pagerState.currentPage == 2) {
+            val party = Party(emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100))
+            KonfettiView(
+                modifier = Modifier.fillMaxSize(),
+                parties = listOf(party)
+            )
+        }
     }
 }
 
@@ -192,12 +200,5 @@ private fun LoadPagerDataUi(
             text = pagerList[pagerState.currentPage],
             style = MaterialTheme.typography.labelMedium
         )
-        if(pagerState.currentPage == 2) {
-            val party = Party(emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100))
-            KonfettiView(
-                modifier = Modifier.fillMaxSize(),
-                parties = listOf(party)
-            )
-        }
     }
 }

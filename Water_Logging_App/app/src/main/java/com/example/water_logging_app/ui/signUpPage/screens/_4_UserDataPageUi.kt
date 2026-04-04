@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -659,6 +660,7 @@ private fun UsersMeasurementsUi(
                 ){}
             },
             onValueChange = { data ->
+                Log.d("CheckData", "current weight: $data")
                 CoroutineScope(Dispatchers.IO).launch {
                     signUpVM.updateUserData(
                         weight = data

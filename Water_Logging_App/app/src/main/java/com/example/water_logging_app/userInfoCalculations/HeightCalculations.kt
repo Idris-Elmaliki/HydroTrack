@@ -5,7 +5,7 @@ import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitM
 /*
 * This is just a simple helper function we use to convert cm/in into meters/feet and pass it as a string
 *
-* Used in the UserDataPageUi_2.kt + more (maybe)
+* Used in the ui for UserDataPage
 */
 fun heightCalculations(
     unitSystem : String,
