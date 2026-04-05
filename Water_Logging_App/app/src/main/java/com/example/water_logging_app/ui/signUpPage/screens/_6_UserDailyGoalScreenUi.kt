@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -24,17 +27,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
+import com.example.water_logging_app.ui.theme.VibrantBlue
+import com.example.water_logging_app.ui.theme.VividCobalt
 import kotlinx.coroutines.delay
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
+import nl.dionsegijn.konfetti.core.Position
 import nl.dionsegijn.konfetti.core.emitter.Emitter
 import java.util.concurrent.TimeUnit
 
@@ -54,14 +63,21 @@ fun UserDailyGoalScreen(
     var showLoadingScreen by rememberSaveable { mutableStateOf(true) }
 
     var currentProgress by rememberSaveable { mutableFloatStateOf(0f) }
-    var isLoaded by rememberSaveable { mutableStateOf(false) }
 
-    LaunchedEffect(isLoaded) {
+    var isLoaded by rememberSaveable { mutableStateOf(false) }
+    var isClicked by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(isLoaded, isClicked) {
         signUpVM.calculateDailyGoal()
 
-        if(isLoaded)
+        if(isClicked)
             showLoadingScreen = false
     }
+
+    val pagerList = listOf(
+        "Your daily recommended water intake is...!",
+        "${signUpVM.signUpData.collectAsStateWithLifecycle().value.dailyGoal}"
+    )
 
     if(showLoadingScreen) {
         LoadingScreen(
@@ -91,29 +107,80 @@ fun UserDailyGoalScreen(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.container_padding))
             )
 
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(
-                        start = dimensionResource(R.dimen.container_padding),
-                        end = dimensionResource(R.dimen.container_padding)
-                    )
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = stringResource(R.string.CalculatingRecommendedGoal),
-                    style = MaterialTheme.typography.labelMedium
-                )
+            when(isLoaded) {
+                false -> {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .padding(
+                                start = dimensionResource(R.dimen.container_padding),
+                                end = dimensionResource(R.dimen.container_padding)
+                            )
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.CalculatingRecommendedGoal),
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
+                true -> {
+                    Column(
+                        modifier = Modifier
+                            .padding(
+                                start = dimensionResource(R.dimen.container_padding),
+                                end = dimensionResource(R.dimen.container_padding)
+                            )
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(bottom = dimensionResource(R.dimen.container_padding)),
+                            text = stringResource(R.string.GoalHasBeenCalculated),
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    start = dimensionResource(R.dimen.container_padding),
+                                    end = dimensionResource(R.dimen.container_padding)
+                                )
+                                .height(dimensionResource(R.dimen.ClickableCardHeight))
+                                .shadow(
+                                    elevation = dimensionResource(R.dimen.card_shadow_elevation),
+                                    clip = true,
+                                    spotColor = VividCobalt,
+                                    ambientColor = VividCobalt,
+                                    shape = MaterialTheme.shapes.medium
+                                ),
+                            colors = CardDefaults.cardColors(
+                                containerColor = VividCobalt
+                            ),
+                            shape = MaterialTheme.shapes.medium,
+                            onClick = {
+                                isClicked = !isClicked
+                            }
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.Continue),
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        lineHeight = 0.sp
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
     else {
-        val pagerList = listOf(
-            "Your daily recommended water intake has been calculated!",
-            "Your daily recommended water intake is...!",
-            "${signUpVM.signUpData.collectAsStateWithLifecycle().value.dailyGoal}"
-        )
-
         val pagerState = rememberPagerState { pagerList.size }
 
         Scaffold(
@@ -152,6 +219,7 @@ fun UserDailyGoalScreen(
                 ) {
                     LoadPagerDataUi(
                         modifier = Modifier
+                            .fillMaxSize()
                             .padding(dimensionResource(R.dimen.container_padding)),
                         signUpVM = signUpVM,
                         pagerState = pagerState,
@@ -161,10 +229,20 @@ fun UserDailyGoalScreen(
             }
         }
 
-        if(pagerState.currentPage == 2) {
-            val party = Party(emitter = Emitter(duration = 100, TimeUnit.MILLISECONDS).max(100))
+        if(pagerState.currentPage == (pagerList.size - 1)) {
+            val deviceWidth = LocalWindowInfo.current.containerSize.width
+            val deviceLength = LocalWindowInfo.current.containerSize.height
+
+            val party = Party(
+                emitter = Emitter(duration = 500, TimeUnit.MILLISECONDS).max(500),
+                position = Position.Absolute(
+                    x = (deviceWidth.toFloat() / 2f),
+                    y = deviceLength.toFloat() * 0.0625f
+                ),
+            )
             KonfettiView(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 parties = listOf(party)
             )
         }
@@ -179,6 +257,7 @@ private fun LoadingBar(
     LinearProgressIndicator(
         modifier = modifier,
         progress = { currentProgress },
+        color = VibrantBlue,
         trackColor = MaterialTheme.colorScheme.background,
         gapSize = 4.dp
     )

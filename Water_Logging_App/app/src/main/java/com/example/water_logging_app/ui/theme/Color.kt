@@ -19,3 +19,5 @@ val MetallicGray = Color(0xFF_8E8E8E)
 val LightGray = Color(0xFF_F2F2F2)
 
 val MistyBlue = Color(0xFF_EAF8FE)
+
+val VibrantBlue = Color(0xF_1514EB8)

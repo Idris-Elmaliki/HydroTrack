@@ -68,5 +68,6 @@
     <string name="CouchPotato">Couch Potato</string>
     <string name="GymBro">Gym Bro</string>
     <string name="CalculatingRecommendedGoal">Calculating your recommended daily goal.</string>
+    <string name="GoalHasBeenCalculated">Your daily recommended water intake has been calculated!</string>
 
 </resources>
