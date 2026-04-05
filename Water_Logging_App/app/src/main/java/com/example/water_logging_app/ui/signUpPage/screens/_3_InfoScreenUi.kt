@@ -123,7 +123,7 @@ fun InfoScreenUi(
                     .padding(
                         start = dimensionResource(R.dimen.container_padding),
                         end = dimensionResource(R.dimen.container_padding),
-                        bottom = dimensionResource(R.dimen.mini_text_padding)
+                        bottom = dimensionResource(R.dimen.text_padding)
                     )
                     .navigationBarsPadding()
                     .fillMaxWidth(),

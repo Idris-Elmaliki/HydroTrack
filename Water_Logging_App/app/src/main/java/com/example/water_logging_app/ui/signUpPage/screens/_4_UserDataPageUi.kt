@@ -1,6 +1,5 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,6 +61,7 @@ import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewM
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
+import com.example.water_logging_app.ui.theme.VibrantBlue
 import com.example.water_logging_app.userInfoCalculations.heightCalculations
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -187,7 +187,11 @@ fun UserDataPageUi(
             UsersAgeUi(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.container_padding)),
+                    .padding(
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding),
+                        bottom = dimensionResource(R.dimen.container_padding)
+                    ),
                 signUpVM = signUpVM,
                 signUpData = signUpData
             )
@@ -585,9 +589,13 @@ private fun UsersMeasurementsUi(
                 Box(
                     modifier = Modifier
                         .size(dimensionResource(R.dimen.NavIconSize))
-                        .background(sliderColors.thumbColor, CircleShape)
+                        .background(VibrantBlue, CircleShape)
                 ){}
             },
+            colors = SliderDefaults.colors(
+                thumbColor = VibrantBlue,
+                activeTrackColor = VibrantBlue
+            ),
             onValueChange = { data ->
                 CoroutineScope(Dispatchers.IO).launch {
                     signUpVM.updateUserData(
@@ -656,11 +664,14 @@ private fun UsersMeasurementsUi(
                 Box(
                     modifier = Modifier
                         .size(dimensionResource(R.dimen.NavIconSize))
-                        .background(sliderColors.thumbColor, CircleShape)
+                        .background(VibrantBlue, CircleShape)
                 ){}
             },
+            colors = SliderDefaults.colors(
+                thumbColor = VibrantBlue,
+                activeTrackColor = VibrantBlue
+            ),
             onValueChange = { data ->
-                Log.d("CheckData", "current weight: $data")
                 CoroutineScope(Dispatchers.IO).launch {
                     signUpVM.updateUserData(
                         weight = data
@@ -673,7 +684,7 @@ private fun UsersMeasurementsUi(
             else {
                 imperialWeightRange
             },
-            enabled = signUpData.unitOfMeasurement != null
+            enabled = signUpData.unitOfMeasurement != null,
         )
         if(signUpData.unitOfMeasurement != null) {
             Text(
