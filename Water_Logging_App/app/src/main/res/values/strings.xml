@@ -58,11 +58,11 @@
     <string name="Measurements">Measurements</string>
     <string name="Age">Age</string>
     <string name="Confirm">Confirm</string>
-    <string name="ConfirmMessage">Are you sure you are done with your profile? (You can change your profile data after setting up the app!)</string>
+    <string name="ConfirmMessage">Are you sure you are done with your profile?</string>
     <string name="Cancel">Cancel\n</string>
     <string name="CouchPotatoDescription">You barely exercise, at most you would walk to your car or around your house.</string>
     <string name="WalkerDescription">"You are somewhat active. You tend to walk a lot and go on strolls, but you never go beyond walking. "</string>
-    <string name="GymBroDescription">You are active, you go to the gym routinely (3 - 4 times a week) but nothing more outside of walking.</string>
+    <string name="GymBroDescription">You are active, you go to the gym routinely (3 – 4 times a week) but nothing more outside of walking.</string>
     <string name="AthleteDescription">You are very active, you go the gym alongside intense training for your sport.</string>
     <string name="ChooseYourActivityLevel">Choose Your Activity Level</string>
     <string name="CouchPotato">Couch Potato</string>
@@ -70,6 +70,7 @@
     <string name="CalculatingRecommendedGoal">Calculating your recommended daily goal.</string>
     <string name="GoalHasBeenCalculated">Your daily recommended water intake has been calculated!</string>
     <string name="EditDailyGoal">Edit Daily Goal</string>
-    <string name="NotSatifisedWithYourGoal">Not Satifised With Your Goal?</string>
+    <string name="NotSatifisedWithYourGoal">Not Satisfied With Your Goal?</string>
+    <string name="ChangeDataLaterMessage">Note: You can change your profile data after setting up the app!</string>
 
 </resources>

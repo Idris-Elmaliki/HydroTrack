@@ -45,7 +45,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.ActivityLevel
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowConfirmDialogUi
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
@@ -64,28 +65,7 @@ fun UserActivityLevelPageUi(
     var checkForError by rememberSaveable { mutableStateOf(false) }
     var error by rememberSaveable { mutableStateOf("") }
 
-    if(checkForError) {
-        if(!error.isEmpty()) {
-            ShowErrorDialogUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = dimensionResource(R.dimen.extra_container_padding),
-                        bottom = dimensionResource(R.dimen.extra_container_padding),
-                        start = dimensionResource(R.dimen.container_padding),
-                        end = dimensionResource(R.dimen.container_padding)
-                    ),
-                errorList = listOf(error),
-                onDismiss = {
-                    checkForError = !checkForError
-                }
-            )
-        }
-        else {
-            checkForError = false
-            currentNavAction()
-        }
-    }
+    var confirmNextNavAction by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -191,6 +171,40 @@ fun UserActivityLevelPageUi(
                 signUpData = signUpData
             )
         }
+    }
+
+    if(checkForError) {
+        if(!error.isEmpty()) {
+            ShowErrorDialogUi(
+                errorList = listOf(error),
+                onDismiss = {
+                    checkForError = !checkForError
+                }
+            )
+        }
+        else {
+            checkForError = false
+            confirmNextNavAction = true
+        }
+    }
+
+    if(confirmNextNavAction) {
+        ShowConfirmDialogUi(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(R.dimen.extra_container_padding),
+                    bottom = dimensionResource(R.dimen.extra_container_padding),
+                    start = dimensionResource(R.dimen.container_padding),
+                    end = dimensionResource(R.dimen.container_padding)
+                ),
+            onDismiss = {
+                confirmNextNavAction = !confirmNextNavAction
+            },
+            currentNavAction = {
+                currentNavAction()
+            }
+        )
     }
 }
 

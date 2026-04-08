@@ -21,4 +21,5 @@
     <dimen name="pfpUpdatedIconSize">150dp</dimen>
     <dimen name="NavIconSize">25dp</dimen>
     <dimen name="ActivityLevelImageSize">75dp</dimen>
+    <dimen name="divider_height">32dp</dimen>
 </resources>
