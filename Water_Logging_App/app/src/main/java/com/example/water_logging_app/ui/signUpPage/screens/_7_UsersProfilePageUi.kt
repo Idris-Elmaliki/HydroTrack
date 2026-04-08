@@ -82,33 +82,10 @@ fun UsersProfilePageUi(
     currentNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
+
     var checkForError by rememberSaveable { mutableStateOf(false) }
     var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
-    if(checkForError) {
-        if(!errorList.isEmpty()) {
-            ShowErrorDialogUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = dimensionResource(R.dimen.extra_container_padding),
-                        bottom = dimensionResource(R.dimen.extra_container_padding),
-                        start = dimensionResource(R.dimen.container_padding),
-                        end = dimensionResource(R.dimen.container_padding)
-                    ),
-                errorList = errorList,
-                onDismiss = {
-                    checkForError = !checkForError
-                }
-            )
-        }
-        else {
-            checkForError = false
-            currentNavAction()
-        }
-    }
-
-    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -151,9 +128,7 @@ fun UsersProfilePageUi(
                         .clip(MaterialTheme.shapes.medium)
                         .clickable(
                             onClick = {
-                                coroutineScope.launch {
-                                    errorList = UserValidator(signUpData).validateUserProfile()
-                                }
+                                errorList = UserValidator(signUpData).validateUserProfile()
                                 checkForError = !checkForError
                             }
                         ),
@@ -215,6 +190,29 @@ fun UsersProfilePageUi(
 //                viewModel = signUpVM,
 //                signUpData = signUpData
 //            )
+        }
+    }
+
+    if(checkForError) {
+        if(!errorList.isEmpty()) {
+            ShowErrorDialogUi(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = dimensionResource(R.dimen.extra_container_padding),
+                        bottom = dimensionResource(R.dimen.extra_container_padding),
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding)
+                    ),
+                errorList = errorList,
+                onDismiss = {
+                    checkForError = !checkForError
+                }
+            )
+        }
+        else {
+            checkForError = false
+            currentNavAction()
         }
     }
 }

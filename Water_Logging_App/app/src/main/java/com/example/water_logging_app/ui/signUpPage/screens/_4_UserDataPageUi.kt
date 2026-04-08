@@ -346,17 +346,15 @@ private fun UsersAgeUi(
                 textAlign = TextAlign.Center
             ),
             onValueChange = { data ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    if(data.contains(regexFilter)) {
-                        signUpVM.updateUserData(
-                            age = data
-                        )
-                    }
-                    else if(data.isEmpty()) {
-                        signUpVM.updateUserData(
-                            age = ""
-                        )
-                    }
+                if(data.contains(regexFilter)) {
+                    signUpVM.updateUserData(
+                        age = data
+                    )
+                }
+                else if(data.isEmpty()) {
+                    signUpVM.updateUserData(
+                        age = ""
+                    )
                 }
             },
             keyboardOptions = KeyboardOptions(
