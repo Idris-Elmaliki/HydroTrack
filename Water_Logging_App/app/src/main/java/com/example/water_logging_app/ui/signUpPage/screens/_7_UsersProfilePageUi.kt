@@ -52,7 +52,8 @@ import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowConfirmDialogUi
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
@@ -78,13 +79,14 @@ fun UsersProfilePageUi(
     modifier : Modifier, // just passes in .fillMaxSize()
     signUpVM : SignUpViewModel,
     profilePicVM : ProfilePictureViewModel,
-    previousNavAction : () -> Unit,
     currentNavAction : () -> Unit,
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
 
     var checkForError by rememberSaveable { mutableStateOf(false) }
     var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
+
+    var confirmNextNavAction by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -179,31 +181,12 @@ fun UsersProfilePageUi(
                 signUpVM = signUpVM,
                 signUpData = signUpData
             )
-//            GenderSelectionUi(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(
-//                        start = dimensionResource(R.dimen.container_padding),
-//                        end = dimensionResource(R.dimen.container_padding),
-//                        top = dimensionResource(R.dimen.container_padding)
-//                    ),
-//                viewModel = signUpVM,
-//                signUpData = signUpData
-//            )
         }
     }
 
     if(checkForError) {
         if(!errorList.isEmpty()) {
             ShowErrorDialogUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = dimensionResource(R.dimen.extra_container_padding),
-                        bottom = dimensionResource(R.dimen.extra_container_padding),
-                        start = dimensionResource(R.dimen.container_padding),
-                        end = dimensionResource(R.dimen.container_padding)
-                    ),
                 errorList = errorList,
                 onDismiss = {
                     checkForError = !checkForError
@@ -212,8 +195,19 @@ fun UsersProfilePageUi(
         }
         else {
             checkForError = false
-            currentNavAction()
+            confirmNextNavAction = true
         }
+    }
+
+    if(confirmNextNavAction) {
+        ShowConfirmDialogUi(
+            onDismiss = {
+                confirmNextNavAction = !confirmNextNavAction
+            },
+            currentNavAction = {
+                currentNavAction()
+            }
+        )
     }
 }
 

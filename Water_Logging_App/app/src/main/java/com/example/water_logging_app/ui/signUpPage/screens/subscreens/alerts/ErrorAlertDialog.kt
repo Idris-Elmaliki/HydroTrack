@@ -1,8 +1,9 @@
-package com.example.water_logging_app.ui.signUpPage.screens.subscreens
+package com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
@@ -27,7 +28,14 @@ import com.example.water_logging_app.ui.theme.poppins
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShowErrorDialogUi(
-    modifier : Modifier,
+    modifier : Modifier = Modifier
+        .fillMaxWidth()
+        .padding(
+            top = dimensionResource(R.dimen.extra_container_padding),
+            bottom = dimensionResource(R.dimen.extra_container_padding),
+            start = dimensionResource(R.dimen.container_padding),
+            end = dimensionResource(R.dimen.container_padding)
+        ),
     errorList : List<String>,
     onDismiss : () -> Unit,
 ) {

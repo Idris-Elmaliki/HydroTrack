@@ -1,6 +1,5 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -54,13 +53,11 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.PaginationSystemUi
-import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.VibrantBlue
 import com.example.water_logging_app.ui.theme.VividCobalt
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import nl.dionsegijn.konfetti.compose.KonfettiView
 import nl.dionsegijn.konfetti.core.Party
 import nl.dionsegijn.konfetti.core.Position
@@ -293,7 +290,6 @@ fun UserDailyGoalScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(dimensionResource(R.dimen.container_padding)),
-                    signUpVM = signUpVM,
                     pagerState = pagerState,
                     pagerList = pagerList,
                     onCardClick = {
@@ -383,7 +379,6 @@ private fun LoadingBar(
 @Composable
 private fun PagerDataUi(
     modifier : Modifier,
-    signUpVM : SignUpViewModel,
     pagerState : PagerState,
     pagerList : List<String>,
     onCardClick : () -> Unit

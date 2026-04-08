@@ -55,7 +55,7 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.ShowErrorDialogUi
+import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
@@ -247,85 +247,6 @@ fun UserDataPageUi(
 //        )
 //    }
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun ShowConfirmDialogUi(
-//    modifier : Modifier,
-//    onDismiss : () -> Unit,
-//    currentNavAction: () -> Unit
-//) {
-//    BasicAlertDialog(
-//        modifier = modifier,
-//        onDismissRequest = {
-//            onDismiss()
-//        }
-//    ) {
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .padding(dimensionResource(R.dimen.container_padding)),
-//                verticalArrangement = Arrangement.Center,
-//                horizontalAlignment = Alignment.CenterHorizontally,
-//            ) {
-//                Text(
-//                    text = stringResource(R.string.Confirm),
-//                    style = MaterialTheme.typography.headlineSmall.copy(
-//                        fontWeight = FontWeight.Bold,
-//                        fontFamily = poppins
-//                    ),
-//                    modifier = Modifier
-//                        .padding(top = dimensionResource(R.dimen.text_padding))
-//                )
-//                Text(
-//                    text = stringResource(R.string.ConfirmMessage),
-//                    style = MaterialTheme.typography.labelMedium,
-//                    modifier = Modifier
-//                        .padding(top = dimensionResource(R.dimen.text_padding), bottom = dimensionResource(R.dimen.text_padding))
-//                )
-//
-//                Row(
-//                    modifier = Modifier
-//                        .fillMaxWidth(),
-//                    verticalAlignment = Alignment.CenterVertically,
-//                    horizontalArrangement = Arrangement.SpaceBetween
-//                ) {
-//                    TextButton(
-//                        shape = CircleShape,
-//                        onClick = {
-//                            onDismiss()
-//                        }
-//                    ) {
-//                        Text(
-//                            text = stringResource(R.string.Cancel).trim(),
-//                            style = MaterialTheme.typography.labelMedium,
-//                            modifier = Modifier
-//                                .padding(dimensionResource(R.dimen.text_padding))
-//                        )
-//                    }
-//
-//                    TextButton(
-//                        shape = CircleShape,
-//                        onClick = {
-//                            onDismiss()
-//                            currentNavAction()
-//                        }
-//                    ) {
-//                        Text(
-//                            text = stringResource(R.string.Confirm).trim(),
-//                            style = MaterialTheme.typography.labelMedium,
-//                            modifier = Modifier
-//                                .padding(dimensionResource(R.dimen.text_padding)),
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 private fun UsersAgeUi(
