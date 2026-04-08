@@ -151,12 +151,12 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateDailyGoal(
-        dailyGoal : Long? = null,
+        dailyGoal: String? = null,
     ) {
         viewModelScope.launch {
             _signUpData.update { data ->
                 data.copy(
-                    dailyGoal = dailyGoal ?: data.dailyGoal
+                    dailyGoal = dailyGoal?.trim()?.toLongOrNull() ?: data.dailyGoal
                 )
             }
         }

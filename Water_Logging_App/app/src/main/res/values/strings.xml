@@ -69,5 +69,7 @@
     <string name="GymBro">Gym Bro</string>
     <string name="CalculatingRecommendedGoal">Calculating your recommended daily goal.</string>
     <string name="GoalHasBeenCalculated">Your daily recommended water intake has been calculated!</string>
+    <string name="EditDailyGoal">Edit Daily Goal</string>
+    <string name="NotSatifisedWithYourGoal">Not Satifised With Your Goal?</string>
 
 </resources>
