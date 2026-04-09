@@ -330,11 +330,11 @@ fun UserDailyGoalScreen(
                         .align(Alignment.CenterHorizontally)
                         .padding(bottom = dimensionResource(R.dimen.container_padding)),
                     value = if(signUpData.dailyGoal != 0L) {
-                                signUpData.dailyGoal.toString()
-                            }
-                            else {
-                                ""
-                            },
+                        signUpData.dailyGoal.toString()
+                    }
+                    else {
+                        ""
+                    },
                     onValueChange = { data ->
                         if(data.isNotBlank())
                             signUpVM.updateDailyGoal(data)
@@ -344,11 +344,11 @@ fun UserDailyGoalScreen(
                     trailingIcon = {
                         Text(
                             text = if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
-                                        "ml"
-                                    }
-                                    else {
-                                        "oz"
-                                    },
+                                "ml"
+                            }
+                            else {
+                                "oz"
+                            },
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurface
                         )
