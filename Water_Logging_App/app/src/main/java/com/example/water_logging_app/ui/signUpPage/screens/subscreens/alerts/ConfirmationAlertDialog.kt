@@ -86,7 +86,10 @@ fun ShowConfirmDialogUi(
                 HorizontalDivider(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = dimensionResource(R.dimen.container_padding))
+                        .padding(
+                            top = dimensionResource(R.dimen.container_padding),
+                            bottom = dimensionResource(R.dimen.text_padding)
+                        )
                 )
                 Row(
                     modifier = Modifier

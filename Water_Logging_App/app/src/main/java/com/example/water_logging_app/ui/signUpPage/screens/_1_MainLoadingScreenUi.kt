@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,23 +39,19 @@ import kotlin.random.Random
 fun MainLoadingScreenUi(
     modifier : Modifier = Modifier,
     signUpViewModel: SignUpViewModel,
-    mainNavAction : () -> Unit, // takes you to the home page
-    currentNavAction : () -> Unit // takes you to the sign-up page
+    toHomeScreen : () -> Unit, // takes you to the home page
+    toSignUpScreen : () -> Unit // takes you to the sign-up page
 ) {
-    val state by signUpViewModel.signUpData.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        while(signUpViewModel.signUpData.value.isLoading) {
+            delay(1000)
+        }
 
-    LaunchedEffect(state.isLoading, state.error) {
-        if(state.isLoading)
-            return@LaunchedEffect
-
-        delay(1000)
-
-        launch {
-            if (state.error != null) {
-                currentNavAction()
-            } else {
-                mainNavAction()
-            }
+        if(signUpViewModel.signUpData.value.error != null) {
+            toSignUpScreen()
+        }
+        else {
+            toHomeScreen()
         }
     }
 

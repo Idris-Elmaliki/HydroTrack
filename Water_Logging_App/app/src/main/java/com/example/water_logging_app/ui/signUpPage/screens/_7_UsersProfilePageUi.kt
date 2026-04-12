@@ -1,6 +1,5 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,18 +58,6 @@ import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewM
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
-import kotlinx.coroutines.launch
-
-/*
-* Hopefully the name is self-explanatory but this is the ui for the first page of the profile creation process
-*
-* Here we are gathering 5 things:
-*   1. A profile picture
-*   2. The users first name
-*   3. The users last name
-*   4. A username for the users profile
-*   5. The users gender
-*/
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -166,7 +152,10 @@ fun UsersProfilePageUi(
             UserProfileUi(
                 modifier = Modifier
                     .padding(
-                        dimensionResource(R.dimen.container_padding))
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding),
+                        bottom = dimensionResource(R.dimen.text_padding)
+                    )
                     .fillMaxWidth(),
                 pfpVM = profilePicVM,
                 pfpData = pfpData
@@ -174,7 +163,6 @@ fun UsersProfilePageUi(
             UserNameTextFieldsUi(
                 modifier = Modifier
                     .padding(
-                        start = dimensionResource(R.dimen.container_padding),
                         bottom = dimensionResource(R.dimen.container_padding)
                     )
                     .fillMaxWidth(),
@@ -217,22 +205,11 @@ private fun UserProfileUi(
     pfpVM: ProfilePictureViewModel,
     pfpData : PhotoData
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     val singlePhotoPickerLaunch = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             pfpVM.updateProfilePicturePath(
                 uri = uri?.toString()
-            )
-
-            Log.d(
-                "ProfilePictureUi",
-                "pfpData.fileName is empty: ${pfpData.filePath.isEmpty()}"
-            )
-            Log.d(
-                "ProfilePictureUi",
-                "pfpData.fileName is blank: ${pfpData.filePath.isBlank()}"
             )
         }
     )
@@ -271,17 +248,15 @@ private fun UserProfileUi(
 
         Card(
             modifier = Modifier
-                .padding(bottom = dimensionResource(R.dimen.container_padding)),
+                .padding(bottom = dimensionResource(R.dimen.text_padding)),
             colors = CardDefaults.cardColors(
                 containerColor = Aquamarine
             ),
             shape = ShapeDefaults.Large,
             onClick = {
-                coroutineScope.launch {
-                    singlePhotoPickerLaunch.launch(
-                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                    )
-                }
+                singlePhotoPickerLaunch.launch(
+                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                )
             }
         ) {
             Text(
@@ -308,8 +283,6 @@ private fun UserNameTextFieldsUi(
         unfocusedTextColor = BrilliantAzure
     )
 
-    val coroutineScope = rememberCoroutineScope()
-
     Column {
         Text(
             text = stringResource(R.string.Names),
@@ -330,11 +303,9 @@ private fun UserNameTextFieldsUi(
                 color = Color.Black
             ),
             onValueChange = { data ->
-                coroutineScope.launch {
-                    signUpVM.updateUserProfile(
-                        firstName = data
-                    )
-                }
+                signUpVM.updateUserProfile(
+                    firstName = data
+                )
             },
             label = {
                 Row(
@@ -367,11 +338,9 @@ private fun UserNameTextFieldsUi(
                 color = Color.Black
             ),
             onValueChange = { data ->
-                coroutineScope.launch {
-                    signUpVM.updateUserProfile(
-                        lastName = data
-                    )
-                }
+                signUpVM.updateUserProfile(
+                    lastName = data
+                )
             },
             label = {
                 Row(
@@ -403,11 +372,9 @@ private fun UserNameTextFieldsUi(
                 color = Color.Black
             ),
             onValueChange = { data ->
-                coroutineScope.launch {
-                    signUpVM.updateUserProfile(
-                        userName = data
-                    )
-                }
+                signUpVM.updateUserProfile(
+                    userName = data
+                )
             },
             label = {
                 Row(
@@ -434,63 +401,3 @@ private fun UserNameTextFieldsUi(
         )
     }
 }
-//@Composable
-//private fun GenderSelectionUi(
-//    modifier : Modifier,
-//    viewModel: SignUpViewModel,
-//    signUpData : UserPreferenceData
-//) {
-//    val genders = listOf(
-//        Genders.Male.name,
-//        Genders.Female.name
-//    )
-//
-//    Column(
-//        modifier = modifier
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically
-//        ) {
-//            Text(
-//                text = stringResource(R.string.Gender),
-//                style = MaterialTheme.typography.headlineSmall.copy(
-//                    fontWeight = FontWeight.Bold,
-//                ),
-//            )
-//            Text(
-//                text = "*",
-//                style = MaterialTheme.typography.labelMedium,
-//                color = MaterialTheme.colorScheme.error
-//            )
-//        }
-//        Row(
-//            modifier = Modifier
-//                .fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceEvenly
-//        ) {
-//            genders.forEach { gender ->
-//                Row(
-//                    verticalAlignment = Alignment.CenterVertically,
-//                ) {
-//                    RadioButton(
-//                        selected = gender == signUpData.gender,
-//                        onClick = {
-//                            viewModel.updateUserData(
-//                                gender = gender
-//                            )
-//                        },
-//                        colors = RadioButtonDefaults.colors(
-//                            selectedColor = Aquamarine,
-//                            unselectedColor = Aquamarine
-//                        )
-//                    )
-//                    Text(
-//                        text = gender,
-//                        style = MaterialTheme.typography.labelMedium
-//                    )
-//                }
-//            }
-//        }
-//    }
-//}
