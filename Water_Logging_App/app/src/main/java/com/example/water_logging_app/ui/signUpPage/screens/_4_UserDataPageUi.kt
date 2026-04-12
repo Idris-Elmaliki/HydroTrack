@@ -89,30 +89,6 @@ fun UserDataPageUi(
 
     var errorList by rememberSaveable { mutableStateOf(emptyList<String>()) }
 
-    if(checkForIncompletion) {
-        if(!errorList.isEmpty()) {
-            ShowErrorDialogUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = dimensionResource(R.dimen.extra_container_padding),
-                        bottom = dimensionResource(R.dimen.extra_container_padding),
-                        start = dimensionResource(R.dimen.container_padding),
-                        end = dimensionResource(R.dimen.container_padding)
-                    ),
-                errorList = errorList, // nothing will be null
-                onDismiss = {
-                    checkForIncompletion = !checkForIncompletion
-                }
-            )
-        }
-        else {
-            currentNavAction()
-        }
-    }
-
-    val coroutineScope = rememberCoroutineScope()
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -151,13 +127,15 @@ fun UserDataPageUi(
                 )
                 Row(
                     modifier = Modifier
-                        .padding(dimensionResource(R.dimen.text_padding))
+                        .padding(
+                            start = dimensionResource(R.dimen.text_padding),
+                            end = dimensionResource(R.dimen.text_padding),
+                            bottom = dimensionResource(R.dimen.text_padding)
+                        )
                         .clip(CircleShape)
                         .clickable(
                             onClick = {
-                                coroutineScope.launch {
-                                    errorList = UserValidator(signUpData).validateUserData()
-                                }
+                                errorList = UserValidator(signUpData).validateUserData()
                                 checkForIncompletion = !checkForIncompletion
                             }
                         ),
@@ -181,8 +159,8 @@ fun UserDataPageUi(
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .verticalScroll(rememberScrollState())
-                .padding(dimensionResource(R.dimen.container_padding)),
+                .padding(dimensionResource(R.dimen.container_padding))
+                .verticalScroll(rememberScrollState()),
         ) {
             UsersAgeUi(
                 modifier = Modifier
@@ -218,34 +196,31 @@ fun UserDataPageUi(
                 signUpVM = signUpVM,
                 signUpData = signUpData
             )
-//            ConfirmButtonUi(
-//                modifier = Modifier
-//                    .padding(
-//                        top = dimensionResource(R.dimen.extra_container_padding),
-//                        start = dimensionResource(R.dimen.container_padding),
-//                        end = dimensionResource(R.dimen.container_padding)
-//                    ),
-//                currentVMAction = {
-//                    coroutineScope.launch {
-//                        errorList = signUpVM.checkIfDataIsComplete2()
-//                    }
-//                },
-//                currentNavAction = {
-//                    checkForError  = !checkForError
-//                },
-//            )
         }
     }
 
-//    if(checkForConfirmation) {
-//        ShowConfirmDialogUi(
-//            modifier = Modifier,
-//            onDismiss = {
-//                checkForConfirmation = false
-//            },
-//            currentNavAction = currentNavAction
-//        )
-//    }
+    if(checkForIncompletion) {
+        if(!errorList.isEmpty()) {
+            ShowErrorDialogUi(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = dimensionResource(R.dimen.extra_container_padding),
+                        bottom = dimensionResource(R.dimen.extra_container_padding),
+                        start = dimensionResource(R.dimen.container_padding),
+                        end = dimensionResource(R.dimen.container_padding)
+                    ),
+                errorList = errorList, // nothing will be null
+                onDismiss = {
+                    checkForIncompletion = !checkForIncompletion
+                }
+            )
+        }
+        else {
+            currentNavAction()
+        }
+    }
+
 }
 
 @Composable
@@ -481,7 +456,7 @@ private fun UsersMeasurementsUi(
     Column(
         modifier = modifier
     ) {
-        val sliderColors = SliderDefaults.colors()
+        SliderDefaults.colors()
 
         val heightVal = signUpData.height.toInt()
 
@@ -613,55 +588,6 @@ private fun UsersMeasurementsUi(
                     "$weightVal lbs"
                 },
                 style = MaterialTheme.typography.headlineSmall,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ConfirmButtonUi(
-    modifier : Modifier,
-    currentVMAction : () -> Unit,
-    currentNavAction: () -> Unit
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                start = dimensionResource(R.dimen.text_padding),
-                end = dimensionResource(R.dimen.text_padding)
-            )
-            .height(dimensionResource(R.dimen.ClickableCardHeight))
-            .shadow(
-                elevation = dimensionResource(R.dimen.card_shadow_elevation),
-                clip = true,
-                spotColor = Aquamarine,
-                ambientColor = Aquamarine,
-                shape = MaterialTheme.shapes.small
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = Aquamarine
-        ),
-        shape = MaterialTheme.shapes.medium,
-        onClick = {
-            // will set up a system similar to UserNamePage
-            CoroutineScope(Dispatchers.IO).launch {
-                currentVMAction()
-            }
-            currentNavAction()
-        }
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.Finish),
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-                textAlign = TextAlign.Center
             )
         }
     }

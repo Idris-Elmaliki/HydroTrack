@@ -38,8 +38,8 @@ fun NavGraphBuilder.signUpGraph(
             MainLoadingScreenUi(
                 modifier = modifier,
                 signUpViewModel = signUpViewModel,
-                mainNavAction = { mainNavActions.navigateToHomePage() },
-                currentNavAction = { actions.navigateToBeginSignUpPage() }
+                toHomeScreen = { mainNavActions.navigateToHomePage() },
+                toSignUpScreen = { actions.navigateToBeginSignUpPage() }
             )
         }
 

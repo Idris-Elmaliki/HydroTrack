@@ -63,7 +63,7 @@ class ProfilePictureViewModel @Inject constructor(
         }
     }
 
-    fun saveProfilePicture() {
+    fun saveUserProfilePicture() {
         viewModelScope.launch {
             try {
                 _profilePictureUri.update { data ->

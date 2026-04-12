@@ -45,6 +45,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -112,7 +113,7 @@ fun UserDailyGoalScreen(
 
             LaunchedEffect(Unit) {
                 loadProgress(
-                    progress = currentProgress.toInt(), // this fixes the issue of the progress bar resetting
+                    progress = (currentProgress * 100).toInt(), // this fixes the issue of the progress bar resetting
                     updateProgress = { progress ->
                         currentProgress = progress
                     }
@@ -432,7 +433,7 @@ private fun PagerDataUi(
                             clip = true,
                             spotColor = Aquamarine,
                             ambientColor = Aquamarine,
-                            shape = MaterialTheme.shapes.small
+                            shape = MaterialTheme.shapes.medium
                         ),
                     colors = CardDefaults.cardColors(
                         containerColor = Aquamarine
@@ -444,14 +445,14 @@ private fun PagerDataUi(
                 ) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxSize()
+                            .padding(dimensionResource(R.dimen.text_padding)),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            modifier = Modifier
-                                .padding(dimensionResource(R.dimen.text_padding)),
                             text = stringResource(R.string.EditDailyGoal),
                             style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
                                 lineHeight = 0.sp
                             )
                         )
