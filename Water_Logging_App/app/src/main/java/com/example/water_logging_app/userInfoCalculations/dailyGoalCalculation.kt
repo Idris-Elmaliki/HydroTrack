@@ -3,15 +3,21 @@ package com.example.water_logging_app.userInfoCalculations
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.ActivityLevel
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
-
-
-// complete the calculations later!
-
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 
 fun dailyGoalCalculation(
     userData : UserPreferenceData
 ) : Long {
-    var dailyGoal : Float = (userData.weight * 30f) // we multiply weight (in kg) by 30
+    var dailyGoal : Float = (userData.weight)
+
+    dailyGoal *= 30f
+
+    when(userData.activityLevel) {
+        ActivityLevel.CouchPotato.name -> dailyGoal *= 1f
+        ActivityLevel.Walker.name -> dailyGoal *= 1.01f
+        ActivityLevel.GymBro.name -> dailyGoal *= 1.05f
+        ActivityLevel.Athlete.name -> dailyGoal *= 1.1f
+    }
 
     dailyGoal += when(userData.gender) {
         Genders.Male.name -> 250
@@ -27,12 +33,10 @@ fun dailyGoalCalculation(
         else -> dailyGoal -= 100f
     }
 
-    when(userData.activityLevel) {
-        ActivityLevel.CouchPotato.name -> dailyGoal *= 1f
-        ActivityLevel.Walker.name -> dailyGoal *= 1.1f
-        ActivityLevel.GymBro.name -> dailyGoal *= 1.2f
-        ActivityLevel.Athlete.name -> dailyGoal *= 1.5f
+    if(userData.unitOfMeasurement == UnitMeasurementType.Imperial.name) {
+        dailyGoal /= 29.5735f
+        return ((dailyGoal.toLong()) / 10L) * 10L
     }
 
-    return dailyGoal.toLong()
+    return ((dailyGoal.toLong()) / 100L) * 100L
 }

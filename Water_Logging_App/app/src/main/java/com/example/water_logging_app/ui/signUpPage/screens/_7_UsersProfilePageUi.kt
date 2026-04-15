@@ -58,6 +58,7 @@ import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewM
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.MistyBlue
+import kotlin.concurrent.thread
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -205,6 +206,7 @@ private fun UserProfileUi(
     pfpVM: ProfilePictureViewModel,
     pfpData : PhotoData
 ) {
+
     val singlePhotoPickerLaunch = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -254,9 +256,11 @@ private fun UserProfileUi(
             ),
             shape = ShapeDefaults.Large,
             onClick = {
-                singlePhotoPickerLaunch.launch(
-                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                )
+                thread {
+                    singlePhotoPickerLaunch.launch(
+                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                    )
+                }
             }
         ) {
             Text(

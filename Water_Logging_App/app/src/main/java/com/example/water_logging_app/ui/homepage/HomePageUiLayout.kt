@@ -69,7 +69,7 @@ fun HomePageUiLayout(
     ) { innerpadding ->
         NavHost(
             navController = bottomNavController,
-            startDestination = HomePageRoutes.Home.name,
+            startDestination = "home_graph",
             modifier = Modifier
                 .padding(innerpadding)
         ) {
