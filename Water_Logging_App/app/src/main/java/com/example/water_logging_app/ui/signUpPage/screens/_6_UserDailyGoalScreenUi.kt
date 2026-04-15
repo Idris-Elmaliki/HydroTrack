@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -98,9 +99,16 @@ fun UserDailyGoalScreen(
             showLoadingScreen = false
     }
 
+    val measurement =   if(signUpData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
+                            "ml"
+                        }
+                        else {
+                            "oz"
+                        }
+
     val pagerList = listOf(
         "Your daily recommended water intake is...!",
-        "${signUpData.dailyGoal}"
+        "${signUpData.dailyGoal} $measurement"
     )
 
     if(showLoadingScreen) {
@@ -135,6 +143,15 @@ fun UserDailyGoalScreen(
                 modifier = Modifier.padding(bottom = dimensionResource(R.dimen.container_padding))
             )
 
+            var dotCount by rememberSaveable { mutableIntStateOf(0) }
+
+            LaunchedEffect(Unit) {
+                while(!isClicked) {
+                    delay(500L)
+                    dotCount = if(dotCount == 3) 1 else dotCount + 1
+                }
+            }
+
             when(isLoaded) {
                 false -> {
                     Box(
@@ -147,7 +164,7 @@ fun UserDailyGoalScreen(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            text = stringResource(R.string.CalculatingRecommendedGoal),
+                            text = stringResource(R.string.CalculatingRecommendedGoal) + ".".repeat(dotCount),
                             style = MaterialTheme.typography.labelMedium
                         )
                     }
@@ -165,7 +182,7 @@ fun UserDailyGoalScreen(
                             modifier = Modifier
                                 .padding(bottom = dimensionResource(R.dimen.container_padding)),
                             text = stringResource(R.string.GoalHasBeenCalculated),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelMedium
                         )
                         Card(
                             modifier = Modifier
@@ -350,7 +367,7 @@ fun UserDailyGoalScreen(
                             else {
                                 "oz"
                             },
-                            style = MaterialTheme.typography.labelSmall,
+                            style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     },

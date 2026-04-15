@@ -18,10 +18,12 @@ fun SaveUserDataLoadingScreen(
     modifier : Modifier,
     signUpVM : SignUpViewModel,
     profilePicVM : ProfilePictureViewModel,
-    currentNavAction : () -> Unit, // go to notifications screen! (will be in the homepage!)
+    toHomePage : () -> Unit, // go to notifications screen! (will be in the homepage!)
 ) {
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
     val profilePickData by profilePicVM.profilePictureUri.collectAsStateWithLifecycle()
+
+    // I need to wrap this process with WorkManager
 
     LaunchedEffect(Unit) {
         signUpVM.updateUserData()
@@ -30,7 +32,7 @@ fun SaveUserDataLoadingScreen(
 
     LaunchedEffect(signUpData, profilePickData) {
         if (!signUpData.isLoading && !profilePickData.isLoading)
-            currentNavAction()
+            toHomePage()
     }
 
     if(signUpData.isLoading && profilePickData.isLoading) {

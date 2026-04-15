@@ -26,9 +26,7 @@ fun AppRoute(
     modifier: Modifier = Modifier,
     navController : NavHostController = rememberNavController()
 ) {
-    val mainNav = remember(navController) {
-        AppNavActions(navController)
-    }
+    val mainNav = AppNavActions(navController)
 
     NavHost(
         navController = navController,
@@ -38,7 +36,6 @@ fun AppRoute(
         composable(
             route = AppNavRoutes.SignUpScreen.name
         ) {
-
             SignUpPageLayout(
                 mainNavActions = mainNav,
                 modifier = modifier
