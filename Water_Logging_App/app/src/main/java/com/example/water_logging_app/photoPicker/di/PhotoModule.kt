@@ -1,4 +1,4 @@
-package com.example.water_logging_app.photoPicker.data.di
+package com.example.water_logging_app.photoPicker.di
 
 import android.content.Context
 import com.example.water_logging_app.photoPicker.data.repository.PhotoRepositoryImpl

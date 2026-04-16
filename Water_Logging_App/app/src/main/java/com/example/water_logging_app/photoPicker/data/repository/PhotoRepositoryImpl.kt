@@ -32,9 +32,8 @@ class PhotoRepositoryImpl @Inject constructor(
                 }
             }
             catch (e : Exception) {
-                // we want the app to crash (for now)
+                // we want the app to crash (for now) [Update: Not anymore]
                 Log.e("PhotoRepositoryImpl", "saveImage error: ${e.message}")
-                throw e
             }
        }
     }

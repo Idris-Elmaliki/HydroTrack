@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
+import com.example.water_logging_app.preferenceData.worker.di.PreferenceWorkerSchedule
 import com.example.water_logging_app.userInfoCalculations.dailyGoalCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val repo : UserPreferenceRepositoryImpl
+    private val repo : UserPreferenceRepositoryImpl,
+    private val preferenceWorker : PreferenceWorkerSchedule
 ) : ViewModel() {
     private var _signUpData = MutableStateFlow(UserPreferenceData())
     val signUpData : StateFlow<UserPreferenceData> = _signUpData.asStateFlow()
@@ -40,15 +42,24 @@ class SignUpViewModel @Inject constructor(
 
                 val userData = repo.getUserPreference()
 
-                if(userData != null) {
-                    _signUpData.update { data ->
-                        data.copy(
-                            isLoading = false
-                        )
-                    }
-                }
-                else {
-                    throw Exception("No data found")
+                if(userData?.userName == null)
+                    throw Exception("User data is null")
+
+                _signUpData.update { data ->
+                    data.copy(
+                        isLoading = false,
+
+                        firstName = userData.firstName,
+                        lastName = userData.lastName,
+                        userName = userData.userName,
+                        age = userData.age,
+                        gender = userData.gender,
+                        unitOfMeasurement = userData.unitOfMeasurement,
+                        height = userData.height,
+                        weight = userData.weight,
+                        activityLevel = userData.activityLevel,
+                        dailyGoal = userData.dailyGoal
+                    )
                 }
             }
             catch (e : Exception) {
@@ -164,41 +175,18 @@ class SignUpViewModel @Inject constructor(
 
     fun uploadUserData() {
         viewModelScope.launch {
-            try {
-                _signUpData.update { data ->
-                    data.copy(
-                        isLoading = true
-                    )
-                }
-
-                val info = _signUpData.value
-
-                repo.insertUserPreference(
-                    UserPreferenceData(
-                        firstName = info.firstName,
-                        lastName = info.lastName,
-                        userName = info.userName,
-                        age = info.age,
-                        gender = info.gender,
-                        height = info.height,
-                        weight = info.weight,
-                        unitOfMeasurement = info.unitOfMeasurement,
-                        dailyGoal = 1L // this needs to be calculated later
-                    )
+            _signUpData.update { data ->
+                data.copy(
+                    isLoading = true
                 )
-
-                _signUpData.update { data ->
-                    data.copy(
-                        isLoading = false
-                    )
-                }
             }
-            catch (e : Exception) {
-                _signUpData.update { data ->
-                    data.copy(
-                        error = e.message
-                    )
-                }
+
+            preferenceWorker.enqueueSaveUserPreference(_signUpData.value)
+
+            _signUpData.update { data ->
+                data.copy(
+                    isLoading = false
+                )
             }
         }
     }

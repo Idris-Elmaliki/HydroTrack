@@ -7,7 +7,7 @@ import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenc
 
 @Database(
     entities = [UserPreferenceEntity::class],
-    version  = 1,
+    version  = 2,
     exportSchema = false
 )
 abstract class UserPreferenceDatabase : RoomDatabase() {
