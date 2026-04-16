@@ -12,6 +12,7 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun SaveUserDataLoadingScreen(
@@ -26,8 +27,12 @@ fun SaveUserDataLoadingScreen(
     // I need to wrap this process with WorkManager
 
     LaunchedEffect(Unit) {
-        signUpVM.updateUserData()
-        profilePicVM.saveUserProfilePicture()
+        delay(3000)
+
+        signUpVM.uploadUserData()
+        profilePicVM.uploadUserProfilePicture()
+
+        delay(3000)
     }
 
     LaunchedEffect(signUpData, profilePickData) {
@@ -44,4 +49,11 @@ fun SaveUserDataLoadingScreen(
             Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.container_padding)))
         }
     }
+}
+
+@Composable
+private fun LoadingAnimationUi(
+
+) {
+
 }

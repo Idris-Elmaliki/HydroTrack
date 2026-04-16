@@ -78,12 +78,12 @@ dependencies {
 
     // dagger hilt
     ksp(libs.dagger.hilt.android.compiler)
-    ksp(libs.dagger.hilt.android.compiler)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.hilt.work)
+    implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.hilt.lifecycle.viewmodel)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.dagger.hilt.android)
 
     // viewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -113,7 +113,13 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation(libs.google.firebase.analytics)
 
-    //Icons
+    // Icons
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
+
+    // WorkManager
+    implementation(libs.work.runtime.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
+    ksp(libs.androidx.hilt.compiler)
+    androidTestImplementation(libs.androidx.work.testing)
 }

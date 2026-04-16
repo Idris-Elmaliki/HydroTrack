@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.screens
 
+import android.util.Log
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.StartOffset
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,7 +32,6 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 @Composable
@@ -42,12 +41,16 @@ fun MainLoadingScreenUi(
     toHomeScreen : () -> Unit, // takes you to the home page
     toSignUpScreen : () -> Unit // takes you to the sign-up page
 ) {
+    val data by signUpViewModel.signUpData.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         while(signUpViewModel.signUpData.value.isLoading) {
             delay(1000)
         }
 
-        if(signUpViewModel.signUpData.value.error != null) {
+        Log.d("MainLoadingScreenUi", "MainLoadingScreenUi: error=${data.error}, user=${data.userName}")
+
+        if (data.error != null) {
             toSignUpScreen()
         }
         else {
