@@ -30,7 +30,18 @@ class ProfilePictureViewModel @Inject constructor(
             try {
                 _profilePictureUri.update { data ->
                     data.copy(
+                        isLoading = true
+                    )
+                }
+
+                _profilePictureUri.update { data ->
+                    data.copy(
                         filePath = repository.getImageUrl() ?: "",
+                    )
+                }
+
+                _profilePictureUri.update { data ->
+                    data.copy(
                         isLoading = false
                     )
                 }
@@ -38,7 +49,8 @@ class ProfilePictureViewModel @Inject constructor(
             catch (e: Exception) {
                 _profilePictureUri.update { data ->
                     data.copy(
-                        error = e.message
+                        error = e.message,
+                        isLoading = false
                     )
                 }
             }

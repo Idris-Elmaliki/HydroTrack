@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.signUpPage.viewModels.parent
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
@@ -42,8 +43,14 @@ class SignUpViewModel @Inject constructor(
 
                 val userData = repo.getUserPreference()
 
+                Log.d("MainLoadingScreenUi", "MainLoadingScreenUi: user = ${userData?.userName}")
+
+                if(userData?.userName == null) {
+                   throw Exception("User data is empty!")
+                }
+
                 _signUpData.update {
-                    (userData ?: UserPreferenceData()).copy(
+                    (userData).copy(
                         isLoading = false
                     )
                 }
