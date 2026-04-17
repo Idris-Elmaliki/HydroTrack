@@ -1,6 +1,9 @@
 package com.example.water_logging_app
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 /*
 * In order for hilt to even know where to inject the dependencies, it needs to know where to look for the dependencies.
@@ -11,4 +14,12 @@ import dagger.hilt.android.HiltAndroidApp
 */
 
 @HiltAndroidApp
-class WaterLogApplication : Application()
+class WaterLogApplication : Application(), Configuration.Provider {
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
+}

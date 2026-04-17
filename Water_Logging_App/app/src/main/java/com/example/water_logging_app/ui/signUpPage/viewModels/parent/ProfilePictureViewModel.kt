@@ -61,6 +61,7 @@ class ProfilePictureViewModel @Inject constructor(
             if(_profilePictureUri.value.filePath.isEmpty()) {
                 return@launch
             }
+
             _profilePictureUri.update { data ->
                 data.copy(
                     isLoading = true

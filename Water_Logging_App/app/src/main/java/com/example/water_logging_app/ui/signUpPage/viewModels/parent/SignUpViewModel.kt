@@ -42,23 +42,9 @@ class SignUpViewModel @Inject constructor(
 
                 val userData = repo.getUserPreference()
 
-                if(userData?.userName == null)
-                    throw Exception("User data is null")
-
-                _signUpData.update { data ->
-                    data.copy(
-                        isLoading = false,
-
-                        firstName = userData.firstName,
-                        lastName = userData.lastName,
-                        userName = userData.userName,
-                        age = userData.age,
-                        gender = userData.gender,
-                        unitOfMeasurement = userData.unitOfMeasurement,
-                        height = userData.height,
-                        weight = userData.weight,
-                        activityLevel = userData.activityLevel,
-                        dailyGoal = userData.dailyGoal
+                _signUpData.update {
+                    (userData ?: UserPreferenceData()).copy(
+                        isLoading = false
                     )
                 }
             }

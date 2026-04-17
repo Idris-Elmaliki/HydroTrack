@@ -5,6 +5,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -24,20 +27,19 @@ fun SaveUserDataLoadingScreen(
     val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
     val profilePickData by profilePicVM.profilePictureUri.collectAsStateWithLifecycle()
 
+    var toHomePageAction by rememberSaveable { mutableStateOf(false) }
+
     // I need to wrap this process with WorkManager
 
     LaunchedEffect(Unit) {
-        delay(3000)
+        delay(3000L)
 
         signUpVM.uploadUserData()
         profilePicVM.uploadUserProfilePicture()
 
-        delay(3000)
-    }
+        delay(3000L)
 
-    LaunchedEffect(signUpData, profilePickData) {
-        if (!signUpData.isLoading && !profilePickData.isLoading)
-            toHomePage()
+        toHomePageAction = true
     }
 
     if(signUpData.isLoading && profilePickData.isLoading) {
@@ -47,6 +49,11 @@ fun SaveUserDataLoadingScreen(
             Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
 
             Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.container_padding)))
+        }
+    }
+    else {
+        if(toHomePageAction) {
+            toHomePage()
         }
     }
 }
