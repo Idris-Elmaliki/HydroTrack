@@ -148,7 +148,7 @@ fun UserDailyGoalScreen(
             LaunchedEffect(Unit) {
                 while(!isClicked) {
                     delay(500L)
-                    dotCount = if(dotCount == 3) 1 else dotCount + 1
+                    dotCount = if(dotCount == 2) 0 else dotCount + 1
                 }
             }
 
