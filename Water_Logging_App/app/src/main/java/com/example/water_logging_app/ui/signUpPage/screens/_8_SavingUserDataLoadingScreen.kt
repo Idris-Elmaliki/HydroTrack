@@ -35,17 +35,17 @@ fun SaveUserDataLoadingScreen(
     // I need to wrap this process with WorkManager
 
     LaunchedEffect(Unit) {
-        delay(3000L)
+        delay(2000L)
 
         signUpVM.uploadUserData()
         profilePicVM.uploadUserProfilePicture()
 
-        delay(3000L)
+        delay(2000L)
 
         toHomePageAction = true
     }
 
-    if(signUpData.isLoading && profilePickData.isLoading) {
+    if(!toHomePageAction) {
         LoadingScreen(
             modifier = modifier
         ) {
@@ -59,16 +59,14 @@ fun SaveUserDataLoadingScreen(
         }
     }
     else {
-        if(toHomePageAction) {
-            toHomePage()
-        }
+        toHomePage()
     }
 }
 
 @Composable
 private fun LoadingAnimationText() {
     Text(
-        text = "Saving Your Data",
-        style = MaterialTheme.typography.bodyLarge
+        text = "Saving Your Data.",
+        style = MaterialTheme.typography.labelMedium
     )
 }

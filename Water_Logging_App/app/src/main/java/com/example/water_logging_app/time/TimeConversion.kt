@@ -1,7 +1,10 @@
 package com.example.water_logging_app.time
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 /*
@@ -12,7 +15,7 @@ import java.time.LocalDateTime
 *   If it's for the UI, @Composable is included.
 *   For ViewModels and Repositories, check the last letter in the func name!
 *
-*   (V = ViewModel, R = Repository)
+*   (V = ViewModel, R = Repository, D = DataStore)
 */
 object TimeConversion {
     fun getLocalDateFromLocalDateTimeV(
@@ -36,5 +39,21 @@ object TimeConversion {
         val localDateTime = LocalDateTime.parse(date)
 
         return localDateTime
+    }
+
+    fun getStringFromLocalTimeD(
+        date : LocalTime
+    ) : String {
+        val string = date.toString()
+
+        return string
+    }
+
+    fun getLocalTimeFromStringD(
+        date : String
+    ) : Flow<LocalTime> {
+        val localTime = LocalTime.parse(date)
+
+        return flowOf(localTime)
     }
 }
