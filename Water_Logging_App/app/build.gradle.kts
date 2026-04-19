@@ -69,9 +69,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Room dependencies
+    // Room
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
 
     // coroutines
     implementation(libs.kotlinx.coroutines.android)
@@ -109,11 +113,10 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
+        // When using the BoM, don't specify versions in Firebase dependencies
+        implementation(libs.google.firebase.analytics)
 
-    // When using the BoM, don't specify versions in Firebase dependencies
-    implementation(libs.google.firebase.analytics)
-
-    // Icons
+    // Icons (needed for apg 9.0 and up)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)
 
