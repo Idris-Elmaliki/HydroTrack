@@ -58,6 +58,7 @@ class TodayWaterLogViewModel @Inject constructor(
         }
     }
 
+    // we will be using WorkManager + OnStop()!
     fun insertWaterLogData(
         waterAmount : Int,
         measurementType : String

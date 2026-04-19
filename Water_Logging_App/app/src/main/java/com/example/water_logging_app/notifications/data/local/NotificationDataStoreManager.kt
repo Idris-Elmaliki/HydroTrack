@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.water_logging_app.time.TimeConversion
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import java.time.LocalTime
 
@@ -52,7 +53,9 @@ class NotificationDataStoreManager(
             data[notificationTime] ?: "00:00"
         }.toString()
 
-        return TimeConversion.getLocalTimeFromStringD(notificationTimeFlow)
+        return flowOf(
+            TimeConversion.getLocalTimeFromStringD(notificationTimeFlow)
+        )
     }
 
     companion object {

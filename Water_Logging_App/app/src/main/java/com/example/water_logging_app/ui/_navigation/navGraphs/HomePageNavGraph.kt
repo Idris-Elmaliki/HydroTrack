@@ -5,11 +5,13 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.example.water_logging_app.rememberActivity
 import com.example.water_logging_app.ui._navigation.routes.HomePageRoutes
 import com.example.water_logging_app.ui.homepage.homescreens.HistoryScreen
 import com.example.water_logging_app.ui.homepage.homescreens.HomeScreen
@@ -17,8 +19,8 @@ import com.example.water_logging_app.ui.mainpage.mainScreens.SettingScreen
 
 const val TWEEN_AMOUNT = 550
 fun NavGraphBuilder.homeGraph(
+    modifier : Modifier = Modifier,
     navController : NavHostController,
-    modifier : Modifier = Modifier
 ) {
     navigation(
         route = "home_graph",
@@ -69,7 +71,11 @@ fun NavGraphBuilder.homeGraph(
                 }
             }
         ) {
-            HomeScreen() {} // I will either have a separate page, OR have a modal (either or) [this is for the insert Water screen]
+            HomeScreen(
+                modifier = modifier,
+                todayWaterLogVM = hiltViewModel(rememberActivity()),
+                userDataVM = hiltViewModel(rememberActivity())
+            )
         }
         composable(
             route = HomePageRoutes.Setting.name,
