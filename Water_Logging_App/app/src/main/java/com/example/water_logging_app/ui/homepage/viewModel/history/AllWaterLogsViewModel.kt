@@ -31,6 +31,8 @@ class AllWaterLogsViewModel @Inject constructor(
     fun loadAllWaterLogsASC() {
         viewModelScope.launch {
             try {
+
+
                 val waterLogs : List<WaterLogData> = repo.getWaterDataASC()
 
                 val map : MutableMap<LocalDate, MutableList<WaterLogData>> = mutableMapOf()

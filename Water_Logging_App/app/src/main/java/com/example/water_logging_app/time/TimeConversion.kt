@@ -51,9 +51,9 @@ object TimeConversion {
 
     fun getLocalTimeFromStringD(
         date : String
-    ) : Flow<LocalTime> {
+    ) : LocalTime {
         val localTime = LocalTime.parse(date)
 
-        return flowOf(localTime)
+        return localTime
     }
 }

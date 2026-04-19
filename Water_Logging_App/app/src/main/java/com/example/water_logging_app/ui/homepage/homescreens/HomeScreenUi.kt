@@ -5,18 +5,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,9 +30,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.time.currentDate
 import com.example.water_logging_app.time.currentTime
+import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.home.TodayWaterLogViewModel
 import com.example.water_logging_app.ui.theme.VividCobalt
 import kotlinx.coroutines.delay
 
@@ -47,16 +52,33 @@ import kotlinx.coroutines.delay
 *
 * There is only more I will need to include for the ui and soon the viewModel & database.
 */
+
 const val ALPHA_AMOUNT = 0.6f
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onButtonClick : () -> Unit,
+    modifier : Modifier,
+    todayWaterLogVM: TodayWaterLogViewModel,
+    userDataVM : ROUserDataViewModel,
 ) {
+    val todayWLData by todayWaterLogVM.todayWaterLogs.collectAsStateWithLifecycle()
+    val userData by userDataVM.userData.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
-            GreetingText()
-        }
+            TopAppBar(
+                title = {
+                    GreetUserText(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(R.dimen.container_padding)),
+                        userData = userData
+                    )
+                }
+            )
+        },
+        modifier = modifier
     ) { innerpadding ->
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -74,11 +96,50 @@ fun HomeScreen(
                     .padding(dimensionResource(R.dimen.icon_padding))
             )
         }
-        AddNewDate(
-            onButtonClick,
+    }
+}
+
+@Composable
+private fun GreetUserText(
+    modifier : Modifier,
+    userData : UserPreferenceData
+) {
+    var time by remember { mutableStateOf(currentTime()) }
+    var date by remember { mutableStateOf(currentDate()) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            if (date != currentDate()) {
+                date = currentDate()
+            }
+            delay(3_600_000)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            if (time != currentDate()) {
+                time = currentDate()
+            }
+            delay(600_000)
+        }
+    }
+
+    Column(
+        modifier = modifier,
+    ) {
+        Text(
+            text = stringResource(R.string.Good_Morning),
+            style = MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Start,
             modifier = Modifier
-                .padding(dimensionResource(R.dimen.container_padding))
-                .fillMaxHeight()
+                .alpha(ALPHA_AMOUNT)
+                .padding(bottom = dimensionResource(R.dimen.text_padding))
+        )
+        Text(
+            text = userData.userName,
+            style = MaterialTheme.typography.headlineMedium,
+            textAlign = TextAlign.Start
         )
     }
 }
@@ -87,6 +148,8 @@ fun HomeScreen(
 private fun CurrentGoalCard(
     modifier : Modifier = Modifier
 ) {
+
+
     Card(
         shape = MaterialTheme.shapes.medium,
         modifier = modifier
@@ -203,52 +266,5 @@ private fun AddNewDate(
                     .padding(dimensionResource(R.dimen.icon_padding)),
             )
         }
-    }
-}
-
-
-@Composable
-private fun GreetingText() {
-    var time by remember { mutableStateOf(currentTime()) }
-    var date by remember { mutableStateOf(currentDate()) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            if (date != currentDate()) {
-                date = currentDate()
-            }
-            delay(3_600_000)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            if (time != currentDate()) {
-                time = currentDate()
-            }
-            delay(600_000)
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                bottom = dimensionResource(R.dimen.container_padding)
-            )
-    ) {
-        Text(
-            text = stringResource(R.string.Good_Morning),
-            style = MaterialTheme.typography.labelMedium,
-            textAlign = TextAlign.Start,
-            modifier = Modifier
-                .alpha(ALPHA_AMOUNT)
-                .padding(bottom = dimensionResource(R.dimen.text_padding))
-        )
-        Text(
-            text = "Idris Elmaliki",
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Start
-        )
     }
 }
