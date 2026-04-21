@@ -1,6 +1,5 @@
 package com.example.water_logging_app.ui.signUpPage.viewModels.parent
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
@@ -8,6 +7,7 @@ import com.example.water_logging_app.preferenceData.domain.modelData.UserPrefere
 import com.example.water_logging_app.preferenceData.worker.di.PreferenceWorkerSchedule
 import com.example.water_logging_app.userInfoCalculations.dailyGoalCalculation
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,7 +33,7 @@ class SignUpViewModel @Inject constructor(
 
     // this won't be posted in the ui, and instead it is only for checking!
     fun getUserData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _signUpData.update { data ->
                     data.copy(
@@ -42,8 +42,6 @@ class SignUpViewModel @Inject constructor(
                 }
 
                 val userData = repo.getUserPreference()
-
-                Log.d("MainLoadingScreenUi", "MainLoadingScreenUi: user = ${userData?.userName}")
 
                 if(userData?.userName == null) {
                    throw Exception("User data is empty!")

@@ -8,10 +8,6 @@ class SignUpPageActions(
 ) {
     // want each page to be nested for the sign-up page!
 
-    fun navigateToMainLoadingPage() {
-        navController.navigate(SignUpPageRoutes.MainLoadingScreen.name)
-    }
-
     fun navigateToBeginSignUpPage() {
         navController.navigate(SignUpPageRoutes.BeginSignUpPage.name)
     }

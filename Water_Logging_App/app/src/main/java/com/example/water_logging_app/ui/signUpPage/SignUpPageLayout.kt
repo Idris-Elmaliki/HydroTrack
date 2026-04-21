@@ -9,10 +9,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.navGraphs.signUpGraph
-import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
-import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 
 @Composable
 fun SignUpPageLayout(
