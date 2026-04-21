@@ -12,7 +12,6 @@ import com.example.water_logging_app.ui._navigation.navActions.SignUpPageActions
 import com.example.water_logging_app.ui._navigation.routes.SignUpPageRoutes
 import com.example.water_logging_app.ui.signUpPage.screens.BeginSignUpPageUi
 import com.example.water_logging_app.ui.signUpPage.screens.InfoScreenUi
-import com.example.water_logging_app.ui.signUpPage.screens.MainLoadingScreenUi
 import com.example.water_logging_app.ui.signUpPage.screens.SaveUserDataLoadingScreen
 import com.example.water_logging_app.ui.signUpPage.screens.UserDailyGoalScreen
 import com.example.water_logging_app.ui.signUpPage.screens.UserDataPageUi
@@ -29,21 +28,8 @@ fun NavGraphBuilder.signUpGraph(
 
     navigation(
         route = "sign_up",
-        startDestination = SignUpPageRoutes.MainLoadingScreen.name,
+        startDestination = SignUpPageRoutes.BeginSignUpPage.name
     ) {
-        composable(
-            route = SignUpPageRoutes.MainLoadingScreen.name
-        ) {
-            val signUpViewModel : SignUpViewModel = hiltViewModel(rememberActivity())
-
-            MainLoadingScreenUi(
-                modifier = modifier,
-                signUpViewModel = signUpViewModel,
-                toHomeScreen = { mainNavActions.navigateToHomePage() },
-                toSignUpScreen = { actions.navigateToBeginSignUpPage() }
-            )
-        }
-
         composable(
             route = SignUpPageRoutes.BeginSignUpPage.name
         ) {
