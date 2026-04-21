@@ -7,6 +7,7 @@ import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
 import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataList
 import com.example.water_logging_app.time.TimeConversion
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +31,7 @@ class TodayWaterLogViewModel @Inject constructor(
     }
 
     fun loadTodayWaterLogs() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val waterLogs : List<WaterLogData> = repo.getWaterDataByDate(LocalDate.now().toString())
 
@@ -63,7 +64,7 @@ class TodayWaterLogViewModel @Inject constructor(
         waterAmount : Int,
         measurementType : String
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val waterLog = WaterLogData(
                     waterAmount,

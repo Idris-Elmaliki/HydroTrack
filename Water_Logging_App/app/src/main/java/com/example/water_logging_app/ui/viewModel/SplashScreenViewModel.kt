@@ -1,4 +1,4 @@
-package com.example.water_logging_app.splashScreen.viewModel
+package com.example.water_logging_app.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +12,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/*
+* This viewModel is what we use to control the loading screen!
+*
+* It has the same logic as before, if we get null then we navigate to the SignUpScreen
+* Else we go to the homePage!
+*
+* The only difference is now this logic is in a dedicated viewModel!
+*/
 @HiltViewModel
-class LoadingViewModel @Inject constructor(
+class SplashScreenViewModel @Inject constructor(
     private val repo : UserPreferenceRepositoryImpl
 ) : ViewModel() {
     private var _isReady = MutableStateFlow(LoadingData())

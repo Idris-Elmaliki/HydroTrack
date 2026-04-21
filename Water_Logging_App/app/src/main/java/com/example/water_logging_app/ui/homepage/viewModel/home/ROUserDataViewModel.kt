@@ -7,6 +7,7 @@ import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.data.repository.UserPreferenceRepositoryImpl
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +33,7 @@ class ROUserDataViewModel @Inject constructor(
     }
 
     fun loadSettingsData() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val userData = repo.getUserPreference() ?: UserPreferenceData()
 
@@ -61,7 +62,7 @@ class ROUserDataViewModel @Inject constructor(
     }
 
     fun loadProfilePic() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _profilePictureUri.update { data ->
                     data.copy(

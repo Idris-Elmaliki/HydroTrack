@@ -24,7 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.R
-import com.example.water_logging_app.splashScreen.viewModel.LoadingViewModel
+import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
@@ -32,6 +32,7 @@ import com.example.water_logging_app.ui.homepage.HomePageUiLayout
 import com.example.water_logging_app.ui.signUpPage.SignUpPageLayout
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.signUpPage.screens.subscreens.animations.DotLoadingAnimation
+import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 /*
@@ -41,7 +42,7 @@ import kotlin.random.Random
 @Composable
 fun AppRoute(
     modifier: Modifier = Modifier,
-    loadingViewModel: LoadingViewModel,
+    loadingViewModel: SplashScreenViewModel,
     navController : NavHostController = rememberNavController()
 ) {
     val mainNav = AppNavActions(navController)
@@ -49,6 +50,7 @@ fun AppRoute(
     val readyVM by loadingViewModel.isReady.collectAsStateWithLifecycle()
 
     LaunchedEffect(readyVM.isReady) {
+        delay(2000L)
         if (readyVM.isReady) {
             if (readyVM.error == null) {
                 navController.navigate(AppNavRoutes.HomePage.name)
@@ -63,12 +65,23 @@ fun AppRoute(
         startDestination = AppNavRoutes.LoadingScreen.name,
         modifier = modifier
     ) {
-
-
+        // this composable is here to ensure that the SignUpScreen doesn't load for a frame while going to homepage
         composable(
             route = AppNavRoutes.LoadingScreen.name
-        ) {}
+        ) {
+            LoadingScreen(
+                modifier = modifier,
+                currentUi = {
+                    Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
 
+                    DotLoadingAnimation()
+
+                    Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
+
+                    RandomTextPrompt()
+                }
+            )
+        }
 
         composable(
             route = AppNavRoutes.SignUpScreen.name
@@ -81,6 +94,8 @@ fun AppRoute(
 
         composable(
             route = AppNavRoutes.HomePage.name,
+            enterTransition = { fadeIn(tween(300)) },
+            exitTransition = { fadeOut(tween(300)) }
         ) {
             HomePageUiLayout(
                 modifier = modifier
@@ -91,7 +106,7 @@ fun AppRoute(
     AnimatedContent(
         targetState = readyVM.isReady,
         transitionSpec = {
-            fadeIn(tween(400)) togetherWith fadeOut(tween(400))
+            fadeIn(tween(0)) togetherWith fadeOut(tween(1000))
         },
         modifier = modifier,
         label = "LoadingAnimation"

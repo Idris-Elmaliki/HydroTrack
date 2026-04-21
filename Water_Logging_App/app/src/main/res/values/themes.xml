@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Water_Logging_App" parent="android:Theme.Material.Light.NoActionBar"/>
-    <style name="Theme.Water_Logging_App.SplashScreen" parent="Theme.Water_Logging_App">
-        <item name="windowSplashScreenBackground">#FF5DCCFC</item>
+    <style name="Theme.Water_Logging_App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/BrilliantAzure</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/bottleofwater</item>
-        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="windowSplashScreenAnimationDuration">3000</item>
         <item name="postSplashScreenTheme">@style/Theme.Water_Logging_App</item>
     </style>
 </resources>
