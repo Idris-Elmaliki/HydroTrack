@@ -7,7 +7,9 @@ class AppNavActions(
     private val navController: NavHostController
 ) {
     fun navigateToHomePage() {
-        navController.navigate(AppNavRoutes.HomePage.name)
+        navController.navigate(AppNavRoutes.HomePage.name) {
+            popUpTo(0)
+        }
     }
 
     fun navigateBackToSignUpScreen() {

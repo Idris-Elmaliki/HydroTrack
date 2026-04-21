@@ -53,8 +53,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.PaginationSystemUi
+import com.example.water_logging_app.ui.subscreens.LoadingScreen
+import com.example.water_logging_app.ui.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.VibrantBlue

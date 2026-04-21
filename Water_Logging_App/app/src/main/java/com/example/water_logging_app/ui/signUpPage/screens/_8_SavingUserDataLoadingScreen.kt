@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.animations.DotLoadingAnimation
+import com.example.water_logging_app.ui.subscreens.LoadingScreen
+import com.example.water_logging_app.ui.subscreens.animations.DotLoadingAnimation
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import kotlinx.coroutines.delay

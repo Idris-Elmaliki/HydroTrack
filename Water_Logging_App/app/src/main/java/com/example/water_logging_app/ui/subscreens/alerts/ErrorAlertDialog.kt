@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts
+package com.example.water_logging_app.ui.subscreens.alerts
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

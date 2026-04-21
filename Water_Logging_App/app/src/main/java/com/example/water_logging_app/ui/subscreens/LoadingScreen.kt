@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.signUpPage.screens.subscreens
+package com.example.water_logging_app.ui.subscreens
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
