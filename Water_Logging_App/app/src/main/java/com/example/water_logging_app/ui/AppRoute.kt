@@ -1,11 +1,9 @@
 package com.example.water_logging_app.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -24,14 +25,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.R
-import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
 import com.example.water_logging_app.ui.homepage.HomePageUiLayout
 import com.example.water_logging_app.ui.signUpPage.SignUpPageLayout
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.LoadingScreen
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.animations.DotLoadingAnimation
+import com.example.water_logging_app.ui.subscreens.LoadingScreen
+import com.example.water_logging_app.ui.subscreens.animations.DotLoadingAnimation
+import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -48,17 +49,7 @@ fun AppRoute(
     val mainNav = AppNavActions(navController)
 
     val readyVM by loadingViewModel.isReady.collectAsStateWithLifecycle()
-
-    LaunchedEffect(readyVM.isReady) {
-        delay(2000L)
-        if (readyVM.isReady) {
-            if (readyVM.error == null) {
-                navController.navigate(AppNavRoutes.HomePage.name)
-            } else {
-                navController.navigate(AppNavRoutes.SignUpScreen.name)
-            }
-        }
-    }
+    var loadDotAnimation by rememberSaveable { mutableStateOf(true) }
 
     NavHost(
         navController = navController,
@@ -74,7 +65,14 @@ fun AppRoute(
                 currentUi = {
                     Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
 
-                    DotLoadingAnimation()
+                    if(loadDotAnimation) {
+                        DotLoadingAnimation()
+                    }
+                    else {
+                        Spacer(modifier = Modifier.padding(
+                            bottom = dimensionResource(R.dimen.text_padding))
+                        )
+                    }
 
                     Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
 
@@ -103,27 +101,20 @@ fun AppRoute(
         }
     }
 
-    AnimatedContent(
-        targetState = readyVM.isReady,
-        transitionSpec = {
-            fadeIn(tween(0)) togetherWith fadeOut(tween(1000))
-        },
-        modifier = modifier,
-        label = "LoadingAnimation"
-    ) { ready ->
-        if (!ready) {
-            LoadingScreen(
-                modifier = modifier,
-                currentUi = {
-                    Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
+    LaunchedEffect(readyVM.isReady) {
+        delay(2000L)
+        if (readyVM.isReady) {
+            loadDotAnimation = false
 
-                    DotLoadingAnimation()
-
-                    Spacer(modifier = Modifier.padding(bottom = dimensionResource(R.dimen.extra_container_padding)))
-
-                    RandomTextPrompt()
+            if (readyVM.error == null) {
+                navController.navigate(AppNavRoutes.HomePage.name) {
+                    popUpTo(0)
                 }
-            )
+            } else {
+                navController.navigate(AppNavRoutes.SignUpScreen.name) {
+                    popUpTo(0)
+                }
+            }
         }
     }
 

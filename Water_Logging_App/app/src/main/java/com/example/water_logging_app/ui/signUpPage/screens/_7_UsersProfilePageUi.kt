@@ -50,8 +50,8 @@ import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowConfirmDialogUi
-import com.example.water_logging_app.ui.signUpPage.screens.subscreens.alerts.ShowErrorDialogUi
+import com.example.water_logging_app.ui.subscreens.alerts.ShowConfirmDialogUi
+import com.example.water_logging_app.ui.subscreens.alerts.ShowErrorDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
