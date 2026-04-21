@@ -11,19 +11,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.example.water_logging_app.splashScreen.viewModel.LoadingViewModel
+import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import com.example.water_logging_app.ui.AppRoute
 import com.example.water_logging_app.ui.theme.Water_Logging_AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    val loadingModel by viewModels<LoadingViewModel>()
+    private val loadingModel by viewModels<SplashScreenViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-
         super.onCreate(savedInstanceState)
+
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            !loadingModel.isReady.value.isReady
+        }
+
         enableEdgeToEdge()
         setContent {
             Water_Logging_AppTheme {
@@ -32,10 +36,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 )
             }
-        }
-
-        splashScreen.setKeepOnScreenCondition {
-            !loadingModel.isReady.value.isReady
         }
     }
 }
