@@ -35,6 +35,7 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.time.currentDate
 import com.example.water_logging_app.time.currentTime
+import com.example.water_logging_app.ui.homepage.viewModel.home.NotificationsViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.TodayWaterLogViewModel
 import com.example.water_logging_app.ui.theme.VividCobalt
@@ -61,6 +62,7 @@ fun HomeScreen(
     modifier : Modifier,
     todayWaterLogVM: TodayWaterLogViewModel,
     userDataVM : ROUserDataViewModel,
+    notifVM : NotificationsViewModel
 ) {
     val todayWLData by todayWaterLogVM.todayWaterLogs.collectAsStateWithLifecycle()
     val userData by userDataVM.userData.collectAsStateWithLifecycle()

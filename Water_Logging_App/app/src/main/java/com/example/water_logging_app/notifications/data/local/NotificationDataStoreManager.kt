@@ -6,13 +6,17 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.water_logging_app.time.TimeConversion
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import java.time.LocalTime
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NotificationDataStoreManager(
-    private val context : Context
+@Singleton
+class NotificationDataStoreManager @Inject constructor(
+    @param:ApplicationContext private val context : Context
 ) {
     val Context.dataStore by preferencesDataStore("notifications")
 
