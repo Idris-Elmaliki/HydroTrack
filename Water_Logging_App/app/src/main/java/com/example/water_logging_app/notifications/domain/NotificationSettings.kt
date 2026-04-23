@@ -6,6 +6,6 @@ data class NotificationSettings(
     val error : String? = null,
 
     val allowNotifications : Boolean = false,
-    val showNotificationSetUp : Boolean = true,
+    val dontShowNotificationSetUp : Boolean = false,
     val notificationTime : LocalTime? = null
 )

@@ -70,7 +70,7 @@ fun InfoScreenUi(
     modifier : Modifier,
     currentNavAction : () -> Unit,
 ) {
-    val pagerState = rememberPagerState() { OnboardingPageList.size }
+    val pagerState = rememberPagerState { OnboardingPageList.size }
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(

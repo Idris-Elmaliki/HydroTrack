@@ -34,7 +34,7 @@ import com.example.water_logging_app.ui.theme.LightGray
 fun <T> PaginationSystemUi(
     modifier : Modifier,
     pagerState : PagerState,
-    pagerList : List<T> // the screens pass different types of variables
+    pagerList : List<T> // the screens can pass different types of variable lists
 ) {
     HorizontalPager(
         state = pagerState

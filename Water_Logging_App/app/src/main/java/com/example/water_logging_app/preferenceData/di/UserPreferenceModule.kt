@@ -28,7 +28,7 @@ object UserPreferenceModule {
             context = applicationContext,
             klass= UserPreferenceDatabase::class.java,
             name ="user_preference_database"
-        ).fallbackToDestructiveMigration().build()
+        ).build()
     }
 
     @Provides
