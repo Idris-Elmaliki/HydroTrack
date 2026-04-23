@@ -37,7 +37,7 @@ class NotificationsViewModel @Inject constructor(
                 ) { param1, param2, param3 ->
                     NotificationSettings(
                         allowNotifications = param1,
-                        showNotificationSetUp = param2,
+                        dontShowNotificationSetUp = param2,
                         notificationTime = param3
                     )
                 }
@@ -60,7 +60,11 @@ class NotificationsViewModel @Inject constructor(
         allowNotifications : Boolean
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataStore.setAllowNotifications(allowNotifications)
+            _notifState.update { data ->
+                data.copy(
+                    allowNotifications = allowNotifications
+                )
+            }
         }
     }
 
@@ -68,7 +72,11 @@ class NotificationsViewModel @Inject constructor(
         showNotificationSetUp : Boolean,
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataStore.setShowNotificationSetUp(showNotificationSetUp)
+            _notifState.update { data ->
+                data.copy(
+                    dontShowNotificationSetUp = showNotificationSetUp
+                )
+            }
         }
     }
 
@@ -76,7 +84,22 @@ class NotificationsViewModel @Inject constructor(
         notificationTime : LocalTime
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            dataStore.setNotificationTime(notificationTime)
+            _notifState.update { data ->
+                data.copy(
+                    notificationTime = notificationTime
+                )
+            }
+        }
+    }
+
+    fun updateNotificationSettings() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+
+            }
+            catch (e : Exception) {
+
+            }
         }
     }
 }
