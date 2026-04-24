@@ -75,7 +75,6 @@ fun NavGraphBuilder.homeGraph(
                 modifier = modifier,
                 todayWaterLogVM = hiltViewModel(rememberActivity()),
                 userDataVM = hiltViewModel(rememberActivity()),
-                notifVM = hiltViewModel(rememberActivity()),
             )
         }
         composable(

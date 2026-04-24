@@ -1,11 +1,12 @@
 package com.example.water_logging_app.ui.homepage
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
@@ -15,7 +16,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -31,7 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -54,28 +56,42 @@ fun HomePageUiLayout(
     val notifData by notifVM.notifState.collectAsStateWithLifecycle()
 
     var selectedItem by rememberSaveable { mutableIntStateOf(1) }
-    var showNotificationPages by rememberSaveable { mutableStateOf(true) }
+    var showNotificationPages by rememberSaveable { mutableStateOf(notifData.dontShowNotificationSetUp) }
 
     val numList = listOf(1, 2, 3)
     val notifPageState = rememberPagerState { numList.size }
 
-    if(notifData.dontShowNotificationSetUp && showNotificationPages) {
+    if(!showNotificationPages) {
         Scaffold(
             modifier = modifier,
             topBar = {
                 TopAppBar(
                     modifier = Modifier.padding(dimensionResource(R.dimen.container_padding)),
-                    actions = {
-                        IconButton(
-                            onClick = {
-                                showNotificationPages = !showNotificationPages
-                            }
+                    navigationIcon = {
+                        Row(
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = {
+                                        showNotificationPages = !showNotificationPages
+                                    }
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
                             Icon(
-                                modifier = Modifier.size(dimensionResource(R.dimen.NavIconSize)),
+                                modifier = Modifier
+                                    .padding(end = dimensionResource(R.dimen.mini_text_padding))
+                                    .size(dimensionResource(R.dimen.NavIconSize)),
                                 imageVector = Icons.Outlined.Cancel,
                                 contentDescription = null,
                                 tint = Aquamarine
+                            )
+                            Text(
+                                text = stringResource(R.string.Cancel),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    lineHeight = 0.sp
+                                ),
+                                color = Aquamarine
                             )
                         }
                     },
@@ -85,12 +101,15 @@ fun HomePageUiLayout(
             bottomBar = {
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .navigationBarsPadding()
+                        .padding(dimensionResource(R.dimen.container_padding)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     PaginationSystemUi(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(
                                 top = dimensionResource(R.dimen.container_padding),
                                 bottom = dimensionResource(R.dimen.container_padding)
@@ -104,19 +123,26 @@ fun HomePageUiLayout(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        var isChecked by rememberSaveable { mutableStateOf(false) }
                         Checkbox(
-                            checked = notifData.dontShowNotificationSetUp,
+                            checked = isChecked,
                             onCheckedChange = { data ->
                                 notifVM.updateShowNotificationSetUp(
                                     showNotificationSetUp = data
                                 )
+                                isChecked = !isChecked
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = Aquamarine
+                                uncheckedColor = Aquamarine,
+                                checkedColor = Aquamarine,
                             )
                         )
                         Text(
-                            text = stringResource(R.string.Dont_show_notif_setup_again)
+                            text = stringResource(R.string.Dont_show_notif_setup_again),
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 10.sp
+                            )
                         )
                     }
                 }
@@ -129,9 +155,15 @@ fun HomePageUiLayout(
                     .padding(dimensionResource(R.dimen.container_padding))
             ) {
                 when(notifPageState.currentPage) {
-                    0 -> {}
-                    1 -> {}
-                    2 -> {}
+                    0 -> {
+
+                    }
+                    1 -> {
+
+                    }
+                    2 -> {
+
+                    }
                 }
             }
         }
@@ -143,7 +175,6 @@ fun HomePageUiLayout(
                 NavigationBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(45.dp)
                 ) {
                     BottomNavList.forEachIndexed { index, item ->
                         NavigationBarItem(

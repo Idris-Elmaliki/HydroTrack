@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,6 +26,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.R
+import com.example.water_logging_app.rememberActivity
 import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
@@ -34,6 +36,7 @@ import com.example.water_logging_app.ui.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.subscreens.animations.DotLoadingAnimation
 import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import kotlinx.coroutines.delay
+import okhttp3.internal.notify
 import kotlin.random.Random
 
 /*
@@ -96,7 +99,8 @@ fun AppRoute(
             exitTransition = { fadeOut(tween(300)) }
         ) {
             HomePageUiLayout(
-                modifier = modifier
+                modifier = modifier,
+                notifVM = hiltViewModel(rememberActivity())
             )
         }
     }

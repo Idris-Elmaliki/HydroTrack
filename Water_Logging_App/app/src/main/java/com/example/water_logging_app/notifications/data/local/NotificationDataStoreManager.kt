@@ -14,17 +14,19 @@ import java.time.LocalTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/*
+* This is the class for notification DataStore
+*
+* We have 3 checks:
+*   1.) If the user wants notifications
+*   2.) If they do, what time will the notification be at?
+*   3.) If they don't want to be reminded to set up notifications
+*/
 @Singleton
 class NotificationDataStoreManager @Inject constructor(
     @param:ApplicationContext private val context : Context
 ) {
     val Context.dataStore by preferencesDataStore("notifications")
-
-    suspend fun setAllowNotifications(allowNotifications : Boolean) {
-        context.dataStore.edit { data ->
-            data[Companion.allowNotifications] = allowNotifications
-        }
-    }
 
     fun getAllowNotifications() : Flow<Boolean> {
         return context.dataStore.data.map { data ->
@@ -32,39 +34,45 @@ class NotificationDataStoreManager @Inject constructor(
         }
     }
 
-    suspend fun setShowNotificationSetUp(showNotificationSetUp : Boolean) {
-        context.dataStore.edit { data ->
-            data[Companion.showNotificationSetUp] = showNotificationSetUp
-        }
-    }
-
-    fun getShowNotificationSetUp() : Flow<Boolean> {
+    fun getDontShowNotificationSetUp() : Flow<Boolean> {
         return context.dataStore.data.map { data ->
-            data[showNotificationSetUp] ?: true
+            data[dontShowNotificationSetUp] ?: false
         }
     }
 
-    suspend fun setNotificationTime(notificationTime : LocalTime) {
-        val notificationTimeStr = TimeConversion.getStringFromLocalTimeD(notificationTime)
+    fun getNotificationTime() : Flow<LocalTime?> {
+        val notificationTimeFlow = context.dataStore.data.map { data ->
+            data[notificationTime]
+        }
+
+        if(notificationTimeFlow != flowOf(null)) {
+            return flowOf(TimeConversion.getLocalTimeFromStringD(notificationTimeFlow.toString()))
+        }
+
+        return flowOf(null)
+    }
+
+    suspend fun setNotificationData(
+        dontShowNotificationSetUp : Boolean?,
+        allowNotifications : Boolean?,
+        notificationTime : String?,
+    ) {
+        context.dataStore.edit { data ->
+            data[Companion.dontShowNotificationSetUp] = dontShowNotificationSetUp ?: data[Companion.dontShowNotificationSetUp] ?: false
+        }
 
         context.dataStore.edit { data ->
-            data[Companion.notificationTime] = notificationTimeStr
+            data[Companion.allowNotifications] = allowNotifications ?: data[Companion.allowNotifications] ?: false
         }
-    }
 
-    fun getNotificationTime() : Flow<LocalTime> {
-        val notificationTimeFlow : String = context.dataStore.data.map { data ->
-            data[notificationTime] ?: "00:00"
-        }.toString()
-
-        return flowOf(
-            TimeConversion.getLocalTimeFromStringD(notificationTimeFlow)
-        )
+        context.dataStore.edit { data ->
+            data[Companion.notificationTime] = notificationTime ?: data[Companion.notificationTime] ?: "00:00"
+        }
     }
 
     companion object {
         val allowNotifications = booleanPreferencesKey("allow_Notifications")
-        val showNotificationSetUp = booleanPreferencesKey("show_Notifications_Set_up")
+        val dontShowNotificationSetUp = booleanPreferencesKey("show_Notifications_Set_up")
         val notificationTime = stringPreferencesKey("notification_time")
     }
 }
