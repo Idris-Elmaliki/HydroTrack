@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.notifications.data.local.NotificationDataStoreManager
 import com.example.water_logging_app.notifications.domain.NotificationSettings
+import com.example.water_logging_app.time.TimeConversion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,14 +31,14 @@ class NotificationsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 combine(
+                    dataStore.getDontShowNotificationSetUp(),
                     dataStore.getAllowNotifications(),
-                    dataStore.getShowNotificationSetUp(),
                     dataStore.getNotificationTime()
-                ) { param1, param2, param3 ->
+                ) { setUpNotif, allowNotif, notifTime ->
                     NotificationSettings(
-                        allowNotifications = param1,
-                        dontShowNotificationSetUp = param2,
-                        notificationTime = param3
+                        dontShowNotificationSetUp = setUpNotif,
+                        allowNotifications = allowNotif,
+                        notificationTime = notifTime
                     )
                 }
                 .flowOn(Dispatchers.IO)
@@ -81,12 +81,12 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun updateNotificationTime(
-        notificationTime : LocalTime
+        notificationTime : String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _notifState.update { data ->
                 data.copy(
-                    notificationTime = notificationTime
+                    notificationTime = TimeConversion.getLocalTimeFromStringD(notificationTime)
                 )
             }
         }
@@ -95,10 +95,31 @@ class NotificationsViewModel @Inject constructor(
     fun updateNotificationSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                _notifState.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
 
+                val vmData = _notifState.value
+
+                dataStore.setNotificationData(
+                    dontShowNotificationSetUp =
+                        if(!vmData.allowNotifications) { vmData.dontShowNotificationSetUp }
+                            else { true },
+                    allowNotifications = vmData.allowNotifications,
+                    notificationTime =
+                        if(vmData.notificationTime != null) { TimeConversion.getStringFromLocalTimeD(vmData.notificationTime) }
+                            else { null }
+                )
             }
             catch (e : Exception) {
-
+                _notifState.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
+                }
             }
         }
     }

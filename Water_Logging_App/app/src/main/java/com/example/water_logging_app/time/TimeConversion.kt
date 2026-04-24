@@ -33,6 +33,7 @@ object TimeConversion {
 
         return string
     }
+
     fun getLocalDateTimeFromStringR(
         date : String
     ) : LocalDateTime {
