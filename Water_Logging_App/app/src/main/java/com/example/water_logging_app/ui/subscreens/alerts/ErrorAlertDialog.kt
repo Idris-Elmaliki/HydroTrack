@@ -27,7 +27,7 @@ import com.example.water_logging_app.ui.theme.poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowErrorDialogUi(
+fun ErrorAlertDialogUi(
     modifier : Modifier = Modifier
         .fillMaxWidth()
         .padding(

@@ -33,11 +33,13 @@ import com.example.water_logging_app.ui.theme.LightGray
 @Composable
 fun <T> PaginationSystemUi(
     modifier : Modifier,
+    allowScrolling : Boolean = true,
     pagerState : PagerState,
     pagerList : List<T> // the screens can pass different types of variable lists
 ) {
     HorizontalPager(
-        state = pagerState
+        state = pagerState,
+        userScrollEnabled = allowScrolling
     ) {
         Row(
             modifier = modifier,

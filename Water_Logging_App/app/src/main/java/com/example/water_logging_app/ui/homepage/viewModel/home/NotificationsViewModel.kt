@@ -30,6 +30,7 @@ class NotificationsViewModel @Inject constructor(
     fun loadNotificationSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // man I hate flows
                 combine(
                     dataStore.getDontShowNotificationSetUp(),
                     dataStore.getAllowNotifications(),
@@ -92,7 +93,7 @@ class NotificationsViewModel @Inject constructor(
         }
     }
 
-    fun updateNotificationSettings() {
+    fun uploadNotificationSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _notifState.update { data ->
@@ -104,10 +105,12 @@ class NotificationsViewModel @Inject constructor(
                 val vmData = _notifState.value
 
                 dataStore.setNotificationData(
+                    // what if the user doesn't check the box but did set up notif?
                     dontShowNotificationSetUp =
                         if(!vmData.allowNotifications) { vmData.dontShowNotificationSetUp }
                             else { true },
                     allowNotifications = vmData.allowNotifications,
+                    // the notification time can be null (we need this check since we are sending everything in bulk)
                     notificationTime =
                         if(vmData.notificationTime != null) { TimeConversion.getStringFromLocalTimeD(vmData.notificationTime) }
                             else { null }

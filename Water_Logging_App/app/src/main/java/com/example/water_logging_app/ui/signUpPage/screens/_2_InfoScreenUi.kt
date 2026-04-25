@@ -125,6 +125,7 @@ fun InfoScreenUi(
                             bottom = dimensionResource(R.dimen.container_padding)
                         )
                         .fillMaxWidth(),
+                    allowScrolling = false,
                     pagerList = OnboardingPageList,
                     pagerState = pagerState
                 )
