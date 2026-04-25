@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
@@ -34,7 +33,7 @@ import com.example.water_logging_app.ui.theme.poppins
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShowConfirmDialogUi(
+fun ConfirmationAlertDialog(
     modifier : Modifier = Modifier
         .fillMaxWidth()
         .padding(
@@ -44,7 +43,7 @@ fun ShowConfirmDialogUi(
             end = dimensionResource(R.dimen.container_padding)
         ),
     onDismiss : () -> Unit,
-    currentNavAction: () -> Unit
+    onContinuation: () -> Unit
 ) {
     BasicAlertDialog(
         modifier = modifier,
@@ -118,7 +117,7 @@ fun ShowConfirmDialogUi(
                         shape = CircleShape,
                         onClick = {
                             onDismiss()
-                            currentNavAction()
+                            onContinuation()
                         }
                     ) {
                         Text(

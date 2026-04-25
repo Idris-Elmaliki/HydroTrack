@@ -49,7 +49,7 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
-import com.example.water_logging_app.ui.subscreens.alerts.ShowErrorDialogUi
+import com.example.water_logging_app.ui.subscreens.alerts.ErrorAlertDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
@@ -195,7 +195,7 @@ fun UserDataPageUi(
 
     if(checkForIncompletion) {
         if(!errorList.isEmpty()) {
-            ShowErrorDialogUi(
+            ErrorAlertDialogUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(

@@ -73,5 +73,9 @@
     <string name="NotSatifisedWithYourGoal">Not Satisfied With Your Goal?</string>
     <string name="ChangeDataLaterMessage">Note: You can change your profile data after setting up the app!</string>
     <string name="Dont_show_notif_setup_again">Don\'t show the Notification Setup Screen again</string>
+    <string name="LetsFinishSetUp">Let\'s finish setting up your profile.</string>
+    <string name="EnableNotifications">Enable Notifications</string>
+    <string name="ChooseYourTime">Choose A Time.</string>
+    <string name="FinishSetUp">Finish Setup</string>
 
 </resources>

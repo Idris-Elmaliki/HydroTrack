@@ -45,8 +45,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.ActivityLevel
-import com.example.water_logging_app.ui.subscreens.alerts.ShowConfirmDialogUi
-import com.example.water_logging_app.ui.subscreens.alerts.ShowErrorDialogUi
+import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
+import com.example.water_logging_app.ui.subscreens.alerts.ErrorAlertDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
@@ -175,7 +175,7 @@ fun UserActivityLevelPageUi(
 
     if(checkForError) {
         if(!error.isEmpty()) {
-            ShowErrorDialogUi(
+            ErrorAlertDialogUi(
                 errorList = listOf(error),
                 onDismiss = {
                     checkForError = !checkForError
@@ -189,7 +189,7 @@ fun UserActivityLevelPageUi(
     }
 
     if(confirmNextNavAction) {
-        ShowConfirmDialogUi(
+        ConfirmationAlertDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
@@ -201,7 +201,7 @@ fun UserActivityLevelPageUi(
             onDismiss = {
                 confirmNextNavAction = !confirmNextNavAction
             },
-            currentNavAction = {
+            onContinuation = {
                 currentNavAction()
             }
         )

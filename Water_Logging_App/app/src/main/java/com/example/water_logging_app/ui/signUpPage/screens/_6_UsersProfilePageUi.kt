@@ -50,8 +50,8 @@ import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
-import com.example.water_logging_app.ui.subscreens.alerts.ShowConfirmDialogUi
-import com.example.water_logging_app.ui.subscreens.alerts.ShowErrorDialogUi
+import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
+import com.example.water_logging_app.ui.subscreens.alerts.ErrorAlertDialogUi
 import com.example.water_logging_app.ui.signUpPage.viewModels.derived.signUp.validate.UserValidator
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.ProfilePictureViewModel
 import com.example.water_logging_app.ui.signUpPage.viewModels.parent.SignUpViewModel
@@ -175,7 +175,7 @@ fun UsersProfilePageUi(
 
     if(checkForError) {
         if(!errorList.isEmpty()) {
-            ShowErrorDialogUi(
+            ErrorAlertDialogUi(
                 errorList = errorList,
                 onDismiss = {
                     checkForError = !checkForError
@@ -189,11 +189,11 @@ fun UsersProfilePageUi(
     }
 
     if(confirmNextNavAction) {
-        ShowConfirmDialogUi(
+        ConfirmationAlertDialog(
             onDismiss = {
                 confirmNextNavAction = !confirmNextNavAction
             },
-            currentNavAction = {
+            onContinuation = {
                 currentNavAction()
             }
         )

@@ -101,7 +101,7 @@ fun BeginSignUpPageUi(
                 colors = CardDefaults.cardColors(
                     containerColor = Aquamarine,
                 ),
-                shape = MaterialTheme.shapes.small,
+                shape = MaterialTheme.shapes.medium,
             ) {
                 Box(
                     modifier = Modifier
