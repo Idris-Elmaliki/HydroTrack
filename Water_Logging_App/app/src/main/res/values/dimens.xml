@@ -22,4 +22,6 @@
     <dimen name="NavIconSize">25dp</dimen>
     <dimen name="ActivityLevelImageSize">75dp</dimen>
     <dimen name="divider_height">32dp</dimen>
+    <dimen name="UiIconSize">75dp</dimen>
+    <dimen name="UiBoxSize">150dp</dimen>
 </resources>

@@ -126,7 +126,6 @@ fun InfoScreenUi(
                         )
                         .fillMaxWidth(),
                     allowScrolling = false,
-                    pagerList = OnboardingPageList,
                     pagerState = pagerState
                 )
                 Card(

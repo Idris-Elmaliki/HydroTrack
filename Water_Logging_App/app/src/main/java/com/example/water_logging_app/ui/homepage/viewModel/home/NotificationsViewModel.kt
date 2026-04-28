@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -82,12 +83,12 @@ class NotificationsViewModel @Inject constructor(
     }
 
     fun updateNotificationTime(
-        notificationTime : String
+        notificationTime : LocalTime
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _notifState.update { data ->
                 data.copy(
-                    notificationTime = TimeConversion.getLocalTimeFromStringD(notificationTime)
+                    notificationTime = notificationTime
                 )
             }
         }

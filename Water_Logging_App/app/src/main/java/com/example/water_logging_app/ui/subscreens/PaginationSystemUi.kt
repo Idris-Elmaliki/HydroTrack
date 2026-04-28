@@ -31,11 +31,10 @@ import com.example.water_logging_app.ui.theme.LightGray
 */
 
 @Composable
-fun <T> PaginationSystemUi(
+fun PaginationSystemUi(
     modifier : Modifier,
     allowScrolling : Boolean = true,
     pagerState : PagerState,
-    pagerList : List<T> // the screens can pass different types of variable lists
 ) {
     HorizontalPager(
         state = pagerState,
@@ -46,7 +45,7 @@ fun <T> PaginationSystemUi(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            repeat(pagerList.size) { iteration ->
+            repeat(pagerState.pageCount) { iteration ->
                 val isSelected = (pagerState.currentPage == iteration)
 
                 val width by animateDpAsState(

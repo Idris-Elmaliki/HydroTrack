@@ -77,5 +77,10 @@
     <string name="EnableNotifications">Enable Notifications</string>
     <string name="ChooseYourTime">Choose A Time.</string>
     <string name="FinishSetUp">Finish Setup</string>
+    <string name="StayInTheLoop">Stay in the loop</string>
+    <string name="TellUserAboutNotif">On the next screen, we\'ll ask if you\'d like to receive notifications.</string>
+    <string name="AllowNotif">Allow Notifications?</string>
+    <string name="NotifBenefits">Get live updates, reminders, and alerts.</string>
+    <string name="Allow">Allow</string>
 
 </resources>
