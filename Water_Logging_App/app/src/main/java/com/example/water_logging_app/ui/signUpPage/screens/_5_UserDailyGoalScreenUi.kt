@@ -247,7 +247,6 @@ fun UserDailyGoalScreen(
                         modifier = Modifier
                             .fillMaxWidth(),
                         pagerState = pagerState,
-                        pagerList = pagerList
                     )
 
                     if(pagerState.currentPage == (pagerList.size - 1)) {
