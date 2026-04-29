@@ -73,7 +73,7 @@
     <string name="NotSatifisedWithYourGoal">Not Satisfied With Your Goal?</string>
     <string name="ChangeDataLaterMessage">Note: You can change your profile data after setting up the app!</string>
     <string name="Dont_show_notif_setup_again">Don\'t show the Notification Setup Screen again</string>
-    <string name="LetsFinishSetUp">Let\'s finish setting up your profile.</string>
+    <string name="LetsFinishSetUp">Let\'s Finish Setting up your Profile.</string>
     <string name="EnableNotifications">Enable Notifications</string>
     <string name="ChooseYourTime">Choose A Time.</string>
     <string name="FinishSetUp">Finish Setup</string>
@@ -82,5 +82,6 @@
     <string name="AllowNotif">Allow Notifications?</string>
     <string name="NotifBenefits">Get live updates, reminders, and alerts.</string>
     <string name="Allow">Allow</string>
+    <string name="Decline">Decline</string>
 
 </resources>

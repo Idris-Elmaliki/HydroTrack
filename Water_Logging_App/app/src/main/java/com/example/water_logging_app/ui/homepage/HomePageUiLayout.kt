@@ -1,6 +1,9 @@
 package com.example.water_logging_app.ui.homepage
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.text.format.DateFormat
 import android.util.Log
@@ -57,6 +60,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -69,7 +73,6 @@ import com.example.water_logging_app.ui.homepage.viewModel.home.NotificationsVie
 import com.example.water_logging_app.ui.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
 import com.example.water_logging_app.ui.theme.Aquamarine
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
@@ -105,6 +108,8 @@ fun HomePageUiLayout(
         }
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
     Log.d("HomePage", "showNotificationSetupPages = $showNotificationSetupPages")
     if(showNotificationSetupPages) {
         Scaffold(
@@ -118,7 +123,7 @@ fun HomePageUiLayout(
                                 modifier = Modifier
                                     .clickable(
                                         onClick = {
-                                            showNotificationSetupPages = false
+                                            confirmUserInput = !confirmUserInput
                                         }
                                     ),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -194,7 +199,6 @@ fun HomePageUiLayout(
                 }
             }
         ) { innerpadding ->
-            val coroutineScope = rememberCoroutineScope()
 
             HorizontalPager(
                 state = notifPageState,
@@ -238,8 +242,10 @@ fun HomePageUiLayout(
                             notifData = notifData,
                             notifVM = notifVM,
                             onLauncherResult = {
-                                coroutineScope.launch {
-                                    notifPageState.animateScrollToPage(page + 1)
+                                if(Build.VERSION.SDK_INT >= 33) {
+                                    coroutineScope.launch {
+                                        notifPageState.animateScrollToPage(page + 1)
+                                    }
                                 }
                             }
                         )
@@ -259,6 +265,10 @@ fun HomePageUiLayout(
         }
     }
     else {
+        LaunchedEffect(Unit) {
+            notifVM.uploadNotificationSettings()
+        }
+
         Scaffold(
             modifier = modifier,
             bottomBar = {
@@ -304,7 +314,7 @@ fun HomePageUiLayout(
         }
     }
 
-    if(confirmUserInput && notifData.dontShowNotificationSetUp) {
+    if(confirmUserInput) {
         ConfirmationAlertDialog(
             onDismiss = {
                 confirmUserInput = !confirmUserInput
@@ -314,6 +324,8 @@ fun HomePageUiLayout(
             }
         )
     }
+
+
 }
 
 @Composable
@@ -463,9 +475,35 @@ private fun NotifLauncherUi(
     notifData : NotificationSettings,
     onLauncherResult: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { _ -> onLauncherResult() }
+    ) { isGranted ->
+        if(!isGranted) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                val isPermanentlyDenied = !ActivityCompat.shouldShowRequestPermissionRationale(
+                    context as Activity,
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
+
+
+                if (isPermanentlyDenied) {
+                    val intent =
+                        Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", context.packageName, null)
+                        }
+                    context.startActivity(intent)
+                }
+            }
+            else {
+                run {}
+            }
+        }
+        else {
+            onLauncherResult()
+        }
+    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -519,7 +557,8 @@ private fun NotifLauncherUi(
             modifier = Modifier
                 .padding(
                     start = dimensionResource(R.dimen.container_padding),
-                    end = dimensionResource(R.dimen.container_padding)
+                    end = dimensionResource(R.dimen.container_padding),
+                    bottom = dimensionResource(R.dimen.text_padding)
                 )
                 .height(dimensionResource(R.dimen.ClickableCardHeight))
                 .shadow(
@@ -527,7 +566,7 @@ private fun NotifLauncherUi(
                     clip = true,
                     spotColor = Aquamarine,
                     ambientColor = Aquamarine,
-                    shape = MaterialTheme.shapes.small
+                    shape = MaterialTheme.shapes.medium
                 )
                 .fillMaxWidth(),
             onClick = {
@@ -535,9 +574,6 @@ private fun NotifLauncherUi(
                     coroutineScope.launch {
                         launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     }
-                }
-                else {
-                    onLauncherResult()
                 }
             },
             colors = CardDefaults.cardColors(
@@ -558,7 +594,42 @@ private fun NotifLauncherUi(
                 )
             }
         }
-
+        Card(
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(R.dimen.container_padding),
+                    end = dimensionResource(R.dimen.container_padding)
+                )
+                .height(dimensionResource(R.dimen.ClickableCardHeight))
+                .shadow(
+                    elevation = dimensionResource(R.dimen.card_shadow_elevation),
+                    clip = true,
+                    spotColor = Aquamarine,
+                    ambientColor = Aquamarine,
+                    shape = MaterialTheme.shapes.medium
+                )
+                .fillMaxWidth(),
+            onClick = {
+                onLauncherResult()
+            },
+            colors = CardDefaults.cardColors(
+                containerColor = Aquamarine,
+            ),
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.Decline),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        lineHeight = 0.sp
+                    )
+                )
+            }
+        }
         if(Build.VERSION.SDK_INT < 33) {
             Text(
                 text = "Looks like your phone doesn't support the Notif Intent!"
@@ -583,7 +654,7 @@ private fun NotificationTimeSetUpUi(
 
     LaunchedEffect(timeState) {
         notifVM.updateNotificationTime(
-            LocalTime.parse("${timeState.hour}:${timeState.minute}")
+            LocalTime.of(timeState.hour, timeState.minute)
         )
     }
 

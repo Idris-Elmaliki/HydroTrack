@@ -12,7 +12,7 @@ plugins {
 
 android {
     namespace = "com.example.water_logging_app"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.water_logging_app"

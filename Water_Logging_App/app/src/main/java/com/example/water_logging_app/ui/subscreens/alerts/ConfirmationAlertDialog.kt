@@ -43,7 +43,8 @@ fun ConfirmationAlertDialog(
             end = dimensionResource(R.dimen.container_padding)
         ),
     onDismiss : () -> Unit,
-    onContinuation: () -> Unit
+    onContinuation: () -> Unit,
+    showDismiss : Boolean = true
 ) {
     BasicAlertDialog(
         modifier = modifier,
@@ -96,23 +97,25 @@ fun ConfirmationAlertDialog(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    TextButton(
-                        shape = CircleShape,
-                        onClick = {
-                            onDismiss()
+                    if(showDismiss) {
+                        TextButton(
+                            shape = CircleShape,
+                            onClick = {
+                                onDismiss()
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.Cancel).trim(),
+                                style = MaterialTheme.typography.labelMedium,
+                                modifier = Modifier
+                                    .padding(dimensionResource(R.dimen.text_padding))
+                            )
                         }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.Cancel).trim(),
-                            style = MaterialTheme.typography.labelMedium,
+                        VerticalDivider(
                             modifier = Modifier
-                                .padding(dimensionResource(R.dimen.text_padding))
+                                .height(dimensionResource(R.dimen.divider_height))
                         )
                     }
-                    VerticalDivider(
-                        modifier = Modifier
-                            .height(dimensionResource(R.dimen.divider_height))
-                    )
                     TextButton(
                         shape = CircleShape,
                         onClick = {
