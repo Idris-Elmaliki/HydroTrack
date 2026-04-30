@@ -90,16 +90,6 @@ fun HomePageUiLayout(
 
     var selectedItem by rememberSaveable { mutableIntStateOf(1) }
 
-    // the variable captures the default value of dontShowNotificationSetUp (which is set to false)
-    var showNotificationSetupPages by rememberSaveable { mutableStateOf(!notifData.dontShowNotificationSetUp) }
-
-    // this captures the actual DataStore value, since by them the function call in init {} will be complete!
-    LaunchedEffect(notifData.isLoading) {
-        if(!notifData.isLoading) {
-            showNotificationSetupPages = !notifData.dontShowNotificationSetUp
-        }
-    }
-
     // it's best to make everything into a when statement
     when(notifData.isLoading) {
         true -> {
@@ -117,7 +107,6 @@ fun HomePageUiLayout(
                     modifier = modifier,
                     notifVM = notifVM,
                     notifPageState = notifPageState,
-                    onShowNotifChange = { showNotificationSetupPages = !showNotificationSetupPages }
                 )
             }
             else {
@@ -175,7 +164,6 @@ private fun NotifPaginationUi(
     modifier: Modifier,
     notifVM: NotificationsViewModel,
     notifPageState : PagerState,
-    onShowNotifChange : () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -349,7 +337,6 @@ private fun NotifPaginationUi(
             },
             onContinuation = {
                 notifVM.updateShowNotificationSetUp(checkBoxInput)
-                onShowNotifChange()
             }
         )
     }
