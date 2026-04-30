@@ -83,5 +83,6 @@
     <string name="NotifBenefits">Get live updates, reminders, and alerts.</string>
     <string name="Allow">Allow</string>
     <string name="Decline">Decline</string>
+    <string name="AboutNotifications">This will be the time when the the notification will be pushed to you!</string>
 
 </resources>

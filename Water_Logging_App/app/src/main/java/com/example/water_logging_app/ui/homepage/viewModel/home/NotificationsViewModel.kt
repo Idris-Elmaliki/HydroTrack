@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.homepage.viewModel.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.notifications.data.local.NotificationDataStoreManager
@@ -31,6 +32,12 @@ class NotificationsViewModel @Inject constructor(
     fun loadNotificationSettings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                Log.d("Datastore", "Inside fun loadNotificationSettings()")
+
+                Log.d("Datastore", "_notifState.value.dontShowNotifSetUp: ${_notifState.value.dontShowNotificationSetUp}")
+                Log.d("Datastore", "_notifState.value.allowNotif: ${_notifState.value.allowNotifications}")
+                Log.d("Datastore", "_notifState.value.notifTime: ${_notifState.value.notificationTime}")
+
                 // man I hate flows
                 combine(
                     dataStore.getDontShowNotificationSetUp(),
@@ -45,12 +52,23 @@ class NotificationsViewModel @Inject constructor(
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { data ->
-                    _notifState.update { data }
+                    _notifState.update {
+                        data.copy(
+                            isLoading = false
+                        )
+                    }
+
+                    Log.d("Datastore", "_notifState.value.dontShowNotifSetUp: ${_notifState.value.dontShowNotificationSetUp}")
+                    Log.d("Datastore", "_notifState.value.allowNotif: ${_notifState.value.allowNotifications}")
+                    Log.d("Datastore", "_notifState.value.notifTime: ${_notifState.value.notificationTime}")
                 }
             }
             catch (e : Exception) {
+                Log.d("Datastore", "Inside exception of fun loadNotificationSettings()")
+                Log.e("Datastore", "loadNotificationSettings error: ${e.message}", e)
                 _notifState.update { data ->
                     data.copy(
+                        isLoading = false,
                         error = e.message
                     )
                 }
@@ -62,11 +80,15 @@ class NotificationsViewModel @Inject constructor(
         allowNotifications : Boolean
     ) {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("Datastore", "before! _notifState.value.allowNotifications: ${_notifState.value.allowNotifications}")
+
             _notifState.update { data ->
                 data.copy(
                     allowNotifications = allowNotifications
                 )
             }
+
+            Log.d("Datastore", "after! _notifState.value.allowNotifications: ${_notifState.value.allowNotifications}")
         }
     }
 
@@ -116,8 +138,15 @@ class NotificationsViewModel @Inject constructor(
                         if(vmData.notificationTime != null) { TimeConversion.getStringFromLocalTimeD(vmData.notificationTime) }
                             else { null }
                 )
+
+                _notifState.update { data ->
+                    data.copy(
+                        isLoading = false
+                    )
+                }
             }
             catch (e : Exception) {
+                Log.e("Datastore", "uploadNotificationSettings error: ${e.message}", e)
                 _notifState.update { data ->
                     data.copy(
                         isLoading = false,
