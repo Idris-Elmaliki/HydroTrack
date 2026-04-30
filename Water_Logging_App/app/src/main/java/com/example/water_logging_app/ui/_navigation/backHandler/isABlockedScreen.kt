@@ -21,8 +21,9 @@ fun isABlockedScreen(
         SignUpPageRoutes.MainLoadingScreen.name,
         SignUpPageRoutes.BeginSignUpPage.name,
         SignUpPageRoutes.InfoScreens.name,
+        SignUpPageRoutes.GetUsersActivityLevelPage.name,
         SignUpPageRoutes.LoadingScreen.name,
-        AppNavRoutes.HomePage.name,
+        AppNavRoutes.HomePage.name
     )
 
     return blockedRoutes.contains(destination.route)

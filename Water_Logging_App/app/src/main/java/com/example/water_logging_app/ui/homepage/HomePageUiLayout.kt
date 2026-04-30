@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import android.text.format.DateFormat
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -32,6 +34,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -66,7 +69,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.R
-import com.example.water_logging_app.notifications.domain.NotificationSettings
 import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavList
 import com.example.water_logging_app.ui._navigation.navGraphs.homeGraph
 import com.example.water_logging_app.ui.homepage.viewModel.home.NotificationsViewModel
@@ -88,118 +90,182 @@ fun HomePageUiLayout(
 
     var selectedItem by rememberSaveable { mutableIntStateOf(1) }
 
+    // the variable captures the default value of dontShowNotificationSetUp (which is set to false)
     var showNotificationSetupPages by rememberSaveable { mutableStateOf(!notifData.dontShowNotificationSetUp) }
-    var confirmUserInput by rememberSaveable { mutableStateOf(false) }
 
-    val numList : List<Int> = when {
-        notifData.allowNotifications && notifData.notificationTime == null -> {
-            listOf(1, 2)
-        }
-        else -> {
-            listOf(1, 2, 3, 4)
+    // this captures the actual DataStore value, since by them the function call in init {} will be complete!
+    LaunchedEffect(notifData.isLoading) {
+        if(!notifData.isLoading) {
+            showNotificationSetupPages = !notifData.dontShowNotificationSetUp
         }
     }
 
-    val notifPageState = rememberPagerState { numList.size }
-
-    LaunchedEffect(showNotificationSetupPages) {
-        if(!showNotificationSetupPages) {
-            notifVM.uploadNotificationSettings()
+    // it's best to make everything into a when statement
+    when(notifData.isLoading) {
+        true -> {
+            CircularProgressIndicator()
         }
-    }
+        false -> {
+            val pageCount = rememberSaveable {
+                if (notifData.allowNotifications && notifData.notificationTime == null) 2 else 4
+            }
 
-    val coroutineScope = rememberCoroutineScope()
+            val notifPageState = rememberPagerState { pageCount }
 
-    Log.d("HomePage", "showNotificationSetupPages = $showNotificationSetupPages")
-    if(showNotificationSetupPages) {
-        Scaffold(
-            modifier = modifier,
-            topBar = {
-                TopAppBar(
-                    modifier = Modifier.padding(dimensionResource(R.dimen.container_padding)),
-                    navigationIcon = {
-                        if (notifPageState.currentPage >= 1) {
-                            Row(
-                                modifier = Modifier
-                                    .clickable(
-                                        onClick = {
-                                            confirmUserInput = !confirmUserInput
-                                        }
-                                    ),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    modifier = Modifier
-                                        .padding(end = dimensionResource(R.dimen.mini_text_padding))
-                                        .size(dimensionResource(R.dimen.NavIconSize)),
-                                    imageVector = Icons.Outlined.Cancel,
-                                    contentDescription = null,
-                                    tint = Aquamarine
-                                )
-                                Text(
-                                    text = stringResource(R.string.Cancel),
-                                    style = MaterialTheme.typography.labelMedium.copy(
-                                        lineHeight = 0.sp
-                                    ),
-                                    color = Aquamarine
+            if(!notifData.dontShowNotificationSetUp) {
+                NotifPaginationUi(
+                    modifier = modifier,
+                    notifVM = notifVM,
+                    notifPageState = notifPageState,
+                    onShowNotifChange = { showNotificationSetupPages = !showNotificationSetupPages }
+                )
+            }
+            else {
+                Scaffold(
+                    modifier = modifier,
+                    bottomBar = {
+                        NavigationBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            BottomNavList.forEachIndexed { index, item ->
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            imageVector = if (selectedItem == index) {
+                                                item.selectedIcon
+                                            } else {
+                                                item.unselectedIcon
+                                            },
+                                            contentDescription = null
+                                        )
+                                    },
+                                    selected = (selectedItem == index),
+                                    onClick = {
+                                        selectedItem = index
+                                        bottomNavController.navigate(item.navHostName)
+                                    },
+                                    alwaysShowLabel = false
                                 )
                             }
                         }
-                    },
-                    title = {}
-                )
-            },
-            bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .navigationBarsPadding()
-                        .padding(dimensionResource(R.dimen.container_padding)),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    PaginationSystemUi(
+
+                    }
+                ) { innerpadding ->
+                    NavHost(
+                        navController = bottomNavController,
+                        startDestination = "home_graph",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                top = dimensionResource(R.dimen.container_padding),
-                                bottom = dimensionResource(R.dimen.container_padding)
-                            ),
-                        allowScrolling = false,
-                        pagerState = notifPageState,
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(innerpadding)
                     ) {
-                        var isChecked by rememberSaveable { mutableStateOf(false) }
-                        Checkbox(
-                            checked = isChecked,
-                            onCheckedChange = { data ->
-                                notifVM.updateShowNotificationSetUp(
-                                    showNotificationSetUp = data
-                                )
-                                isChecked = !isChecked
-                            },
-                            colors = CheckboxDefaults.colors(
-                                uncheckedColor = Aquamarine,
-                                checkedColor = Aquamarine,
-                            )
-                        )
-                        Text(
-                            text = stringResource(R.string.Dont_show_notif_setup_again),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                            )
+                        homeGraph(
+                            navController = bottomNavController,
+                            modifier = modifier
                         )
                     }
                 }
             }
-        ) { innerpadding ->
+        }
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NotifPaginationUi(
+    modifier: Modifier,
+    notifVM: NotificationsViewModel,
+    notifPageState : PagerState,
+    onShowNotifChange : () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+
+    var checkBoxInput by rememberSaveable { mutableStateOf(false)}
+    var confirmUserCompletion by rememberSaveable { mutableStateOf(false) } // used either when the user presses cancel/finish
+
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            TopAppBar(
+                modifier = Modifier.padding(dimensionResource(R.dimen.container_padding)),
+                navigationIcon = {
+                    if (notifPageState.currentPage >= 1) {
+                        Row(
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = {
+                                        confirmUserCompletion = !confirmUserCompletion
+                                    }
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = dimensionResource(R.dimen.mini_text_padding))
+                                    .size(dimensionResource(R.dimen.NavIconSize)),
+                                imageVector = Icons.Outlined.Cancel,
+                                contentDescription = null,
+                                tint = Aquamarine
+                            )
+                            Text(
+                                text = stringResource(R.string.Cancel),
+                                style = MaterialTheme.typography.labelMedium.copy(
+                                    lineHeight = 0.sp
+                                ),
+                                color = Aquamarine
+                            )
+                        }
+                    }
+                },
+                title = {}
+            )
+        },
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .padding(dimensionResource(R.dimen.container_padding)),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                PaginationSystemUi(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = dimensionResource(R.dimen.container_padding),
+                            bottom = dimensionResource(R.dimen.container_padding)
+                        ),
+                    allowScrolling = false,
+                    pagerState = notifPageState,
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = checkBoxInput,
+                        onCheckedChange = {
+                            checkBoxInput = !checkBoxInput
+                        },
+                        colors = CheckboxDefaults.colors(
+                            uncheckedColor = Aquamarine,
+                            checkedColor = Aquamarine,
+                        )
+                    )
+                    Text(
+                        text = stringResource(R.string.Dont_show_notif_setup_again),
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                        )
+                    )
+                }
+            }
+        }
+    ) { innerpadding ->
+        if(notifPageState.pageCount == 2) {
             HorizontalPager(
                 state = notifPageState,
                 modifier = Modifier
@@ -210,42 +276,54 @@ fun HomePageUiLayout(
             ) { page ->
                 when (page) {
                     0 -> {
-                        NotificationSetUpTransitionUi(
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
+                        NotificationSetUpTransitionUi {
                             coroutineScope.launch {
                                 notifPageState.animateScrollToPage(page + 1)
                             }
                         }
                     }
                     1 -> {
-                        if(notifPageState.pageCount == 2) {
-                            NotificationTimeSetUpUi(
-                                modifier = Modifier.fillMaxSize(),
-                                notifVM = notifVM,
-                                notifData = notifData,
-                                onCardClick = {
-                                    confirmUserInput = !confirmUserInput
-                                }
-                            )
+                        NotificationTimeSetUpUi(
+                            modifier = Modifier.fillMaxSize(),
+                            notifVM = notifVM,
+                            onCardClick = {
+                                confirmUserCompletion = !confirmUserCompletion
+                            }
+                        )
+                    }
+                }
+            }
+        }
+        else {
+            HorizontalPager(
+                state = notifPageState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerpadding)
+                    .padding(dimensionResource(R.dimen.container_padding)),
+                userScrollEnabled = false // Keep control via buttons/logic
+            ) { page ->
+                when(page) {
+                    0 -> {
+                        NotificationSetUpTransitionUi {
+                            coroutineScope.launch {
+                                notifPageState.animateScrollToPage(page + 1)
+                            }
                         }
-                        else {
-                            TellUserAboutNotifPopUpUi {
-                                coroutineScope.launch {
-                                    notifPageState.animateScrollToPage(page + 1)
-                                }
+                    }
+                    1 -> {
+                        TellUserAboutNotifPopUpUi {
+                            coroutineScope.launch {
+                                notifPageState.animateScrollToPage(page + 1)
                             }
                         }
                     }
                     2 -> {
                         NotifLauncherUi(
-                            notifData = notifData,
                             notifVM = notifVM,
                             onLauncherResult = {
-                                if(Build.VERSION.SDK_INT >= 33) {
-                                    coroutineScope.launch {
-                                        notifPageState.animateScrollToPage(page + 1)
-                                    }
+                                coroutineScope.launch {
+                                    notifPageState.animateScrollToPage(page + 1)
                                 }
                             }
                         )
@@ -254,9 +332,8 @@ fun HomePageUiLayout(
                         NotificationTimeSetUpUi(
                             modifier = Modifier.fillMaxSize(),
                             notifVM = notifVM,
-                            notifData = notifData,
                             onCardClick = {
-                                confirmUserInput = !confirmUserInput
+                                confirmUserCompletion = !confirmUserCompletion
                             }
                         )
                     }
@@ -264,77 +341,25 @@ fun HomePageUiLayout(
             }
         }
     }
-    else {
-        LaunchedEffect(Unit) {
-            notifVM.uploadNotificationSettings()
-        }
 
-        Scaffold(
-            modifier = modifier,
-            bottomBar = {
-                NavigationBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    BottomNavList.forEachIndexed { index, item ->
-                        NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    imageVector = if (selectedItem == index) {
-                                        item.selectedIcon
-                                    } else {
-                                        item.unselectedIcon
-                                    },
-                                    contentDescription = null
-                                )
-                            },
-                            selected = (selectedItem == index),
-                            onClick = {
-                                selectedItem = index
-                                bottomNavController.navigate(item.navHostName)
-                            },
-                            alwaysShowLabel = false
-                        )
-                    }
-                }
-
-            }
-        ) { innerpadding ->
-            NavHost(
-                navController = bottomNavController,
-                startDestination = "home_graph",
-                modifier = Modifier
-                    .padding(innerpadding)
-            ) {
-                homeGraph(
-                    navController = bottomNavController,
-                    modifier = modifier
-                )
-            }
-        }
-    }
-
-    if(confirmUserInput) {
+    if(confirmUserCompletion) {
         ConfirmationAlertDialog(
             onDismiss = {
-                confirmUserInput = !confirmUserInput
+                confirmUserCompletion = !confirmUserCompletion
             },
             onContinuation = {
-                showNotificationSetupPages = !showNotificationSetupPages
+                notifVM.updateShowNotificationSetUp(checkBoxInput)
+                onShowNotifChange()
             }
         )
     }
-
-
 }
 
 @Composable
 private fun NotificationSetUpTransitionUi(
-    modifier : Modifier,
     onCardClick : () -> Unit
 ) {
     Column(
-        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -472,7 +497,6 @@ private fun TellUserAboutNotifPopUpUi(
 @Composable
 private fun NotifLauncherUi(
     notifVM: NotificationsViewModel,
-    notifData : NotificationSettings,
     onLauncherResult: () -> Unit
 ) {
     val context = LocalContext.current
@@ -487,10 +511,9 @@ private fun NotifLauncherUi(
                     Manifest.permission.POST_NOTIFICATIONS
                 )
 
-
                 if (isPermanentlyDenied) {
                     val intent =
-                        Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                             data = Uri.fromParts("package", context.packageName, null)
                         }
                     context.startActivity(intent)
@@ -501,6 +524,9 @@ private fun NotifLauncherUi(
             }
         }
         else {
+            notifVM.updateAllowNotifications(
+                allowNotifications = true
+            )
             onLauncherResult()
         }
     }
@@ -643,7 +669,6 @@ private fun NotifLauncherUi(
 private fun NotificationTimeSetUpUi(
     modifier : Modifier,
     notifVM: NotificationsViewModel,
-    notifData : NotificationSettings,
     onCardClick: () -> Unit
 ) {
     val timeState = rememberTimePickerState(
@@ -665,12 +690,23 @@ private fun NotificationTimeSetUpUi(
         Text(
             modifier = Modifier
                 .padding(
-                    top = dimensionResource(R.dimen.container_padding),
-                    bottom = dimensionResource(R.dimen.mini_text_padding)
+                    bottom = dimensionResource(R.dimen.container_padding)
                 ),
             text = stringResource(R.string.ChooseYourTime),
-            style = MaterialTheme.typography.displaySmall.copy(
+            style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Bold,
+            )
+        )
+
+        Text(
+            modifier = Modifier
+                .alpha(0.7f)
+                .padding(
+                    bottom = dimensionResource(R.dimen.text_padding)
+                ),
+            text = stringResource(R.string.AboutNotifications),
+            style = MaterialTheme.typography.labelSmall.copy(
+                textAlign = TextAlign.Center
             )
         )
 
@@ -705,9 +741,19 @@ private fun NotificationTimeSetUpUi(
             ),
             shape = MaterialTheme.shapes.medium
         ) {
-            Text(
-                text = stringResource(R.string.FinishSetUp)
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.FinishSetUp),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 0.sp
+                    )
+                )
+            }
         }
     }
 }
