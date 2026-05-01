@@ -1,4 +1,4 @@
-package com.example.water_logging_app.notifications.data.remote.modelData
+package com.example.water_logging_app.notifications.domain.remote.modelData
 
 data class RegisterDeviceData(
     val installationId: String,
