@@ -71,7 +71,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.R
 import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavList
 import com.example.water_logging_app.ui._navigation.navGraphs.homeGraph
-import com.example.water_logging_app.ui.homepage.viewModel.home.NotificationsViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.NotificationsViewModel
 import com.example.water_logging_app.ui.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
 import com.example.water_logging_app.ui.theme.Aquamarine
