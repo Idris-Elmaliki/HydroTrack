@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.notifications.data.local.NotificationDataStoreManager
-import com.example.water_logging_app.notifications.domain.NotificationSettings
+import com.example.water_logging_app.notifications.domain.local.NotificationSettings
 import com.example.water_logging_app.time.TimeConversion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
