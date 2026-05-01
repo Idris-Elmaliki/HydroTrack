@@ -36,7 +36,7 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.time.currentDate
 import com.example.water_logging_app.time.currentTime
-import com.example.water_logging_app.ui.homepage.viewModel.home.NotificationsViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.NotificationsViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.TodayWaterLogViewModel
 import com.example.water_logging_app.ui.theme.VividCobalt
