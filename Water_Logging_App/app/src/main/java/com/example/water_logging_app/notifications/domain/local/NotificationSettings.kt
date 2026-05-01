@@ -1,4 +1,4 @@
-package com.example.water_logging_app.notifications.domain
+package com.example.water_logging_app.notifications.domain.local
 
 import java.time.LocalTime
 

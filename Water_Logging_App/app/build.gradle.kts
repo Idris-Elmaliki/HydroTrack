@@ -110,6 +110,7 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.scalars) // Retrofit with Scalar Converter
+    implementation(libs.converter.gson)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
