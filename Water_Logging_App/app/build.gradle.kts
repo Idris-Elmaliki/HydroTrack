@@ -113,9 +113,11 @@ dependencies {
     implementation(libs.converter.gson)
 
     // Firebase
+
+    // When using the BoM, don't specify versions in Firebase dependencies
     implementation(platform(libs.firebase.bom))
-        // When using the BoM, don't specify versions in Firebase dependencies
-        implementation(libs.google.firebase.analytics)
+    implementation(libs.google.firebase.analytics)
+    implementation(libs.google.firebase.messaging)
 
     // Icons (needed for apg 9.0 and up)
     implementation(libs.androidx.compose.material.icons.core)
