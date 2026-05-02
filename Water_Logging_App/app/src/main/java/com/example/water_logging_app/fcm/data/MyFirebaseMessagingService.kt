@@ -8,6 +8,7 @@ import androidx.core.app.NotificationCompat
 import com.example.water_logging_app.R
 import com.example.water_logging_app.notifications.data.remote.repositoryImpl.NotifRepositoryImpl
 import com.example.water_logging_app.notifications.domain.remote.modelData.RegisterDeviceData
+import com.example.water_logging_app.notifications.domain.remote.repository.NotifRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint // Don't forget, FCM is a service so Android made it, hence @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-    @Inject lateinit var repo: NotifRepositoryImpl
+    @Inject lateinit var repo: NotifRepository
 
     @SuppressLint("HardwareIds")
     override fun onNewToken(fcmToken: String) {

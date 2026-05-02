@@ -3,16 +3,13 @@ package com.example.water_logging_app.ui.homepage.viewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.water_logging_app.fcm.worker.di.NotificationWorkerSchedule
 import com.example.water_logging_app.notifications.data.local.NotificationDataStoreManager
-import com.example.water_logging_app.notifications.data.remote.repositoryImpl.NotifRepositoryImpl
 import com.example.water_logging_app.notifications.domain.local.NotificationSettings
-import com.example.water_logging_app.notifications.domain.remote.modelData.RegisterDeviceData
 import com.example.water_logging_app.time.TimeConversion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -25,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NotificationsViewModel @Inject constructor(
     private val dataStore : NotificationDataStoreManager,
-    private val backendAPI : NotifRepositoryImpl
+    private val notifWorker : NotificationWorkerSchedule
 ) : ViewModel() {
     private var _notifState = MutableStateFlow(NotificationSettings())
     val notifState : StateFlow<NotificationSettings> = _notifState.asStateFlow()
@@ -143,19 +140,6 @@ class NotificationsViewModel @Inject constructor(
                         if(vmData.notificationTime != null) { TimeConversion.getStringFromLocalTimeD(vmData.notificationTime) }
                             else { null }
                 )
-
-                backendAPI.registerUserDevice(
-                    RegisterDeviceData(
-                        installationId = TODO(),
-                        fcmToken = TODO()
-                    )
-                )
-
-                _notifState.update { data ->
-                    data.copy(
-                        isLoading = false
-                    )
-                }
             }
             catch (e : Exception) {
                 Log.e("Datastore", "uploadNotificationSettings error: ${e.message}", e)
