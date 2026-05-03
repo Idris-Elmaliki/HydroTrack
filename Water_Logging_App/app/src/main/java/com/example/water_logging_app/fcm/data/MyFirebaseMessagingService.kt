@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.provider.Settings
 import android.provider.Settings.Secure.ANDROID_ID
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.water_logging_app.R
-import com.example.water_logging_app.notifications.data.remote.repositoryImpl.NotifRepositoryImpl
 import com.example.water_logging_app.notifications.domain.remote.modelData.RegisterDeviceData
 import com.example.water_logging_app.notifications.domain.remote.repository.NotifRepository
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -24,6 +24,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     @SuppressLint("HardwareIds")
     override fun onNewToken(fcmToken: String) {
         super.onNewToken(fcmToken) // creates a new token
+
+        Log.d("TestWorker", "New token: $fcmToken")
 
         val deviceId = Settings.Secure.getString(contentResolver, ANDROID_ID)
         CoroutineScope(Dispatchers.IO).launch {

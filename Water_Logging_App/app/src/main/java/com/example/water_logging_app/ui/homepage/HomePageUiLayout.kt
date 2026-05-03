@@ -110,6 +110,10 @@ fun HomePageUiLayout(
                 )
             }
             else {
+                LaunchedEffect(Unit) {
+                    notifVM.uploadNotificationSettings()
+                }
+
                 Scaffold(
                     modifier = modifier,
                     bottomBar = {
@@ -337,6 +341,7 @@ private fun NotifPaginationUi(
             },
             onContinuation = {
                 notifVM.updateShowNotificationSetUp(checkBoxInput)
+                confirmUserCompletion = !confirmUserCompletion
             }
         )
     }
@@ -588,6 +593,15 @@ private fun NotifLauncherUi(
                         launcher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     }
                 }
+                else {
+                    // for phones older than API 33, we just send them to the settings screen
+                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    }
+                    context.startActivity(intent)
+
+                    onLauncherResult()
+                }
             },
             colors = CardDefaults.cardColors(
                 containerColor = Aquamarine,
@@ -642,11 +656,6 @@ private fun NotifLauncherUi(
                     )
                 )
             }
-        }
-        if(Build.VERSION.SDK_INT < 33) {
-            Text(
-                text = "Looks like your phone doesn't support the Notif Intent!"
-            )
         }
     }
 }

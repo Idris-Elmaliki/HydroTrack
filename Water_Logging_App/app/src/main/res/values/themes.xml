@@ -3,7 +3,7 @@
     <style name="Theme.Water_Logging_App" parent="android:Theme.Material.Light.NoActionBar"/>
     <style name="Theme.Water_Logging_App.SplashScreen" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/BrilliantAzure</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/bottleofwater</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/dropicon</item>
         <item name="windowSplashScreenAnimationDuration">3000</item>
         <item name="postSplashScreenTheme">@style/Theme.Water_Logging_App</item>
     </style>
