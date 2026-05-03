@@ -3,10 +3,13 @@ package com.example.water_logging_app.fcm.worker.di
 import android.content.Context
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.water_logging_app.fcm.worker.NotificationSchedulerWorker
+import com.example.water_logging_app.fcm.worker.TestNotificationSchedulerWorker
 import com.example.water_logging_app.notifications.domain.remote.modelData.NotifRequestData
+import com.example.water_logging_app.notifications.domain.remote.modelData.TestNotifRequestData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
@@ -45,5 +48,21 @@ class NotificationWorkerSchedule @Inject constructor(
             existingPeriodicWorkPolicy = ExistingPeriodicWorkPolicy.UPDATE,
             request = workRequest
         )
+    }
+
+    fun enqueueTestNotification(
+        notifData: TestNotifRequestData
+    ) {
+        val workData = Data.Builder()
+            .putString(TestNotificationSchedulerWorker.FCM_TOKEN, notifData.fcmToken)
+            .putString(TestNotificationSchedulerWorker.TITLE, notifData.title)
+            .putString(TestNotificationSchedulerWorker.BODY, notifData.body)
+            .build()
+
+        val workRequest = OneTimeWorkRequestBuilder<TestNotificationSchedulerWorker>()
+            .setInputData(workData)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
     }
 }
