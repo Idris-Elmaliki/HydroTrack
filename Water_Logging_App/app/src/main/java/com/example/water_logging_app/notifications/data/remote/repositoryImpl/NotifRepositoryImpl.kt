@@ -49,7 +49,7 @@ private fun NotifRequestData.toNotifRequestDTO() : NotifRequestDTO {
 private fun RegisterDeviceData.toRegisterDeviceDTO() : RegisterDeviceDTO {
     return RegisterDeviceDTO(
         installationId = installationId,
-        FcmToken = fcmToken
+        fcmToken = fcmToken
     )
 }
 

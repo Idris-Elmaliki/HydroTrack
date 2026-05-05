@@ -5,9 +5,9 @@
         <string name="HydroTrack">HydroTrack</string>
 
     <!-- Home Screen -->
-        <string name="Good_Morning">Good Morning,</string>
-        <string name="Good_Afternoon">Good Afternoon,"></string>
-        <string name="Good_Evening">Good Evening,</string>
+        <string name="Good_Morning">Good Morning</string>
+        <string name="Good_Afternoon">Good Afternoon</string>
+        <string name="Good_Evening">Good Evening</string>
 
         <string name="Target">Target</string>
 

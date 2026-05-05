@@ -13,7 +13,7 @@
     <dimen name="jumpingValue">15dp</dimen>
     <dimen name="loadingDotSize">8dp</dimen>
     <dimen name="shadow_elevation">4dp</dimen>
-    <dimen name="BorderStroke">4dp</dimen>
+    <dimen name="BorderStroke">2dp</dimen>
     <dimen name="card_shadow_elevation">8dp</dimen>
     <dimen name="ClickableCardHeight">50dp</dimen>
     <dimen name="PageIndicatorIconSize">4dp</dimen>
@@ -24,4 +24,5 @@
     <dimen name="divider_height">32dp</dimen>
     <dimen name="UiIconSize">75dp</dimen>
     <dimen name="UiBoxSize">150dp</dimen>
+    <dimen name="pfpNavIconSize">40dp</dimen>
 </resources>

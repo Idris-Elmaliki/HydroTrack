@@ -57,4 +57,12 @@ object TimeConversion {
 
         return localTime
     }
+
+    fun getStringFromLocalDateV(
+        date: LocalDate
+    ): String {
+        val string = date.toString()
+
+        return string
+    }
 }

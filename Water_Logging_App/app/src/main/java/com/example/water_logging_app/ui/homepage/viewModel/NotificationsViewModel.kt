@@ -107,11 +107,13 @@ class NotificationsViewModel @Inject constructor(
                         allowNotifications = allowNotif,
                         notificationTime = notifTime
                     )
+
                 }
                 .flowOn(Dispatchers.IO)
                 .collect { data ->
                     _notifState.update {
                         data.copy(
+
                             isLoading = false
                         )
                     }

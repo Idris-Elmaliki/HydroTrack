@@ -30,7 +30,7 @@ import javax.inject.Singleton
 class NotificationDataStoreManager @Inject constructor(
     @param:ApplicationContext private val context : Context
 ) {
-    val Context.dataStore by preferencesDataStore("notifications")
+    private val Context.dataStore by preferencesDataStore("notifications")
 
     fun getAllowNotifications() : Flow<Boolean> {
         return context.dataStore.data.map { data ->

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.water_logging_app._waterLogs.data.local.dao.WaterLogDAO
 import com.example.water_logging_app._waterLogs.data.local.database.WaterInfoDatabase
-import com.example.water_logging_app._waterLogs.data.repository.WaterLogRepositoryImpl
+import com.example.water_logging_app._waterLogs.data.local.repository.WaterLogRepositoryImpl
 import com.example.water_logging_app._waterLogs.domain.repository.WaterLogRepository
 import dagger.Module
 import dagger.Provides

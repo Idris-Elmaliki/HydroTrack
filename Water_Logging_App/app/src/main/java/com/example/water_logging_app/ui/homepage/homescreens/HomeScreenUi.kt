@@ -1,46 +1,39 @@
 package com.example.water_logging_app.ui.homepage.homescreens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.Card
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
-import com.example.water_logging_app.time.currentDate
-import com.example.water_logging_app.time.currentTime
-import com.example.water_logging_app.ui.homepage.viewModel.NotificationsViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.TodayWaterLogViewModel
-import com.example.water_logging_app.ui.theme.VividCobalt
-import kotlinx.coroutines.delay
+import com.example.water_logging_app.ui.theme.BrilliantAzure
+import com.example.water_logging_app.ui.theme.poppins
+import java.time.LocalTime
 
 /*
 * What I have so far is just the shell for the home page ui!
@@ -55,7 +48,7 @@ import kotlinx.coroutines.delay
 * There is only more I will need to include for the ui and soon the viewModel & database.
 */
 
-const val ALPHA_AMOUNT = 0.6f
+private const val ALPHA_AMOUNT = 0.6f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +59,7 @@ fun HomeScreen(
 ) {
     val todayWLData by todayWaterLogVM.todayWaterLogs.collectAsStateWithLifecycle()
     val userData by userDataVM.userData.collectAsStateWithLifecycle()
+    val pfpData by userDataVM.profilePicture.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -73,30 +67,46 @@ fun HomeScreen(
                 title = {
                     GreetUserText(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(dimensionResource(R.dimen.container_padding)),
+                            .fillMaxWidth(),
                         userData = userData
                     )
-                }
+                },
+                actions = {
+                    Box(
+                        modifier = Modifier
+                            .size(dimensionResource(R.dimen.pfpNavIconSize))
+                            .clip(CircleShape)
+                            .border(
+                                width = dimensionResource(R.dimen.BorderStroke),
+                                color = BrilliantAzure,
+                                shape = CircleShape
+                            )
+                            .clickable(onClick = {}),
+                    ) {
+                        AsyncImage(
+                            model = pfpData.filePath.toUri(),
+                            contentDescription = null,
+                            placeholder = painterResource(R.drawable.default_pfp_icon),
+                            error = painterResource(R.drawable.default_pfp_icon),
+                            fallback = painterResource(R.drawable.default_pfp_icon), // If model is null
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.pfpNavIconSize))
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .padding(dimensionResource(R.dimen.container_padding)),
             )
         },
         modifier = modifier
     ) { innerpadding ->
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
             modifier = Modifier
+                .padding(dimensionResource(R.dimen.container_padding))
                 .padding(innerpadding)
-                .fillMaxWidth()
         ) {
-            CurrentGoalCard(
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.icon_padding))
-            )
-            CurrentGoalAmountMatched(
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.icon_padding))
-            )
+
         }
     }
 }
@@ -106,167 +116,35 @@ private fun GreetUserText(
     modifier : Modifier,
     userData : UserPreferenceData
 ) {
-    var time by remember { mutableStateOf(currentTime()) }
-    var date by remember { mutableStateOf(currentDate()) }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            if (date != currentDate()) {
-                date = currentDate()
-            }
-            delay(3_600_000)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        while (true) {
-            if (time != currentDate()) {
-                time = currentDate()
-            }
-            delay(600_000)
-        }
-    }
-
     Column(
         modifier = modifier,
     ) {
         Text(
-            text = stringResource(R.string.Good_Morning),
+            text = when {
+                (LocalTime.now().hour in 5..< 12) -> { stringResource(R.string.Good_Morning) }
+                (LocalTime.now().hour in 12..19) -> { stringResource(R.string.Good_Afternoon) }
+                else -> { stringResource(R.string.Good_Evening) }
+            },
             style = MaterialTheme.typography.labelMedium,
             textAlign = TextAlign.Start,
             modifier = Modifier
                 .alpha(ALPHA_AMOUNT)
-                .padding(bottom = dimensionResource(R.dimen.text_padding))
+                .padding(bottom = dimensionResource(R.dimen.mini_text_padding))
         )
         Text(
             text = userData.userName,
-            style = MaterialTheme.typography.headlineMedium,
-            textAlign = TextAlign.Start
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontFamily = poppins,
+                fontWeight = FontWeight.Bold
+            ),
         )
     }
 }
 
 @Composable
-private fun CurrentGoalCard(
-    modifier : Modifier = Modifier
+private fun LoggingStreakUi(
+    modifier : Modifier,
+
 ) {
 
-
-    Card(
-        shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-    ) {
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.container_padding))
-        ) {
-            Text(
-                text = stringResource(R.string.Target),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier
-                    .alpha(ALPHA_AMOUNT)
-            )
-            Spacer(
-                modifier = Modifier
-                    .padding(
-                        top = dimensionResource(R.dimen.container_padding)
-                    )
-            )
-            // Placeholder (will need to query the data from the Sqlite database)
-            Text(
-                text = "1000ml",
-                style = MaterialTheme.typography.headlineLarge
-            )
-        }
-    }
-}
-
-@Composable
-private fun CurrentGoalAmountMatched(
-    modifier : Modifier = Modifier
-) {
-    Card(
-        shape = MaterialTheme.shapes.medium,
-        modifier = modifier
-    ) {
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.container_padding))
-        ) {
-            Text(
-                text = stringResource(R.string.Amount_of_water_drank),
-                style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier
-                    .alpha(ALPHA_AMOUNT)
-            )
-            Spacer(
-                modifier = Modifier
-                    .padding(
-                        top = dimensionResource(R.dimen.container_padding)
-                    )
-            )
-
-            // Placeholder (will need to query the data from the Sqlite database)
-            Text(
-                text = "50%",
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier
-                    .align(alignment = Alignment.CenterHorizontally)
-            )
-            Text(
-                text = stringResource(R.string.Goal_amount_reached),
-                style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.text_padding))
-                    .alpha(0.7f)
-            )
-        }
-    }
-}
-
-@Composable
-private fun AddNewDate(
-    onButtonClick : () -> Unit,
-    modifier : Modifier = Modifier
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = stringResource(R.string.Empty_Log_Description),
-            style = MaterialTheme.typography.labelMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .alpha(ALPHA_AMOUNT)
-                .padding(dimensionResource(R.dimen.text_padding))
-        )
-        Spacer(
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.container_padding))
-        )
-        IconButton(
-            onClick = onButtonClick,
-            modifier = Modifier
-                .background(
-                    color = VividCobalt,
-                    shape = MaterialTheme.shapes.extraLarge,
-                )
-                .size(dimensionResource(R.dimen.text_bubble_size))
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Add,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(dimensionResource(R.dimen.text_bubble_size))
-                    .padding(dimensionResource(R.dimen.icon_padding)),
-            )
-        }
-    }
 }
