@@ -244,7 +244,8 @@ private fun UserProfileUi(
                 error = painterResource(R.drawable.default_pfp_icon),
                 fallback = painterResource(R.drawable.default_pfp_icon), // If model is null
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(dimensionResource(R.dimen.pfpUpdatedIconSize))
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.pfpUpdatedIconSize))
             )
         }
 

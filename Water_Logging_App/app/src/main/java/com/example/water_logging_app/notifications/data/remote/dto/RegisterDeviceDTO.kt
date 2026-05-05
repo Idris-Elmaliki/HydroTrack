@@ -8,6 +8,6 @@ data class RegisterDeviceDTO(
     val installationId : String,
 
     @SerializedName("FcmToken")
-    val FcmToken : String
+    val fcmToken : String
 )
 

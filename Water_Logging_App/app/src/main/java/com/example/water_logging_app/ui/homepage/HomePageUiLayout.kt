@@ -1,13 +1,13 @@
 package com.example.water_logging_app.ui.homepage
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.text.format.DateFormat
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -78,6 +78,7 @@ import com.example.water_logging_app.ui.theme.Aquamarine
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePageUiLayout(
@@ -111,7 +112,7 @@ fun HomePageUiLayout(
             }
             else {
                 LaunchedEffect(Unit) {
-                    notifVM.uploadNotificationSettings()
+                    // we will have a separate vm for just re logging the notif workMangers
                 }
 
                 Scaffold(
@@ -142,14 +143,11 @@ fun HomePageUiLayout(
                                 )
                             }
                         }
-
                     }
                 ) { innerpadding ->
                     NavHost(
                         navController = bottomNavController,
-                        startDestination = "home_graph",
-                        modifier = Modifier
-                            .padding(innerpadding)
+                        startDestination = "home_graph"
                     ) {
                         homeGraph(
                             navController = bottomNavController,
@@ -341,6 +339,7 @@ private fun NotifPaginationUi(
             },
             onContinuation = {
                 notifVM.updateShowNotificationSetUp(checkBoxInput)
+                notifVM.uploadNotificationSettings()
                 confirmUserCompletion = !confirmUserCompletion
             }
         )

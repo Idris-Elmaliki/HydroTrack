@@ -9,6 +9,5 @@ data class WaterLogEntity(
     val id : Long? = null,
 
     val amountOfWater: Int,
-    val measurement : String,
     val timeOfInput : String,
 )

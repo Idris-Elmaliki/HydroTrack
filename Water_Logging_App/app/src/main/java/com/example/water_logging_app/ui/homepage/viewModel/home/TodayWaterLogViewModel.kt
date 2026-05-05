@@ -2,9 +2,9 @@ package com.example.water_logging_app.ui.homepage.viewModel.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.water_logging_app._waterLogs.data.repository.WaterLogRepositoryImpl
+import com.example.water_logging_app._waterLogs.data.local.repository.WaterLogRepositoryImpl
+import com.example.water_logging_app._waterLogs.domain.modelData.TodayWaterDataList
 import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
-import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataList
 import com.example.water_logging_app.time.TimeConversion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,8 +21,8 @@ import javax.inject.Inject
 class TodayWaterLogViewModel @Inject constructor(
     private val repo : WaterLogRepositoryImpl
 ) : ViewModel() {
-    private var _todayWaterLogs = MutableStateFlow(WaterLogDataList())
-    var todayWaterLogs : StateFlow<WaterLogDataList> = _todayWaterLogs.asStateFlow()
+    private var _todayWaterLogs = MutableStateFlow(TodayWaterDataList())
+    var todayWaterLogs : StateFlow<TodayWaterDataList> = _todayWaterLogs.asStateFlow()
 
     val timeConversion = TimeConversion
 
@@ -33,20 +33,15 @@ class TodayWaterLogViewModel @Inject constructor(
     fun loadTodayWaterLogs() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val waterLogs : List<WaterLogData> = repo.getWaterDataByDate(LocalDate.now().toString())
-
-                val map : MutableMap<LocalDate, MutableList<WaterLogData>> = mutableMapOf()
-
-                for(log in waterLogs) {
-                    val key = timeConversion.getLocalDateFromLocalDateTimeV(log.timeOfInput)
-                    map.getOrPut(key) { mutableListOf() }.add(log)
-                }
-
-                _todayWaterLogs.update { data ->
-                    data.copy(
-                        isLoading = false,
-                        waterInfoList = map
-                    )
+                repo.getWaterDataByDate(
+                    timeConversion.getStringFromLocalDateV(LocalDate.now())
+                ).collect { list ->
+                    _todayWaterLogs.update { data ->
+                        data.copy(
+                            isLoading = false,
+                            waterInfoList = list.toMutableList()
+                        )
+                    }
                 }
             }
             catch (e : Exception) {
@@ -59,35 +54,51 @@ class TodayWaterLogViewModel @Inject constructor(
         }
     }
 
-    // we will be using WorkManager + OnStop()!
-    fun insertWaterLogData(
+    fun updateWaterLogData(
         waterAmount : Int,
-        measurementType : String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val waterLog = WaterLogData(
+            val newList : MutableList<WaterLogData> = _todayWaterLogs.value.waterInfoList.toMutableList()
+
+            newList.add(
+                WaterLogData(
                     waterAmount,
-                    measurementType,
                     LocalDateTime.now()
                 )
+            )
 
-                val updatedMap = _todayWaterLogs.value.waterInfoList.toMutableMap()
-                val key = timeConversion.getLocalDateFromLocalDateTimeV(waterLog.timeOfInput)
+            _todayWaterLogs.update { data ->
+                data.copy(
+                    waterInfoList = newList.toList()
+                )
+            }
+        }
+    }
 
-                updatedMap.getOrPut(key) { mutableListOf() }.add(waterLog)
+    // we will be using OnStop()!
+    fun insertWaterLogData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _todayWaterLogs.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
 
-                repo.upsertLoggedWaterData(waterLog)
+                repo.upsertLoggedWaterData(
+                    _todayWaterLogs.value.waterInfoList
+                )
 
                 _todayWaterLogs.update { data ->
                     data.copy(
-                        waterInfoList = updatedMap
+                        isLoading = false
                     )
                 }
             }
             catch (e : Exception) {
                 _todayWaterLogs.update { data ->
                     data.copy(
+                        isLoading = false,
                         error = e.message
                     )
                 }
