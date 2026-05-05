@@ -113,7 +113,6 @@ dependencies {
     implementation(libs.converter.gson)
 
     // Firebase
-
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.analytics)
@@ -131,4 +130,7 @@ dependencies {
 
     // Splash Screen
     implementation(libs.androidx.core.splashscreen)
+
+    // Constraint Layout
+    implementation(libs.androidx.constraintlayout.compose)
 }
