@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,15 +16,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -139,6 +145,7 @@ fun HomeScreen(
                 .padding(
                     dimensionResource(R.dimen.container_padding))
                 .padding(innerpadding)
+                .verticalScroll(rememberScrollState())
         ) {
             LoggingStreakUi(
                 modifier = Modifier
@@ -159,9 +166,9 @@ fun HomeScreen(
             )
             Spacer(
                 modifier = Modifier
-                    .height(dimensionResource(R.dimen.text_padding))
+                    .height(dimensionResource(R.dimen.container_padding))
             )
-            DailyGoalBar(
+            DailyGoalBarUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(
@@ -176,9 +183,29 @@ fun HomeScreen(
                         ambientColor = Aquamarine,
                         shape = MaterialTheme.shapes.small
                     ),
-                dailyStreakVM = dailyStreakVM,
                 todayWLData = todayWLData,
                 userData = userData
+            )
+            Spacer(
+                modifier = Modifier
+                    .height(dimensionResource(R.dimen.container_padding))
+            )
+            TodayWaterLogsUi(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(
+                        width = dimensionResource(R.dimen.BorderStroke),
+                        color = BrilliantAzure,
+                        shape = MaterialTheme.shapes.medium
+                    )
+                    .shadow(
+                        elevation = dimensionResource(R.dimen.card_shadow_elevation),
+                        clip = true,
+                        spotColor = Aquamarine,
+                        ambientColor = Aquamarine,
+                        shape = MaterialTheme.shapes.small
+                    ),
+                todayWLData = todayWLData,
             )
         }
     }
@@ -247,7 +274,7 @@ private fun LoggingStreakUi(
                     start.linkTo(parent.start, margin = 16.dp)
                 },
                 text = stringResource(R.string.LoggingStreak),
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.bodyLarge
             )
 
             Row(
@@ -406,9 +433,8 @@ private fun LoggingStreakUi(
 }
 
 @Composable
-private fun DailyGoalBar(
+private fun DailyGoalBarUi(
     modifier : Modifier,
-    dailyStreakVM : DailyStreakViewModel,
     todayWLData : TodayWaterDataList,
     userData : UserPreferenceData
 ) {
@@ -431,7 +457,8 @@ private fun DailyGoalBar(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.DailyGoal)
+                    text = stringResource(R.string.DailyGoal),
+                    style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(
                     modifier = Modifier
@@ -476,6 +503,85 @@ private fun DailyGoalBar(
                     fontFamily = poppins
                 )
             )
+        }
+    }
+}
+
+@Composable
+private fun TodayWaterLogsUi(
+    modifier : Modifier,
+    todayWLData : TodayWaterDataList,
+) {
+    Card(
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        shape = MaterialTheme.shapes.medium,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(dimensionResource(R.dimen.container_padding))
+        ) {
+            Text(
+                modifier = Modifier
+                    .padding(bottom = dimensionResource(R.dimen.mini_text_padding)),
+                text = stringResource(R.string.todayLogs),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            if(!todayWLData.waterInfoList.isEmpty()) {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    userScrollEnabled = false
+                ) {
+                    items(
+                        count = todayWLData.waterInfoList.size
+                    ) { data ->
+                        val currentData = todayWLData.waterInfoList[data]
+                        Card(
+                            modifier = Modifier
+                                .padding(dimensionResource(R.dimen.container_padding))
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f),
+                                ) {
+                                    Text(
+                                        text = "${currentData.amountOfWater} ml"
+                                    )
+                                    Text(
+                                        text = "${currentData.timeOfInput.hour} : ${currentData.timeOfInput.minute}"
+                                    )
+                                }
+
+                                IconButton(
+                                    onClick = {}
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                Text(
+                    modifier = Modifier
+                        .alpha(0.7f)
+                        .padding(dimensionResource(R.dimen.container_padding))
+                        .padding(dimensionResource(R.dimen.text_padding)),
+                    text = stringResource(R.string.Empty_Log_Description),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
         }
     }
 }
