@@ -24,13 +24,6 @@ object Home : BottomNavBarData(
     navHostName = HomePageRoutes.Home.name
 )
 
-object Settings : BottomNavBarData(
-    name = "Settings",
-    selectedIcon = Icons.Filled.Settings,
-    unselectedIcon = Icons.Outlined.Settings,
-    navHostName = HomePageRoutes.Setting.name
-)
-
 object History : BottomNavBarData(
     name = "History",
     selectedIcon = Icons.Filled.DateRange,
@@ -39,5 +32,5 @@ object History : BottomNavBarData(
 )
 
 val BottomNavList =  listOf(
-    Settings, Home, History
+    Home, History
 )

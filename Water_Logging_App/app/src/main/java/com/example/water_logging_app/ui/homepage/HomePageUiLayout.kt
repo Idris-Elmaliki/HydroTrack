@@ -28,17 +28,20 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -57,6 +60,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -89,7 +93,7 @@ fun HomePageUiLayout(
 
     val notifData by notifVM.notifState.collectAsStateWithLifecycle()
 
-    var selectedItem by rememberSaveable { mutableIntStateOf(1) }
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
 
     // it's best to make everything into a when statement
     when(notifData.isLoading) {
@@ -118,12 +122,33 @@ fun HomePageUiLayout(
                 Scaffold(
                     modifier = modifier,
                     bottomBar = {
-                        NavigationBar(
+                        BottomAppBar(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
                             BottomNavList.forEachIndexed { index, item ->
+                                if(index == 1) {
+                                    Box(
+                                        modifier = Modifier
+                                            .weight(1f),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        FloatingActionButton(
+                                            onClick = { },
+                                            shape = CircleShape,
+                                            containerColor = Aquamarine
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Add,
+                                                contentDescription = null,
+                                                tint = Color.White
+                                            )
+                                        }
+                                    }
+                                }
                                 NavigationBarItem(
+                                    modifier = Modifier
+                                        .weight(1f),
                                     icon = {
                                         Icon(
                                             imageVector = if (selectedItem == index) {
@@ -143,8 +168,12 @@ fun HomePageUiLayout(
                                 )
                             }
                         }
-                    }
-                ) { innerpadding ->
+                    },
+                    floatingActionButton = {
+
+                    },
+                    floatingActionButtonPosition = FabPosition.Center
+                ) {
                     NavHost(
                         navController = bottomNavController,
                         startDestination = "home_graph"
