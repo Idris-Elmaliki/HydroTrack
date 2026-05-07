@@ -5,7 +5,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -62,7 +60,7 @@ import com.example.water_logging_app.preferenceData.domain.modelData.UserPrefere
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.ui.homepage.viewModel.home.DailyStreakViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
-import com.example.water_logging_app.ui.homepage.viewModel.home.TodayWaterLogViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.home.WaterLogViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.averiaSerifLibre
@@ -90,7 +88,7 @@ private const val ALPHA_AMOUNT = 0.6f
 @Composable
 fun HomeScreen(
     modifier : Modifier,
-    todayWaterLogVM: TodayWaterLogViewModel,
+    todayWaterLogVM: WaterLogViewModel,
     userDataVM : ROUserDataViewModel,
     dailyStreakVM : DailyStreakViewModel
 ) {
@@ -162,7 +160,8 @@ fun HomeScreen(
                         ambientColor = Aquamarine,
                         shape = MaterialTheme.shapes.small
                     ),
-                dailyStreakVM = dailyStreakVM
+                dailyStreakVM = dailyStreakVM,
+                waterLogVM = todayWaterLogVM
             )
             Spacer(
                 modifier = Modifier
@@ -244,7 +243,8 @@ private fun GreetUserText(
 @Composable
 private fun LoggingStreakUi(
     modifier : Modifier,
-    dailyStreakVM : DailyStreakViewModel
+    dailyStreakVM : DailyStreakViewModel,
+    waterLogVM : WaterLogViewModel
 ) {
     val streakData by dailyStreakVM.dailyStreak.collectAsStateWithLifecycle()
 
@@ -341,8 +341,7 @@ private fun LoggingStreakUi(
                     "Sun"
                 )
 
-            val monday = LocalDate.now().with(DayOfWeek.MONDAY)
-            val weeklyWaterLog by dailyStreakVM.weeklyWaterLog.collectAsStateWithLifecycle()
+            val weeklyWaterLog by waterLogVM.weeklyWaterLog.collectAsStateWithLifecycle()
 
             Log.d("WeekStreak", "dayList size: ${dayList.size}")
             Log.d("WeekStreak", "weeklyWaterLog: ${weeklyWaterLog.waterInfoList}")
@@ -358,13 +357,14 @@ private fun LoggingStreakUi(
                         width = Dimension.fillToConstraints
                     },
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                userScrollEnabled = false
             ) {
                 items(
                     count = dayList.size,
                 ) { day ->
-                    val date = monday.plusDays(day.toLong())
-                    val hasLog : Boolean = weeklyWaterLog.waterInfoList.containsKey(date)
+                    val currentDate = LocalDate.now().with(DayOfWeek.MONDAY).plusDays(day.toLong())
+                    val hasLog : Boolean = weeklyWaterLog.waterInfoList.containsKey(currentDate)
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -388,7 +388,8 @@ private fun LoggingStreakUi(
                             ) {
                                 Icon(
                                     modifier = Modifier
-                                        .fillMaxSize(),
+                                        .fillMaxSize()
+                                        .padding(dimensionResource(R.dimen.text_padding)),
                                     tint = MaterialTheme.colorScheme.background,
                                     imageVector = Icons.Filled.Check,
                                     contentDescription = null
@@ -530,14 +531,10 @@ private fun TodayWaterLogsUi(
                 style = MaterialTheme.typography.bodyLarge
             )
             if(!todayWLData.waterInfoList.isEmpty()) {
-                LazyColumn(
+                Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    userScrollEnabled = false
                 ) {
-                    items(
-                        count = todayWLData.waterInfoList.size
-                    ) { data ->
-                        val currentData = todayWLData.waterInfoList[data]
+                    todayWLData.waterInfoList.forEach { currentData ->
                         Card(
                             modifier = Modifier
                                 .padding(dimensionResource(R.dimen.container_padding))

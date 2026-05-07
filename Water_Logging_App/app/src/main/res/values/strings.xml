@@ -87,5 +87,8 @@
     <string name="LoggingStreak">Logging Streak</string>
     <string name="DailyGoal">Daily Goal</string>
     <string name="todayLogs">Today\'s Logs</string>
+    <string name="LogWater">Log Water</string>
+    <string name="WaterLoggingDescription">tap a preset or enter a custom value</string>
+    <string name="EnterCustomAmount">Enter custom amount...</string>
 
 </resources>
