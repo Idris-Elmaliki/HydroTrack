@@ -24,8 +24,6 @@ class AllWaterLogsViewModel @Inject constructor(
     private var _allWaterLogs = MutableStateFlow(WaterLogDataList())
     val allWaterLogs : StateFlow<WaterLogDataList> = _allWaterLogs.asStateFlow()
 
-    val timeConversion = TimeConversion
-
     init {
         loadAllWaterLogsASC()
     }

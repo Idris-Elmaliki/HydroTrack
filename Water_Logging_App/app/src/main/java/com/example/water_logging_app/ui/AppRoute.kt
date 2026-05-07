@@ -31,6 +31,7 @@ import com.example.water_logging_app.ui._navigation.backHandler.isABlockedScreen
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.routes.AppNavRoutes
 import com.example.water_logging_app.ui.homepage.HomePageUiLayout
+import com.example.water_logging_app.ui.homepage.homescreens.WaterLoggingUi
 import com.example.water_logging_app.ui.signUpPage.SignUpPageLayout
 import com.example.water_logging_app.ui.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.subscreens.animations.DotLoadingAnimation
@@ -100,7 +101,18 @@ fun AppRoute(
         ) {
             HomePageUiLayout(
                 modifier = modifier,
-                notifVM = hiltViewModel(rememberActivity())
+                notifVM = hiltViewModel(rememberActivity()),
+                mainNavActions = mainNav
+            )
+        }
+
+        composable(
+            route = AppNavRoutes.WaterLogScreen.name
+        ) {
+            WaterLoggingUi(
+                modifier = modifier,
+                todayWaterLogVM = hiltViewModel(rememberActivity()),
+                mainNavActions = mainNav
             )
         }
     }

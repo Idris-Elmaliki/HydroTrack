@@ -73,6 +73,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.water_logging_app.R
+import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavList
 import com.example.water_logging_app.ui._navigation.navGraphs.homeGraph
 import com.example.water_logging_app.ui.homepage.viewModel.NotificationsViewModel
@@ -82,20 +83,15 @@ import com.example.water_logging_app.ui.theme.Aquamarine
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePageUiLayout(
     modifier : Modifier,
-    notifVM : NotificationsViewModel
+    notifVM : NotificationsViewModel,
+    mainNavActions : AppNavActions
 ) {
-    val bottomNavController : NavHostController = rememberNavController()
-
     val notifData by notifVM.notifState.collectAsStateWithLifecycle()
 
-    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
-
-    // it's best to make everything into a when statement
     when(notifData.isLoading) {
         true -> {
             CircularProgressIndicator()
@@ -116,74 +112,13 @@ fun HomePageUiLayout(
             }
             else {
                 LaunchedEffect(Unit) {
-                    // we will have a separate vm for just re logging the notif workMangers
+                    // we will have a separate vm/function for just re logging the notif workManger
                 }
 
-                Scaffold(
+                HomePageNavHostUi(
                     modifier = modifier,
-                    bottomBar = {
-                        BottomAppBar(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            BottomNavList.forEachIndexed { index, item ->
-                                if(index == 1) {
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        FloatingActionButton(
-                                            onClick = { },
-                                            shape = CircleShape,
-                                            containerColor = Aquamarine
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Filled.Add,
-                                                contentDescription = null,
-                                                tint = Color.White
-                                            )
-                                        }
-                                    }
-                                }
-                                NavigationBarItem(
-                                    modifier = Modifier
-                                        .weight(1f),
-                                    icon = {
-                                        Icon(
-                                            imageVector = if (selectedItem == index) {
-                                                item.selectedIcon
-                                            } else {
-                                                item.unselectedIcon
-                                            },
-                                            contentDescription = null
-                                        )
-                                    },
-                                    selected = (selectedItem == index),
-                                    onClick = {
-                                        selectedItem = index
-                                        bottomNavController.navigate(item.navHostName)
-                                    },
-                                    alwaysShowLabel = false
-                                )
-                            }
-                        }
-                    },
-                    floatingActionButton = {
-
-                    },
-                    floatingActionButtonPosition = FabPosition.Center
-                ) {
-                    NavHost(
-                        navController = bottomNavController,
-                        startDestination = "home_graph"
-                    ) {
-                        homeGraph(
-                            navController = bottomNavController,
-                            modifier = modifier
-                        )
-                    }
-                }
+                    mainNavActions = mainNavActions
+                )
             }
         }
     }
@@ -372,6 +307,81 @@ private fun NotifPaginationUi(
                 confirmUserCompletion = !confirmUserCompletion
             }
         )
+    }
+}
+
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+private fun HomePageNavHostUi(
+    modifier: Modifier,
+    mainNavActions: AppNavActions
+) {
+    val bottomNavController : NavHostController = rememberNavController()
+    var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            BottomAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                BottomNavList.forEachIndexed { index, item ->
+                    if(index == 1) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            FloatingActionButton(
+                                onClick = {
+                                    mainNavActions.navigateToWaterLoggingScreen()
+                                },
+                                shape = CircleShape,
+                                containerColor = Aquamarine
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Add,
+                                    contentDescription = null,
+                                    tint = Color.White
+                                )
+                            }
+                        }
+                    }
+                    NavigationBarItem(
+                        modifier = Modifier
+                            .weight(1f),
+                        icon = {
+                            Icon(
+                                imageVector = if (selectedItem == index) {
+                                    item.selectedIcon
+                                } else {
+                                    item.unselectedIcon
+                                },
+                                contentDescription = null
+                            )
+                        },
+                        selected = (selectedItem == index),
+                        onClick = {
+                            selectedItem = index
+                            bottomNavController.navigate(item.navHostName)
+                        },
+                        alwaysShowLabel = false
+                    )
+                }
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
+    ) {
+        NavHost(
+            navController = bottomNavController,
+            startDestination = "home_graph"
+        ) {
+            homeGraph(
+                navController = bottomNavController,
+                modifier = modifier
+            )
+        }
     }
 }
 
