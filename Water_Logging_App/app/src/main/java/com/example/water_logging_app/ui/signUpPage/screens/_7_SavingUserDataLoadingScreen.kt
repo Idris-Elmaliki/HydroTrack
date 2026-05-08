@@ -27,12 +27,7 @@ fun SaveUserDataLoadingScreen(
     profilePicVM : ProfilePictureViewModel,
     toHomePage : () -> Unit // go to notifications screen! (will be in the homepage!)
 ) {
-    val signUpData by signUpVM.signUpData.collectAsStateWithLifecycle()
-    val profilePickData by profilePicVM.profilePictureUri.collectAsStateWithLifecycle()
-
     var toHomePageAction by rememberSaveable { mutableStateOf(false) }
-
-    // I need to wrap this process with WorkManager
 
     LaunchedEffect(Unit) {
         delay(2000L)

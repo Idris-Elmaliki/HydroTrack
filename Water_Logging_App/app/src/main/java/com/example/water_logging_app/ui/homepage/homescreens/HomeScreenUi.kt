@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -33,6 +34,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +43,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -82,7 +85,7 @@ import java.time.LocalTime
 * There is only more I will need to include for the ui and soon the viewModel & database.
 */
 
-private const val ALPHA_AMOUNT = 0.6f
+private const val ALPHA_AMOUNT = 0.7f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -96,9 +99,14 @@ fun HomeScreen(
     val userData by userDataVM.userData.collectAsStateWithLifecycle()
     val pfpData by userDataVM.profilePicture.collectAsStateWithLifecycle()
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
+                scrollBehavior = scrollBehavior,
                 title = {
                     GreetUserText(
                         modifier = Modifier
@@ -136,13 +144,15 @@ fun HomeScreen(
                     .padding(dimensionResource(R.dimen.container_padding)),
             )
         },
-        modifier = modifier
+        bottomBar = {}
     ) { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(
                     dimensionResource(R.dimen.container_padding))
                 .padding(innerpadding)
+                .navigationBarsPadding()
+                .padding(bottom = 40.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             LoggingStreakUi(
@@ -221,7 +231,7 @@ private fun GreetUserText(
         Text(
             text = when {
                 (LocalTime.now().hour in 5..< 12) -> { stringResource(R.string.Good_Morning) }
-                (LocalTime.now().hour in 12..19) -> { stringResource(R.string.Good_Afternoon) }
+                (LocalTime.now().hour in 12.. 19) -> { stringResource(R.string.Good_Afternoon) }
                 else -> { stringResource(R.string.Good_Evening) }
             },
             style = MaterialTheme.typography.labelMedium,
@@ -570,7 +580,7 @@ private fun TodayWaterLogsUi(
             else {
                 Text(
                     modifier = Modifier
-                        .alpha(0.7f)
+                        .alpha(ALPHA_AMOUNT)
                         .padding(dimensionResource(R.dimen.container_padding))
                         .padding(dimensionResource(R.dimen.text_padding)),
                     text = stringResource(R.string.Empty_Log_Description),

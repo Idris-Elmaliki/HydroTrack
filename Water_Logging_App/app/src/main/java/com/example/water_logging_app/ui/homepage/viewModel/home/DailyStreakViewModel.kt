@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.homepage.viewModel.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app._waterLogStreak.data.DailyStreakDataStoreManager
@@ -23,7 +24,6 @@ import javax.inject.Inject
 @HiltViewModel
 class DailyStreakViewModel @Inject constructor(
     private val dataStore : DailyStreakDataStoreManager,
-    private val repo : WaterLogRepositoryImpl
 ) : ViewModel() {
     private var _dailyStreak = MutableStateFlow(DailyStreakData())
     val dailyStreak = _dailyStreak.asStateFlow()
@@ -44,6 +44,57 @@ class DailyStreakViewModel @Inject constructor(
                 )
             }.collect { streakData ->
                 _dailyStreak.value = streakData
+            }
+        }
+    }
+
+    fun updateDailyStreakData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentData = dailyStreak.value
+
+            val newStreak = currentData.currentDailyStreak + 1
+
+            _dailyStreak.update { data ->
+                data.copy(
+                    currentDailyStreak = newStreak,
+                    maxDailyStreak =
+                        if(newStreak > currentData.maxDailyStreak) { newStreak }
+                        else { currentData.maxDailyStreak }
+                )
+            }
+        }
+    }
+
+    fun uploadDailyStreakData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _dailyStreak.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                val newData = dailyStreak.value
+
+                dataStore.setCurrentDailyStreak(newData.currentDailyStreak)
+
+                if(newData.currentDailyStreak == newData.maxDailyStreak) {
+                    dataStore.setMaxDailyStreak(newData.maxDailyStreak)
+                }
+
+                _dailyStreak.update { data ->
+                    data.copy(
+                        isLoading = false
+                    )
+                }
+            }
+            catch (e : Exception) {
+                _dailyStreak.update { data ->
+                    Log.e("StreakVM", e.message, e)
+                    data.copy(
+                        error = e.message
+                    )
+                }
             }
         }
     }

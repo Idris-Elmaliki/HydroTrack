@@ -380,6 +380,7 @@ private fun HomePageNavHostUi(
             homeGraph(
                 navController = bottomNavController,
                 modifier = modifier
+                    .navigationBarsPadding()
             )
         }
     }

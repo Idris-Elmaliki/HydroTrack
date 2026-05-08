@@ -31,6 +31,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,9 +57,10 @@ fun WaterLoggingUi(
     todayWaterLogVM: WaterLogViewModel,
     mainNavActions : AppNavActions
 ) {
-    var currentWaterInput by rememberSaveable { mutableStateOf("0") }
+    var currentWaterInput by remember { mutableStateOf("0") }
 
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
@@ -99,14 +101,14 @@ fun WaterLoggingUi(
                         end = dimensionResource(R.dimen.extra_container_padding),
                     ),
                 onClick = {
-                    todayWaterLogVM.updateWaterLogData(currentWaterInput.toInt())
+                    todayWaterLogVM.updateWaterLogData(currentWaterInput.toIntOrNull() ?: 0)
                     mainNavActions.navigateBackToHomePage()
                 },
                 colors = CardDefaults.cardColors(
                     containerColor = Aquamarine
                 ),
                 shape = MaterialTheme.shapes.medium,
-                enabled = currentWaterInput.isBlank() || !currentWaterInput.isBlank() && currentWaterInput.toInt() != 0
+                enabled = currentWaterInput.isBlank() || currentWaterInput.toIntOrNull() != 0
             ) {
                 Row(
                     modifier = Modifier
@@ -133,33 +135,27 @@ fun WaterLoggingUi(
         Column(
             modifier = modifier
                 .padding(dimensionResource(R.dimen.container_padding))
-                .navigationBarsPadding()
                 .padding(innerpadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CurrentWaterLogInputUi(
                 modifier = Modifier
                     .fillMaxWidth(),
-                currentWaterLogValue =
-                   if(!currentWaterInput.isBlank()) { currentWaterInput.toInt() }
-                   else { 0 }
+                currentWaterLogValue = currentWaterInput.toIntOrNull() ?: 0
             )
             Spacer(modifier = Modifier.padding(
                 bottom = dimensionResource(R.dimen.container_padding))
             )
             OutlinedTextField(
-                value =
-                    if(!currentWaterInput.isBlank() && currentWaterInput.toInt() == 0) { "" }
-                    else { currentWaterInput },
+                value = if (currentWaterInput == "0") "" else currentWaterInput,
                 onValueChange = { newData ->
-                    if(!newData.isBlank() && newData.toInt() < 10000) {
-                        currentWaterInput = newData
-                    }
-                    else if(!newData.isBlank() && newData.toInt() >= 10000) {
-                        // I left this empty, since we don't want to do anything
-                        // We want to limit the amount of dta the user can input
-                    }
-                    else {
+                    val filtered = newData.filter { it.isDigit() }
+                    val intValue = filtered.toIntOrNull()
+                    if (intValue != null) {
+                        if (intValue < 10000) {
+                            currentWaterInput = filtered
+                        }
+                    } else if (filtered.isBlank()) {
                         currentWaterInput = "0"
                     }
                 },
@@ -184,11 +180,7 @@ fun WaterLoggingUi(
                 modifier = Modifier
                     .fillMaxWidth(),
                 todayWaterLogVM = todayWaterLogVM,
-                currentWaterLogValue =
-                    if(!currentWaterInput.isBlank()) {
-                        currentWaterInput.toInt()
-                    }
-                    else { 0 },
+                currentWaterLogValue = currentWaterInput.toIntOrNull() ?: 0,
                 onPresetSelected = { newInput ->
                     currentWaterInput = newInput.toString()
                 }
