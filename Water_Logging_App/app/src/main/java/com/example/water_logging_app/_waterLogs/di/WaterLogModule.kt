@@ -25,7 +25,8 @@ object WaterLogModule {
             context = context,
             klass = WaterInfoDatabase::class.java,
             name ="water_log_database"
-        ).build()
+        ).fallbackToDestructiveMigration(true)
+            .build()
     }
 
     @Provides
