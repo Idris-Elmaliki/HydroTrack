@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.homepage.homescreens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -44,7 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
+import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
+import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.WaterLogViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.MetallicGray
@@ -55,9 +58,17 @@ import com.example.water_logging_app.ui.theme.VibrantBlue
 fun WaterLoggingUi(
     modifier : Modifier,
     todayWaterLogVM: WaterLogViewModel,
+    userPreferenceVM : ROUserDataViewModel,
     mainNavActions : AppNavActions
 ) {
-    var currentWaterInput by remember { mutableStateOf("0") }
+    var currentWaterInput by rememberSaveable { mutableStateOf("0") }
+
+    val userPreferenceData by userPreferenceVM.userData.collectAsStateWithLifecycle()
+    Log.d("WaterLog", "unitOfMeasurement: ${userPreferenceData.unitOfMeasurement}")
+
+    val measurementType =
+        if(userPreferenceData.unitOfMeasurement == UnitMeasurementType.Metric.name) { "ml" }
+        else { "oz" }
 
     Scaffold(
         modifier = modifier,
@@ -103,6 +114,7 @@ fun WaterLoggingUi(
                 onClick = {
                     todayWaterLogVM.updateWaterLogData(currentWaterInput.toIntOrNull() ?: 0)
                     mainNavActions.navigateBackToHomePage()
+                    currentWaterInput = "0"
                 },
                 colors = CardDefaults.cardColors(
                     containerColor = Aquamarine
@@ -125,7 +137,7 @@ fun WaterLoggingUi(
                         tint = Color.White
                     )
                     Text(
-                        text = "Log $currentWaterInput ml",
+                        text = "Log $currentWaterInput $measurementType",
                         color = Color.White
                     )
                 }
@@ -141,7 +153,8 @@ fun WaterLoggingUi(
             CurrentWaterLogInputUi(
                 modifier = Modifier
                     .fillMaxWidth(),
-                currentWaterLogValue = currentWaterInput.toIntOrNull() ?: 0
+                currentWaterLogValue = currentWaterInput.toIntOrNull() ?: 0,
+                measurementType = measurementType
             )
             Spacer(modifier = Modifier.padding(
                 bottom = dimensionResource(R.dimen.container_padding))
@@ -181,6 +194,7 @@ fun WaterLoggingUi(
                     .fillMaxWidth(),
                 todayWaterLogVM = todayWaterLogVM,
                 currentWaterLogValue = currentWaterInput.toIntOrNull() ?: 0,
+                measurementType = measurementType,
                 onPresetSelected = { newInput ->
                     currentWaterInput = newInput.toString()
                 }
@@ -192,7 +206,8 @@ fun WaterLoggingUi(
 @Composable
 private fun CurrentWaterLogInputUi(
     modifier: Modifier,
-    currentWaterLogValue : Int
+    currentWaterLogValue : Int,
+    measurementType : String
 ) {
     Column(
         modifier = modifier,
@@ -219,7 +234,7 @@ private fun CurrentWaterLogInputUi(
                     .padding(
                         bottom = dimensionResource(R.dimen.mini_text_padding)
                     ),
-                text = "ml",
+                text = "$measurementType",
                 style = MaterialTheme.typography.titleSmall
             )
         }
@@ -235,6 +250,7 @@ private fun RecentWaterLogsUi(
     modifier: Modifier,
     todayWaterLogVM: WaterLogViewModel,
     currentWaterLogValue : Int,
+    measurementType : String,
     onPresetSelected : (Int) -> Unit
 ) {
     val recentWaterLogs by todayWaterLogVM.recentWaterLogs.collectAsStateWithLifecycle()
@@ -286,7 +302,7 @@ private fun RecentWaterLogsUi(
                             tint = Color.White
                         )
                         Text(
-                            text = "${recentWaterLogs.recentWaterLogs[index]} ml",
+                            text = "${recentWaterLogs.recentWaterLogs[index]} $measurementType",
                             style = MaterialTheme.typography.labelMedium,
                             color = Color.White
                         )

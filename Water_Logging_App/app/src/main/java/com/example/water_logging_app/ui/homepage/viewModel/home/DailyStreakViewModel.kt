@@ -5,19 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app._waterLogStreak.data.DailyStreakDataStoreManager
 import com.example.water_logging_app._waterLogStreak.domain.DailyStreakData
-import com.example.water_logging_app._waterLogs.data.local.repository.WaterLogRepositoryImpl
-import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
-import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogDataList
-import com.example.water_logging_app.time.TimeConversion
+import com.example.water_logging_app._waterLogs.domain.modelData.TodayWaterDataList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -36,11 +31,13 @@ class DailyStreakViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             combine(
                 dataStore.getCurrentDailyStreak(),
-                dataStore.getMaxDailyStreak()
-            ) { current, max ->
+                dataStore.getMaxDailyStreak(),
+                dataStore.getLastStreakUpdateDate()
+            ) { current, max, date ->
                 DailyStreakData(
                     currentDailyStreak = current,
-                    maxDailyStreak = max
+                    maxDailyStreak = max,
+                    lastUpdatedDay = date
                 )
             }.collect { streakData ->
                 _dailyStreak.value = streakData
@@ -48,19 +45,32 @@ class DailyStreakViewModel @Inject constructor(
         }
     }
 
-    fun updateDailyStreakData() {
+    private fun streakAlreadyUpdatedToday(): Boolean {
+        val lastUpdatedDate = _dailyStreak.value.lastUpdatedDay
+        return lastUpdatedDate == LocalDate.now()
+    }
+
+    fun updateDailyStreakData(
+        todayWaterLog : TodayWaterDataList
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val currentData = dailyStreak.value
+            if(todayWaterLog.waterInfoList.isNotEmpty() && !streakAlreadyUpdatedToday()) {
+                val currentData = dailyStreak.value
 
-            val newStreak = currentData.currentDailyStreak + 1
+                val newStreak = currentData.currentDailyStreak + 1
 
-            _dailyStreak.update { data ->
-                data.copy(
-                    currentDailyStreak = newStreak,
-                    maxDailyStreak =
-                        if(newStreak > currentData.maxDailyStreak) { newStreak }
-                        else { currentData.maxDailyStreak }
-                )
+                _dailyStreak.update { data ->
+                    data.copy(
+                        currentDailyStreak = newStreak,
+                        maxDailyStreak =
+                            if (newStreak > currentData.maxDailyStreak) {
+                                newStreak
+                            } else {
+                                currentData.maxDailyStreak
+                            },
+                        lastUpdatedDay = LocalDate.now()
+                    )
+                }
             }
         }
     }
@@ -78,6 +88,10 @@ class DailyStreakViewModel @Inject constructor(
 
                 dataStore.setCurrentDailyStreak(newData.currentDailyStreak)
 
+                newData.lastUpdatedDay?.let { newDate ->
+                    dataStore.setLastStreakUpdateDate(newDate)
+                }
+
                 if(newData.currentDailyStreak == newData.maxDailyStreak) {
                     dataStore.setMaxDailyStreak(newData.maxDailyStreak)
                 }
@@ -92,7 +106,8 @@ class DailyStreakViewModel @Inject constructor(
                 _dailyStreak.update { data ->
                     Log.e("StreakVM", e.message, e)
                     data.copy(
-                        error = e.message
+                        error = e.message,
+                        isLoading = false
                     )
                 }
             }
