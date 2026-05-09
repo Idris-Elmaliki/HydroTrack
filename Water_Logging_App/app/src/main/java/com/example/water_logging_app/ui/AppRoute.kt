@@ -112,7 +112,8 @@ fun AppRoute(
             WaterLoggingUi(
                 modifier = modifier,
                 todayWaterLogVM = hiltViewModel(rememberActivity()),
-                mainNavActions = mainNav
+                userPreferenceVM = hiltViewModel(rememberActivity()),
+                mainNavActions = mainNav,
             )
         }
     }

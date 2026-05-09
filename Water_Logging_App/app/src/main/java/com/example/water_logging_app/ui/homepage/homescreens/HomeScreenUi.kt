@@ -1,5 +1,6 @@
 package com.example.water_logging_app.ui.homepage.homescreens
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -36,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,6 +68,7 @@ import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewMo
 import com.example.water_logging_app.ui.homepage.viewModel.home.WaterLogViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
+import com.example.water_logging_app.ui.theme.LightGray
 import com.example.water_logging_app.ui.theme.averiaSerifLibre
 import com.example.water_logging_app.ui.theme.poppins
 import java.time.DayOfWeek
@@ -87,6 +90,7 @@ import java.time.LocalTime
 
 private const val ALPHA_AMOUNT = 0.7f
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -100,6 +104,10 @@ fun HomeScreen(
     val pfpData by userDataVM.profilePicture.collectAsStateWithLifecycle()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    LaunchedEffect(Unit) {
+        dailyStreakVM.updateDailyStreakData(todayWLData)
+    }
 
     Scaffold(
         modifier = modifier
@@ -152,7 +160,7 @@ fun HomeScreen(
                     dimensionResource(R.dimen.container_padding))
                 .padding(innerpadding)
                 .navigationBarsPadding()
-                .padding(bottom = 40.dp)
+                .padding(bottom = 65.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             LoggingStreakUi(
@@ -214,7 +222,7 @@ fun HomeScreen(
                         ambientColor = Aquamarine,
                         shape = MaterialTheme.shapes.small
                     ),
-                todayWLData = todayWLData,
+                todayWLData = todayWLData
             )
         }
     }
@@ -295,12 +303,21 @@ private fun LoggingStreakUi(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    modifier = Modifier.padding(end = dimensionResource(R.dimen.mini_text_padding)),
+                    modifier = Modifier
+                        .padding(end = dimensionResource(R.dimen.mini_text_padding))
+                        .alpha(
+                            if(streakData.currentDailyStreak == 0) { ALPHA_AMOUNT }
+                            else { 1.0f }
+                        ),
                     imageVector = Icons.Filled.LocalFireDepartment,
                     contentDescription = null,
                 )
                 Text(
-                    text = "${streakData.currentDailyStreak} days",
+                    modifier = Modifier.alpha(
+                        if(streakData.currentDailyStreak == 0) { ALPHA_AMOUNT }
+                        else { 1.0f }
+                    ),
+                    text = "${streakData.currentDailyStreak}",
                     style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold)
                 )
             }
@@ -547,20 +564,30 @@ private fun TodayWaterLogsUi(
                     todayWLData.waterInfoList.forEach { currentData ->
                         Card(
                             modifier = Modifier
-                                .padding(dimensionResource(R.dimen.container_padding))
+                                .fillMaxWidth()
+                                .padding(dimensionResource(R.dimen.container_padding)),
+                            colors = CardDefaults.cardColors(
+                                containerColor = LightGray
+                            )
                         ) {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(dimensionResource(R.dimen.text_padding)),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .weight(1f),
                                 ) {
                                     Text(
-                                        text = "${currentData.amountOfWater} ml"
+                                        text = "${currentData.amountOfWater} ml",
+                                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                                     )
                                     Text(
-                                        text = "${currentData.timeOfInput.hour} : ${currentData.timeOfInput.minute}"
+                                        text = String.format("%02d:%02d", currentData.timeOfInput.hour, currentData.timeOfInput.minute),
+                                        style = MaterialTheme.typography.bodyMedium.copy(fontFamily = poppins)
                                     )
                                 }
 
