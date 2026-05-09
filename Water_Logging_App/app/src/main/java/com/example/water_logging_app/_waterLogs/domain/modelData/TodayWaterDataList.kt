@@ -4,5 +4,5 @@ data class TodayWaterDataList(
     val isLoading : Boolean = true,
     val error : String? = null,
 
-    val waterInfoList : List<WaterLogData> = mutableListOf()
+    val waterInfoList : List<WaterLogData> = listOf()
 )

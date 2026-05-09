@@ -15,6 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import com.example.water_logging_app.ui.AppRoute
+import com.example.water_logging_app.ui.homepage.viewModel.home.DailyStreakViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.home.WaterLogViewModel
 import com.example.water_logging_app.ui.theme.Water_Logging_AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,6 +43,19 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    // this ensures that the uploading data functions get called on onStop!
+
+    // This allows us to get the references of the VMs from hilt
+    private val waterLogVM: WaterLogViewModel by viewModels()
+    private val dailyStreakVM: DailyStreakViewModel by viewModels()
+
+    override fun onStop() {
+        super.onStop()
+
+        waterLogVM.insertWaterLogData()
+        dailyStreakVM.uploadDailyStreakData()
     }
 }
 

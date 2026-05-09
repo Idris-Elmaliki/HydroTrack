@@ -2,6 +2,9 @@ package com.example.water_logging_app.ui.homepage.homescreens
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +23,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -32,13 +37,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,6 +63,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,6 +88,7 @@ import com.example.water_logging_app.ui.theme.poppins
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
+import java.util.Locale
 
 /*
 * What I have so far is just the shell for the home page ui!
@@ -102,6 +117,12 @@ fun HomeScreen(
     val todayWLData by todayWaterLogVM.todayWaterLogs.collectAsStateWithLifecycle()
     val userData by userDataVM.userData.collectAsStateWithLifecycle()
     val pfpData by userDataVM.profilePicture.collectAsStateWithLifecycle()
+
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) }
+    val modalBottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = false
+    )
+    var editWaterLogListIndex by rememberSaveable { mutableIntStateOf(0) }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -222,8 +243,64 @@ fun HomeScreen(
                         ambientColor = Aquamarine,
                         shape = MaterialTheme.shapes.small
                     ),
-                todayWLData = todayWLData
+                todayWLData = todayWLData,
+                onEditButtonClick = { index ->
+                    editWaterLogListIndex = index
+                    showBottomSheet = !showBottomSheet
+                }
             )
+        }
+    }
+
+    if(showBottomSheet) {
+        ModalBottomSheet(
+            modifier = Modifier
+                .fillMaxWidth(),
+            onDismissRequest = { showBottomSheet = !showBottomSheet },
+            sheetState = modalBottomSheetState,
+        ) {
+            var newWaterLogValue by rememberSaveable { mutableStateOf("${todayWLData.waterInfoList[editWaterLogListIndex].amountOfWater}") }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.container_padding))
+            ) {
+                OutlinedTextField(
+                    value = newWaterLogValue,
+                    onValueChange = { newData ->
+                        newWaterLogValue = newData
+                    },
+                    textStyle = MaterialTheme.typography.bodyLarge,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            val updatedAmount = newWaterLogValue.toIntOrNull() ?: 0
+                            val logToUpdate = todayWLData.waterInfoList[editWaterLogListIndex]
+
+                            todayWaterLogVM.updateWaterLog(
+                                index = editWaterLogListIndex,
+                                logToUpdate.copy(amountOfWater = updatedAmount)
+                            )
+                            showBottomSheet = !showBottomSheet
+                        }
+                    ),
+                    singleLine = true,
+                    trailingIcon = {
+                        Text(
+                            text = if (userData.unitOfMeasurement == UnitMeasurementType.Metric.name) {
+                                "ml"
+                            } else {
+                                "oz"
+                            },
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                )
+            }
         }
     }
 }
@@ -262,7 +339,7 @@ private fun GreetUserText(
 private fun LoggingStreakUi(
     modifier : Modifier,
     dailyStreakVM : DailyStreakViewModel,
-    waterLogVM : WaterLogViewModel
+    waterLogVM : WaterLogViewModel,
 ) {
     val streakData by dailyStreakVM.dailyStreak.collectAsStateWithLifecycle()
 
@@ -464,7 +541,7 @@ private fun LoggingStreakUi(
 private fun DailyGoalBarUi(
     modifier : Modifier,
     todayWLData : TodayWaterDataList,
-    userData : UserPreferenceData
+    userData : UserPreferenceData,
 ) {
     val totalIntake = todayWLData.waterInfoList.sumOf { it.amountOfWater }
 
@@ -503,15 +580,28 @@ private fun DailyGoalBarUi(
                 )
             }
 
+            val targetProgress =
+                if (userData.dailyGoal > 0) {
+                    (totalIntake.toFloat() / userData.dailyGoal.toFloat()).coerceIn(0f, 1f)
+                }
+                else { 0f }
+
+            val animatedProgress by animateFloatAsState(
+                targetValue = targetProgress,
+                animationSpec = tween(
+                    durationMillis = 1000,
+                    easing = FastOutSlowInEasing
+                ),
+                label = "progress"
+            )
+
             LinearProgressIndicator(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = dimensionResource(R.dimen.text_padding))
                     .height(8.dp)
                     .clip(CircleShape),
-                progress = {
-                    (totalIntake.toFloat() / userData.dailyGoal.toFloat()).coerceIn(0f, 1f)
-                },
+                progress = { animatedProgress },
                 color = BrilliantAzure,
                 trackColor = MaterialTheme.colorScheme.onBackground,
             )
@@ -539,6 +629,7 @@ private fun DailyGoalBarUi(
 private fun TodayWaterLogsUi(
     modifier : Modifier,
     todayWLData : TodayWaterDataList,
+    onEditButtonClick : (Int) -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -561,7 +652,7 @@ private fun TodayWaterLogsUi(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    todayWLData.waterInfoList.forEach { currentData ->
+                    todayWLData.waterInfoList.forEachIndexed { index, currentData ->
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -586,13 +677,15 @@ private fun TodayWaterLogsUi(
                                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                                     )
                                     Text(
-                                        text = String.format("%02d:%02d", currentData.timeOfInput.hour, currentData.timeOfInput.minute),
+                                        text = String.format(Locale.getDefault(), "%02d:%02d", currentData.timeOfInput.hour, currentData.timeOfInput.minute),
                                         style = MaterialTheme.typography.bodyMedium.copy(fontFamily = poppins)
                                     )
                                 }
 
                                 IconButton(
-                                    onClick = {}
+                                    onClick = {
+                                        onEditButtonClick(index)
+                                    }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Filled.Edit,

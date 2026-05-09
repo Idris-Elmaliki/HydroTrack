@@ -1,8 +1,8 @@
 package com.example.water_logging_app.ui.homepage.viewModel.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.water_logging_app._waterLogs.data.local.repository.WaterLogRepositoryImpl
 import com.example.water_logging_app._waterLogs.domain.modelData.RecentWaterLogData
 import com.example.water_logging_app._waterLogs.domain.modelData.TodayWaterDataList
@@ -84,12 +84,8 @@ class WaterLogViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 repo.getWeeklyLoggedWaterData(
-                    startDate = TimeConversion.getStringFromLocalDateV(
-                        LocalDate.now().with(DayOfWeek.MONDAY)
-                    ),
-                    endDate = TimeConversion.getStringFromLocalDateV(
-                        LocalDate.now()
-                    ),
+                    startDate = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay().toString(), // gives us LocalDateTime at 0:0:0 as a string
+                    endDate = LocalDate.now().atTime(23, 59, 59).toString(), // gives us today at 23:59:59 as a string
                 ).map { list ->
                     // Group the flat list of logs into a map keyed by LocalDate
                     val map =
@@ -101,8 +97,7 @@ class WaterLogViewModel @Inject constructor(
 
                         map.getOrPut(currentKey) { mutableListOf() }.add(data)
                     }
-
-                    map
+                    map // equal to returning the new map (so collect is able to receive it)
                 }.collect { map ->
                     _weeklyWaterLog.update { data ->
                         data.copy(
@@ -244,11 +239,30 @@ class WaterLogViewModel @Inject constructor(
             }
             catch (e : Exception) {
                 _todayWaterLogs.update { data ->
+                    Log.e("WaterLog", e.message, e)
                     data.copy(
                         isLoading = false,
                         error = e.message
                     )
                 }
+            }
+        }
+    }
+
+    fun updateWaterLog(
+        index : Int,
+        newWaterData: WaterLogData
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val newList = _todayWaterLogs.value.waterInfoList.toMutableList()
+
+            if (index < newList.size)
+                newList[index] = newWaterData
+
+            _todayWaterLogs.update { data ->
+                data.copy(
+                    waterInfoList = newList.toList()
+                )
             }
         }
     }
