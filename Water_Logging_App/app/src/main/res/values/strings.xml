@@ -89,6 +89,8 @@
     <string name="todayLogs">Today\'s Logs</string>
     <string name="LogWater">Log Water</string>
     <string name="WaterLoggingDescription">tap a preset or enter a custom value</string>
-    <string name="EnterCustomAmount">Enter custom amount...</string>
+    <string name="EnterCustomAmount">Enter custom amount…</string>
+    <string name="Editing">Editing</string>
+    <string name="Profile">Profile</string>
 
 </resources>

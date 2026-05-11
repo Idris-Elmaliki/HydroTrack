@@ -378,7 +378,6 @@ private fun HomePageNavHostUi(
             startDestination = "home_graph"
         ) {
             homeGraph(
-                navController = bottomNavController,
                 modifier = modifier
                     .navigationBarsPadding()
             )

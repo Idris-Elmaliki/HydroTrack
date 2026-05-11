@@ -6,7 +6,6 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -15,12 +14,10 @@ import com.example.water_logging_app.rememberActivity
 import com.example.water_logging_app.ui._navigation.routes.HomePageRoutes
 import com.example.water_logging_app.ui.homepage.homescreens.HistoryScreen
 import com.example.water_logging_app.ui.homepage.homescreens.HomeScreen
-import com.example.water_logging_app.ui.mainpage.mainScreens.SettingScreen
 
 const val TWEEN_AMOUNT = 550
 fun NavGraphBuilder.homeGraph(
     modifier : Modifier = Modifier,
-    navController : NavHostController,
 ) {
     navigation(
         route = "home_graph",
@@ -76,25 +73,6 @@ fun NavGraphBuilder.homeGraph(
                 todayWaterLogVM = hiltViewModel(rememberActivity()),
                 userDataVM = hiltViewModel(rememberActivity()),
                 dailyStreakVM = hiltViewModel(rememberActivity())
-            )
-        }
-        composable(
-            route = HomePageRoutes.Setting.name,
-            enterTransition = {
-                slideIntoContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Right,
-                    animationSpec = tween(TWEEN_AMOUNT)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    towards = AnimatedContentTransitionScope.SlideDirection.Left,
-                    animationSpec = tween(TWEEN_AMOUNT)
-                )
-            }
-        ) {
-            SettingScreen(
-                modifier = modifier
             )
         }
         composable(

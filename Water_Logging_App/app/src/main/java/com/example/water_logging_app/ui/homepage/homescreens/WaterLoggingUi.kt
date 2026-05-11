@@ -270,7 +270,7 @@ private fun RecentWaterLogsUi(
         LazyRow(
             modifier = modifier,
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceAround,
             userScrollEnabled = false
         ) {
             items(
