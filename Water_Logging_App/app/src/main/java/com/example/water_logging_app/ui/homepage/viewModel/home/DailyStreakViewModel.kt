@@ -34,8 +34,17 @@ class DailyStreakViewModel @Inject constructor(
                 dataStore.getMaxDailyStreak(),
                 dataStore.getLastStreakUpdateDate()
             ) { current, max, date ->
+                var currentStreak = current
+
+                if (date != null) {
+                    val today = LocalDate.now()
+                    if (today.isAfter(date.plusDays(1))) {
+                        currentStreak = 0
+                    }
+                }
+
                 DailyStreakData(
-                    currentDailyStreak = current,
+                    currentDailyStreak = currentStreak,
                     maxDailyStreak = max,
                     lastUpdatedDay = date
                 )

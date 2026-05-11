@@ -32,17 +32,20 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -119,10 +122,9 @@ fun HomeScreen(
     val pfpData by userDataVM.profilePicture.collectAsStateWithLifecycle()
 
     var showBottomSheet by rememberSaveable { mutableStateOf(false) }
-    val modalBottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
-    )
     var editWaterLogListIndex by rememberSaveable { mutableIntStateOf(0) }
+
+    var isProfileDrawerOpen by rememberSaveable { mutableStateOf(false) }
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
@@ -130,127 +132,151 @@ fun HomeScreen(
         dailyStreakVM.updateDailyStreakData(todayWLData)
     }
 
-    Scaffold(
-        modifier = modifier
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        topBar = {
-            TopAppBar(
-                scrollBehavior = scrollBehavior,
-                title = {
-                    GreetUserText(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        userData = userData
-                    )
-                },
-                actions = {
-                    Box(
-                        modifier = Modifier
-                            .size(dimensionResource(R.dimen.pfpNavIconSize))
-                            .clip(CircleShape)
-                            .border(
-                                width = dimensionResource(R.dimen.BorderStroke),
-                                color = BrilliantAzure,
-                                shape = CircleShape
-                            )
-                            .clickable(onClick = {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
 
-                            }),
-                    ) {
-                        AsyncImage(
-                            model = pfpData.filePath.toUri(),
-                            contentDescription = null,
-                            placeholder = painterResource(R.drawable.default_pfp_icon),
-                            error = painterResource(R.drawable.default_pfp_icon),
-                            fallback = painterResource(R.drawable.default_pfp_icon), // If model is null
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(dimensionResource(R.dimen.pfpNavIconSize))
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .padding(dimensionResource(R.dimen.container_padding)),
-            )
-        },
-        bottomBar = {}
-    ) { innerpadding ->
-        Column(
-            modifier = Modifier
-                .padding(
-                    dimensionResource(R.dimen.container_padding))
-                .padding(innerpadding)
-                .navigationBarsPadding()
-                .padding(bottom = 65.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            LoggingStreakUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = dimensionResource(R.dimen.BorderStroke),
-                        color = BrilliantAzure,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .shadow(
-                        elevation = dimensionResource(R.dimen.card_shadow_elevation),
-                        clip = true,
-                        spotColor = Aquamarine,
-                        ambientColor = Aquamarine,
-                        shape = MaterialTheme.shapes.small
-                    ),
-                dailyStreakVM = dailyStreakVM,
-                waterLogVM = todayWaterLogVM
-            )
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.container_padding))
-            )
-            DailyGoalBarUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = dimensionResource(R.dimen.BorderStroke),
-                        color = BrilliantAzure,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .shadow(
-                        elevation = dimensionResource(R.dimen.card_shadow_elevation),
-                        clip = true,
-                        spotColor = Aquamarine,
-                        ambientColor = Aquamarine,
-                        shape = MaterialTheme.shapes.small
-                    ),
-                todayWLData = todayWLData,
-                userData = userData
-            )
-            Spacer(
-                modifier = Modifier
-                    .height(dimensionResource(R.dimen.container_padding))
-            )
-            TodayWaterLogsUi(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(
-                        width = dimensionResource(R.dimen.BorderStroke),
-                        color = BrilliantAzure,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .shadow(
-                        elevation = dimensionResource(R.dimen.card_shadow_elevation),
-                        clip = true,
-                        spotColor = Aquamarine,
-                        ambientColor = Aquamarine,
-                        shape = MaterialTheme.shapes.small
-                    ),
-                todayWLData = todayWLData,
-                onEditButtonClick = { index ->
-                    editWaterLogListIndex = index
-                    showBottomSheet = !showBottomSheet
-                }
+    LaunchedEffect(isProfileDrawerOpen) {
+        if (isProfileDrawerOpen) drawerState.open()
+        else drawerState.close()
+    }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = true,
+        drawerContent = {
+            ProfileScreenUi(
+                userState = userData,
+                photoState = pfpData,
+                onDismiss = { isProfileDrawerOpen = false },
+                onSave = { }
             )
         }
+    ) {
+
+        Scaffold(
+            modifier = modifier
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
+            topBar = {
+                TopAppBar(
+                    scrollBehavior = scrollBehavior,
+                    title = {
+                        GreetUserText(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            userData = userData
+                        )
+                    },
+                    actions = {
+                        Box(
+                            modifier = Modifier
+                                .size(dimensionResource(R.dimen.pfpNavIconSize))
+                                .clip(CircleShape)
+                                .border(
+                                    width = dimensionResource(R.dimen.BorderStroke),
+                                    color = BrilliantAzure,
+                                    shape = CircleShape
+                                )
+                                .clickable(onClick = {
+                                    isProfileDrawerOpen = !isProfileDrawerOpen
+                                }),
+                        ) {
+                            AsyncImage(
+                                model = pfpData.filePath.toUri(),
+                                contentDescription = null,
+                                placeholder = painterResource(R.drawable.default_pfp_icon),
+                                error = painterResource(R.drawable.default_pfp_icon),
+                                fallback = painterResource(R.drawable.default_pfp_icon), // If model is null
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(dimensionResource(R.dimen.pfpNavIconSize))
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .padding(dimensionResource(R.dimen.container_padding)),
+                )
+            },
+            bottomBar = {}
+        ) { innerpadding ->
+            Column(
+                modifier = Modifier
+                    .padding(
+                        dimensionResource(R.dimen.container_padding)
+                    )
+                    .padding(innerpadding)
+                    .navigationBarsPadding()
+                    .padding(bottom = 65.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                LoggingStreakUi(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = dimensionResource(R.dimen.BorderStroke),
+                            color = BrilliantAzure,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .shadow(
+                            elevation = dimensionResource(R.dimen.card_shadow_elevation),
+                            clip = true,
+                            spotColor = Aquamarine,
+                            ambientColor = Aquamarine,
+                            shape = MaterialTheme.shapes.small
+                        ),
+                    dailyStreakVM = dailyStreakVM,
+                    waterLogVM = todayWaterLogVM
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.container_padding))
+                )
+                DailyGoalBarUi(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = dimensionResource(R.dimen.BorderStroke),
+                            color = BrilliantAzure,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .shadow(
+                            elevation = dimensionResource(R.dimen.card_shadow_elevation),
+                            clip = true,
+                            spotColor = Aquamarine,
+                            ambientColor = Aquamarine,
+                            shape = MaterialTheme.shapes.small
+                        ),
+                    todayWLData = todayWLData,
+                    userData = userData
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(dimensionResource(R.dimen.container_padding))
+                )
+                TodayWaterLogsUi(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(
+                            width = dimensionResource(R.dimen.BorderStroke),
+                            color = BrilliantAzure,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .shadow(
+                            elevation = dimensionResource(R.dimen.card_shadow_elevation),
+                            clip = true,
+                            spotColor = Aquamarine,
+                            ambientColor = Aquamarine,
+                            shape = MaterialTheme.shapes.small
+                        ),
+                    todayWLData = todayWLData,
+                    onEditButtonClick = { index ->
+                        editWaterLogListIndex = index
+                        showBottomSheet = !showBottomSheet
+                    }
+                )
+            }
+        }
     }
+
+    val modalBottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = false,)
 
     if(showBottomSheet) {
         ModalBottomSheet(
@@ -260,12 +286,18 @@ fun HomeScreen(
             sheetState = modalBottomSheetState,
         ) {
             var newWaterLogValue by rememberSaveable { mutableStateOf("${todayWLData.waterInfoList[editWaterLogListIndex].amountOfWater}") }
-            Box(
-                contentAlignment = Alignment.Center,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.container_padding))
+                    .padding(dimensionResource(R.dimen.container_padding)),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Text(
+                    modifier = Modifier
+                        .padding(bottom = dimensionResource(R.dimen.text_padding)),
+                    text = stringResource(R.string.Editing),
+                    style = MaterialTheme.typography.bodyLarge
+                )
                 OutlinedTextField(
                     value = newWaterLogValue,
                     onValueChange = { newData ->
@@ -603,7 +635,7 @@ private fun DailyGoalBarUi(
                     .clip(CircleShape),
                 progress = { animatedProgress },
                 color = BrilliantAzure,
-                trackColor = MaterialTheme.colorScheme.onBackground,
+                trackColor = MaterialTheme.colorScheme.secondaryContainer,
             )
 
             val measurementType =
