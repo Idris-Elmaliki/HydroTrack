@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.homepage.viewModel.home
+package com.example.water_logging_app.ui.homepage.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

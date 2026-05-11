@@ -37,16 +37,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -76,7 +79,9 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
 import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavList
 import com.example.water_logging_app.ui._navigation.navGraphs.homeGraph
+import com.example.water_logging_app.ui.homepage.homescreens.ProfileScreenUi
 import com.example.water_logging_app.ui.homepage.viewModel.NotificationsViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.ROUserDataViewModel
 import com.example.water_logging_app.ui.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
 import com.example.water_logging_app.ui.theme.Aquamarine
@@ -88,6 +93,7 @@ import java.time.LocalTime
 fun HomePageUiLayout(
     modifier : Modifier,
     notifVM : NotificationsViewModel,
+    userDataVM : ROUserDataViewModel,
     mainNavActions : AppNavActions
 ) {
     val notifData by notifVM.notifState.collectAsStateWithLifecycle()
@@ -117,7 +123,8 @@ fun HomePageUiLayout(
 
                 HomePageNavHostUi(
                     modifier = modifier,
-                    mainNavActions = mainNavActions
+                    mainNavActions = mainNavActions,
+                    userDataVM = userDataVM
                 )
             }
         }
@@ -314,73 +321,94 @@ private fun NotifPaginationUi(
 @Composable
 private fun HomePageNavHostUi(
     modifier: Modifier,
+    userDataVM: ROUserDataViewModel,
     mainNavActions: AppNavActions
 ) {
     val bottomNavController : NavHostController = rememberNavController()
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
 
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            BottomAppBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                BottomNavList.forEachIndexed { index, item ->
-                    if(index == 1) {
-                        Box(
-                            modifier = Modifier
-                                .weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            FloatingActionButton(
-                                onClick = {
-                                    mainNavActions.navigateToWaterLoggingScreen()
-                                },
-                                shape = CircleShape,
-                                containerColor = Aquamarine
+    var isProfileDrawerOpen by rememberSaveable { mutableStateOf(false) }
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    LaunchedEffect(isProfileDrawerOpen) {
+        if (isProfileDrawerOpen) drawerState.open()
+        else drawerState.close()
+    }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = false,
+        drawerContent = {
+            ProfileScreenUi(
+                userDataVM = userDataVM,
+                onDismiss = { isProfileDrawerOpen = false },
+            )
+        }
+    ) {
+        Scaffold(
+            modifier = modifier,
+            bottomBar = {
+                BottomAppBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    BottomNavList.forEachIndexed { index, item ->
+                        if (index == 1) {
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Add,
-                                    contentDescription = null,
-                                    tint = Color.White
-                                )
+                                FloatingActionButton(
+                                    onClick = {
+                                        mainNavActions.navigateToWaterLoggingScreen()
+                                    },
+                                    shape = CircleShape,
+                                    containerColor = Aquamarine
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Add,
+                                        contentDescription = null,
+                                        tint = Color.White
+                                    )
+                                }
                             }
                         }
+                        NavigationBarItem(
+                            modifier = Modifier
+                                .weight(1f),
+                            icon = {
+                                Icon(
+                                    imageVector = if (selectedItem == index) {
+                                        item.selectedIcon
+                                    } else {
+                                        item.unselectedIcon
+                                    },
+                                    contentDescription = null
+                                )
+                            },
+                            selected = (selectedItem == index),
+                            onClick = {
+                                selectedItem = index
+                                bottomNavController.navigate(item.navHostName)
+                            },
+                            alwaysShowLabel = false
+                        )
                     }
-                    NavigationBarItem(
-                        modifier = Modifier
-                            .weight(1f),
-                        icon = {
-                            Icon(
-                                imageVector = if (selectedItem == index) {
-                                    item.selectedIcon
-                                } else {
-                                    item.unselectedIcon
-                                },
-                                contentDescription = null
-                            )
-                        },
-                        selected = (selectedItem == index),
-                        onClick = {
-                            selectedItem = index
-                            bottomNavController.navigate(item.navHostName)
-                        },
-                        alwaysShowLabel = false
-                    )
                 }
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center
-    ) {
-        NavHost(
-            navController = bottomNavController,
-            startDestination = "home_graph"
+            },
+            floatingActionButtonPosition = FabPosition.Center
         ) {
-            homeGraph(
-                modifier = modifier
-                    .navigationBarsPadding()
-            )
+            NavHost(
+                navController = bottomNavController,
+                startDestination = "home_graph"
+            ) {
+                homeGraph(
+                    modifier = modifier
+                        .navigationBarsPadding(),
+                    isProfileClick = {isProfileDrawerOpen = !isProfileDrawerOpen}
+                )
+            }
         }
     }
 }

@@ -17,7 +17,8 @@ import com.example.water_logging_app.ui.homepage.homescreens.HomeScreen
 
 const val TWEEN_AMOUNT = 550
 fun NavGraphBuilder.homeGraph(
-    modifier : Modifier = Modifier,
+    modifier : Modifier,
+    isProfileClick : () -> Unit
 ) {
     navigation(
         route = "home_graph",
@@ -25,7 +26,7 @@ fun NavGraphBuilder.homeGraph(
     ) {
         composable(
             route = HomePageRoutes.Home.name,
-            arguments = listOf(/*this will be very useful for loading the users data!*/), // f that, dagger hilt >>>
+            arguments = listOf(/*this will be very useful for loading the user's data!*/), // f that, dagger hilt >>>
             deepLinks = listOf(/*I will need to implement this soon, will be useful for push notifications!*/),
             enterTransition = {
                 when (initialState.destination.route) {
@@ -72,7 +73,8 @@ fun NavGraphBuilder.homeGraph(
                 modifier = modifier,
                 todayWaterLogVM = hiltViewModel(rememberActivity()),
                 userDataVM = hiltViewModel(rememberActivity()),
-                dailyStreakVM = hiltViewModel(rememberActivity())
+                dailyStreakVM = hiltViewModel(rememberActivity()),
+                isProfileClick = isProfileClick
             )
         }
         composable(
