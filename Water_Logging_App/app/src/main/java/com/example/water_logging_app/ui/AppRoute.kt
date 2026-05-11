@@ -37,7 +37,6 @@ import com.example.water_logging_app.ui.subscreens.LoadingScreen
 import com.example.water_logging_app.ui.subscreens.animations.DotLoadingAnimation
 import com.example.water_logging_app.ui.viewModel.SplashScreenViewModel
 import kotlinx.coroutines.delay
-import okhttp3.internal.notify
 import kotlin.random.Random
 
 /*
@@ -102,6 +101,7 @@ fun AppRoute(
             HomePageUiLayout(
                 modifier = modifier,
                 notifVM = hiltViewModel(rememberActivity()),
+                userDataVM = hiltViewModel(rememberActivity()),
                 mainNavActions = mainNav
             )
         }
