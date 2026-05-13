@@ -1,5 +1,7 @@
 package com.example.water_logging_app.ui.homepage.viewModel.settings
 
+import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app.photoPicker.data.repository.PhotoRepositoryImpl
@@ -31,7 +33,7 @@ class UserDataViewModel @Inject constructor(
         loadProfilePic()
     }
 
-    fun loadSettingsData() {
+    private fun loadSettingsData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val userData = repo.getUserPreference()?: UserPreferenceData()
@@ -60,7 +62,7 @@ class UserDataViewModel @Inject constructor(
         }
     }
 
-    fun loadProfilePic() {
+    private fun loadProfilePic() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _profilePictureUri.update { data ->
@@ -83,6 +85,96 @@ class UserDataViewModel @Inject constructor(
                     data.copy(
                         isLoading = false,
                         error = e.message
+                    )
+                }
+            }
+        }
+    }
+
+    fun uploadUpdatedData() {
+        Log.d("Profile", "Entered uploadUpdatedData")
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _userData.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                repo.insertUserPreference(_userData.value)
+
+                _userData.update { data ->
+                    data.copy(
+                        isLoading = false
+                    )
+                }
+            }
+            catch (e : Exception) {
+                Log.e("UserDataVM", e.message, e)
+                _userData.update { data ->
+                    data.copy(
+                        error = e.message,
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    fun onUserDataChange(newData: UserPreferenceData) {
+        Log.d("Profile", "Entered onUserDataChange")
+        viewModelScope.launch(Dispatchers.IO) {
+            _userData.update { data ->
+                Log.d("Profile", "Entered onUserDataChange update")
+                data.copy(
+                    firstName = newData.firstName,
+                    lastName = newData.lastName,
+                    userName = newData.userName,
+                    age = newData.age,
+                    gender = newData.gender,
+                    height = newData.height,
+                    weight = newData.weight,
+                    dailyGoal = newData.dailyGoal,
+                    unitOfMeasurement = newData.unitOfMeasurement
+                )
+            }
+            Log.d("Profile", "Entered ${_userData.value.firstName}")
+        }
+    }
+
+    fun onFilePathChange(newData: PhotoData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _profilePictureUri.update { data ->
+                data.copy(
+                    filePath = newData.filePath
+                )
+            }
+        }
+    }
+
+    fun uploadUpdatedFilePath() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _profilePictureUri.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                photoRepo.saveImage(_profilePictureUri.value.filePath.toUri())
+
+                _profilePictureUri.update { data ->
+                    data.copy(
+                        isLoading = false
+                    )
+                }
+            }
+            catch (e : Exception) {
+                Log.e("UserDataVM", e.message, e)
+                _profilePictureUri.update { data ->
+                    data.copy(
+                        error = e.message,
+                        isLoading = false
                     )
                 }
             }

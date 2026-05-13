@@ -81,7 +81,7 @@ import com.example.water_logging_app.ui._navigation.navData.homepage.BottomNavLi
 import com.example.water_logging_app.ui._navigation.navGraphs.homeGraph
 import com.example.water_logging_app.ui.homepage.homescreens.ProfileScreenUi
 import com.example.water_logging_app.ui.homepage.viewModel.NotificationsViewModel
-import com.example.water_logging_app.ui.homepage.viewModel.ROUserDataViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.settings.UserDataViewModel
 import com.example.water_logging_app.ui.subscreens.PaginationSystemUi
 import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
 import com.example.water_logging_app.ui.theme.Aquamarine
@@ -93,7 +93,7 @@ import java.time.LocalTime
 fun HomePageUiLayout(
     modifier : Modifier,
     notifVM : NotificationsViewModel,
-    userDataVM : ROUserDataViewModel,
+    userDataVM : UserDataViewModel,
     mainNavActions : AppNavActions
 ) {
     val notifData by notifVM.notifState.collectAsStateWithLifecycle()
@@ -321,7 +321,7 @@ private fun NotifPaginationUi(
 @Composable
 private fun HomePageNavHostUi(
     modifier: Modifier,
-    userDataVM: ROUserDataViewModel,
+    userDataVM: UserDataViewModel,
     mainNavActions: AppNavActions
 ) {
     val bottomNavController : NavHostController = rememberNavController()
