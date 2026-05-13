@@ -47,7 +47,7 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.ui._navigation.navActions.AppNavActions
-import com.example.water_logging_app.ui.homepage.viewModel.ROUserDataViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.WaterLogViewModel
 import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.MetallicGray
