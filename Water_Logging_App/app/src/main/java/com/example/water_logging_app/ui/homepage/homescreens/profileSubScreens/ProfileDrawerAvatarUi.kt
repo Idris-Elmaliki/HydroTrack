@@ -56,7 +56,7 @@ fun ProfileDrawerAvatarUi(
     isEditMode: Boolean,
     pfpPath: String,
     onPfpClick: (PhotoData) -> Unit,
-    listOfNames: List<String>,
+    newUserNamesData: UserPreferenceData,
     onNameChanges: (UserPreferenceData) -> Unit,
 ) {
     Text(
@@ -143,14 +143,14 @@ fun ProfileDrawerAvatarUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = dimensionResource(R.dimen.text_padding)),
-                value = listOfNames[NameList.UserName.ordinal],
+                value = newUserNamesData.userName,
                 onValueChange = { data ->
                     if(data.all { it.isLetterOrDigit() } || data.all { it.isHighSurrogate() })
                     { onNameChanges(
                         UserPreferenceData(
                             userName = data,
-                            firstName = listOfNames[NameList.FirstName.ordinal],
-                            lastName = listOfNames[NameList.LastName.ordinal]
+                            firstName = newUserNamesData.firstName,
+                            lastName = newUserNamesData.lastName
                         )
                     )
                     }
@@ -166,14 +166,14 @@ fun ProfileDrawerAvatarUi(
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f),
-                    value = listOfNames[NameList.FirstName.ordinal],
+                    value = newUserNamesData.firstName,
                     onValueChange = { data ->
                         if (data.all { it.isLetter() }) {
                             onNameChanges(
                                 UserPreferenceData(
-                                    userName = listOfNames[NameList.UserName.ordinal],
+                                    userName = newUserNamesData.userName,
                                     firstName = data,
-                                    lastName = listOfNames[NameList.LastName.ordinal]
+                                    lastName = newUserNamesData.lastName
                                 )
                             )
                         }
@@ -188,13 +188,13 @@ fun ProfileDrawerAvatarUi(
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f),
-                    value = listOfNames[NameList.LastName.ordinal],
+                    value = newUserNamesData.lastName,
                     onValueChange = { data ->
                         if (data.all { it.isLetter()}) {
                             onNameChanges(
                                 UserPreferenceData(
-                                    userName = listOfNames[NameList.UserName.ordinal],
-                                    firstName = listOfNames[NameList.FirstName.ordinal],
+                                    userName = newUserNamesData.userName,
+                                    firstName = newUserNamesData.firstName,
                                     lastName = data
                                 )
                             )

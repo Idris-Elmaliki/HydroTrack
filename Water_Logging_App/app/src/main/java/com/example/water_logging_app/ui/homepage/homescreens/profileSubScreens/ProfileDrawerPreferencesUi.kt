@@ -31,17 +31,13 @@ import com.example.water_logging_app.R
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 
-private enum class PreferenceList {
-    Measurement,
-    DailyGoal
-}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileDrawerPreferencesUi(
     modifier: Modifier,
     userData: UserPreferenceData,
     isEditMode: Boolean,
-    userPreferenceList : List<String>,
+    newUserPreferenceData: UserPreferenceData,
     onPreferenceChange : (UserPreferenceData) -> Unit,
 ) {
     var measurementExpanded by rememberSaveable { mutableStateOf(false) }
@@ -87,12 +83,12 @@ fun ProfileDrawerPreferencesUi(
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
-                    value = userPreferenceList[PreferenceList.Measurement.ordinal],
+                    value = newUserPreferenceData.unitOfMeasurement ?: UnitMeasurementType.Metric.name,
                     onValueChange = { data ->
                         onPreferenceChange(
                             UserPreferenceData(
                                 unitOfMeasurement = data,
-                                dailyGoal = userPreferenceList[PreferenceList.DailyGoal.ordinal].toLong()
+                                dailyGoal = newUserPreferenceData.dailyGoal
                             )
                         )
                     },
@@ -115,7 +111,7 @@ fun ProfileDrawerPreferencesUi(
                                 onPreferenceChange(
                                     UserPreferenceData(
                                         unitOfMeasurement = type.name,
-                                        dailyGoal = userPreferenceList[PreferenceList.DailyGoal.ordinal].toLong()
+                                        dailyGoal = newUserPreferenceData.dailyGoal
                                     )
                                 )
                                 measurementExpanded = false
@@ -130,12 +126,12 @@ fun ProfileDrawerPreferencesUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(R.dimen.container_padding)),
-                value = userPreferenceList[PreferenceList.DailyGoal.ordinal],
+                value = newUserPreferenceData.dailyGoal.toString(),
                 onValueChange = { data ->
                     if (data.all { it.isDigit() }) {
                         onPreferenceChange(
                             UserPreferenceData(
-                                unitOfMeasurement = userPreferenceList[PreferenceList.Measurement.ordinal],
+                                unitOfMeasurement = newUserPreferenceData.unitOfMeasurement,
                                 dailyGoal = if(data.isEmpty()) 0L else data.toLong()
                             )
                         )
@@ -147,7 +143,7 @@ fun ProfileDrawerPreferencesUi(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 suffix = {
                     Text(
-                        text = if (userPreferenceList[PreferenceList.Measurement.ordinal] == UnitMeasurementType.Metric.name) "ml" else "oz"
+                        text = if (newUserPreferenceData.unitOfMeasurement == UnitMeasurementType.Metric.name) "ml" else "oz"
                     )
                 }
             )
