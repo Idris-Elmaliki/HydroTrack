@@ -1,5 +1,6 @@
 package com.example.water_logging_app.preferenceData.data.repository
 
+import android.util.Log
 import com.example.water_logging_app.preferenceData.data.local.dao.UserPreferenceDAO
 import com.example.water_logging_app.preferenceData.data.local.entity.UserPreferenceEntity
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
@@ -15,6 +16,7 @@ class UserPreferenceRepositoryImpl @Inject constructor(
     private val dao : UserPreferenceDAO
 ) : UserPreferenceRepository {
     override suspend fun insertUserPreference(userPreference: UserPreferenceData) {
+        Log.d("Profile", "Entered repo from uploadUpdatedData")
         dao.insertUserPreference(userPreference.toUserPreferenceEntity())
     }
 

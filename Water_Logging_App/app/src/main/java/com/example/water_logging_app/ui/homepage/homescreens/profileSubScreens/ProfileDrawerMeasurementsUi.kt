@@ -32,20 +32,13 @@ import com.example.water_logging_app.preferenceData.domain.modelData.UserPrefere
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
 import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 
-private enum class MeasurementList {
-    Weight,
-    Height,
-    Age,
-    Gender
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileDrawerMeasurementsUi(
     modifier: Modifier,
     userData: UserPreferenceData,
     isEditMode: Boolean,
-    userMeasurementList : List<String>,
+    newUserMeasurementData : UserPreferenceData,
     onMeasurementChange : (UserPreferenceData) -> Unit
 ) {
     val isMetric = userData.unitOfMeasurement == UnitMeasurementType.Metric.name
@@ -93,15 +86,15 @@ fun ProfileDrawerMeasurementsUi(
             ) {
                 OutlinedTextField(
                     modifier = Modifier.weight(1f),
-                    value = userMeasurementList[MeasurementList.Weight.ordinal],
+                    value = newUserMeasurementData.weight.toString(),
                     onValueChange = { data ->
                         if (data.isEmpty() || data.all { it.isDigit() }) {
                             onMeasurementChange(
                                 UserPreferenceData(
                                     weight = if (data.isEmpty()) 0f else data.toFloat(),
-                                    height = userMeasurementList[MeasurementList.Height.ordinal].toFloat(),
-                                    age = userMeasurementList[MeasurementList.Age.ordinal],
-                                    gender = userMeasurementList[MeasurementList.Gender.ordinal]
+                                    height = newUserMeasurementData.height,
+                                    age = newUserMeasurementData.age,
+                                    gender = newUserMeasurementData.gender
                                 )
                             )
                         }
@@ -118,15 +111,15 @@ fun ProfileDrawerMeasurementsUi(
                 )
                 OutlinedTextField(
                     modifier = Modifier.weight(1f),
-                    value = userMeasurementList[MeasurementList.Height.ordinal],
+                    value = newUserMeasurementData.age,
                     onValueChange = { data ->
                         if (data.isEmpty() || data.all { it.isDigit() }) {
                             onMeasurementChange(
                                 UserPreferenceData(
-                                    weight = userMeasurementList[MeasurementList.Weight.ordinal].toFloat(),
+                                    weight = newUserMeasurementData.weight,
                                     height = if (data.isEmpty()) 0f else data.toFloat(),
-                                    age = userMeasurementList[MeasurementList.Age.ordinal],
-                                    gender = userMeasurementList[MeasurementList.Gender.ordinal]
+                                    age = newUserMeasurementData.age,
+                                    gender = newUserMeasurementData.gender
                                 )
                             )
                         }
@@ -148,15 +141,15 @@ fun ProfileDrawerMeasurementsUi(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(R.dimen.container_padding)),
-                value = userMeasurementList[MeasurementList.Age.ordinal],
+                value = newUserMeasurementData.age,
                 onValueChange = { data ->
                     if (data.all { it.isDigit() }) {
                         onMeasurementChange(
                             UserPreferenceData(
-                                weight = userMeasurementList[MeasurementList.Weight.ordinal].toFloat(),
-                                height = userMeasurementList[MeasurementList.Height.ordinal].toFloat(),
+                                weight = newUserMeasurementData.weight,
+                                height = newUserMeasurementData.height,
                                 age = data,
-                                gender = userMeasurementList[MeasurementList.Gender.ordinal]
+                                gender = newUserMeasurementData.gender
                             )
                         )
                     }
@@ -182,13 +175,13 @@ fun ProfileDrawerMeasurementsUi(
                         .fillMaxWidth()
                         .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                         .padding(horizontal = dimensionResource(R.dimen.container_padding)),
-                    value = userMeasurementList[MeasurementList.Gender.ordinal],
+                    value = newUserMeasurementData.gender ?: UnitMeasurementType.Metric.name,
                     onValueChange = { data ->
                         onMeasurementChange(
                             UserPreferenceData(
-                                weight = userMeasurementList[MeasurementList.Weight.ordinal].toFloat(),
-                                height = userMeasurementList[MeasurementList.Height.ordinal].toFloat(),
-                                age = userMeasurementList[MeasurementList.Age.ordinal],
+                                weight = newUserMeasurementData.weight,
+                                height = newUserMeasurementData.height,
+                                age = newUserMeasurementData.age,
                                 gender = data
                             )
                         )
@@ -214,9 +207,9 @@ fun ProfileDrawerMeasurementsUi(
                             onClick = {
                                 onMeasurementChange(
                                     UserPreferenceData(
-                                        weight = userMeasurementList[MeasurementList.Weight.ordinal].toFloat(),
-                                        height = userMeasurementList[MeasurementList.Height.ordinal].toFloat(),
-                                        age = userMeasurementList[MeasurementList.Age.ordinal],
+                                        weight = newUserMeasurementData.weight,
+                                        height = newUserMeasurementData.height,
+                                        age = newUserMeasurementData.age,
                                         gender = gender.name
                                     )
                                 )

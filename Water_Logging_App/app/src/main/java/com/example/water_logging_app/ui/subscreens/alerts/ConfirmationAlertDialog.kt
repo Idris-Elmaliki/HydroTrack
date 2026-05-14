@@ -119,8 +119,8 @@ fun ConfirmationAlertDialog(
                     TextButton(
                         shape = CircleShape,
                         onClick = {
-                            onDismiss()
                             onContinuation()
+                            onDismiss()
                         }
                     ) {
                         Text(

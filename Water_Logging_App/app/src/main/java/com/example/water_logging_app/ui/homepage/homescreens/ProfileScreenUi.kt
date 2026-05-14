@@ -13,7 +13,6 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -22,15 +21,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
 import com.example.water_logging_app.preferenceData.domain.modelData.UserPreferenceData
-import com.example.water_logging_app.preferenceData.domain.modelData.enums.Genders
-import com.example.water_logging_app.preferenceData.domain.modelData.enums.UnitMeasurementType
 import com.example.water_logging_app.ui.homepage.homescreens.profileSubScreens.ProfileDrawerAvatarUi
 import com.example.water_logging_app.ui.homepage.homescreens.profileSubScreens.ProfileDrawerHeaderUi
 import com.example.water_logging_app.ui.homepage.homescreens.profileSubScreens.ProfileDrawerMeasurementsUi
 import com.example.water_logging_app.ui.homepage.homescreens.profileSubScreens.ProfileDrawerPreferencesUi
-import com.example.water_logging_app.ui.homepage.viewModel.settings.UserDataViewModel
+import com.example.water_logging_app.ui.homepage.viewModel.profile.UserDataViewModel
 import com.example.water_logging_app.ui.subscreens.alerts.ConfirmationAlertDialog
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,40 +35,19 @@ fun ProfileScreenUi(
     onDismiss : () -> Unit
 ) {
     val userData by userDataVM.userData.collectAsStateWithLifecycle()
+
+    val editedUserData by userDataVM.editedUserData.collectAsStateWithLifecycle()
     val pfpData by userDataVM.profilePicture.collectAsStateWithLifecycle()
 
-    var isInEditMode by rememberSaveable { mutableStateOf(false) }
-    Log.d("Profile", "isInEditMode: $isInEditMode")
-
-    var hasChanges by rememberSaveable { mutableStateOf(false) }
-
+    var isInEditMode by rememberSaveable      { mutableStateOf(false) }
+    var hasChanges by rememberSaveable        { mutableStateOf(false) }
     var showConfirmDialog by rememberSaveable { mutableStateOf(false) }
 
     var newPfpFilePath by rememberSaveable(pfpData.filePath) { mutableStateOf(pfpData.filePath) }
 
-    var newUserName by rememberSaveable(userData.userName) { mutableStateOf(userData.userName) }
-    var newFirstName by rememberSaveable(userData.firstName) { mutableStateOf(userData.firstName) }
-    var newLastName by rememberSaveable(userData.lastName) { mutableStateOf(userData.lastName) }
-
-    var newWeight by rememberSaveable(userData.weight) { mutableStateOf(userData.weight.toInt().toString()) }
-    var newHeight by rememberSaveable(userData.height) { mutableStateOf(userData.height.toInt().toString()) }
-    var newAge by rememberSaveable(userData.age) { mutableStateOf(userData.age) }
-    var newGender by rememberSaveable(userData.gender) { mutableStateOf(userData.gender ?: Genders.Male.name) }
-
-    var newUnitType by rememberSaveable(userData.unitOfMeasurement) { mutableStateOf(userData.unitOfMeasurement ?: UnitMeasurementType.Metric.name) }
-    var newDailyGoal by rememberSaveable(userData.dailyGoal) { mutableStateOf(userData.dailyGoal.toString()) }
-
-    val resetData = {
-        newPfpFilePath = pfpData.filePath
-        newUserName = userData.userName
-        newFirstName = userData.firstName
-        newLastName = userData.lastName
-        newWeight = userData.weight.toInt().toString()
-        newHeight = userData.height.toInt().toString()
-        newAge = userData.age
-        newGender = userData.gender ?: Genders.Male.name
-        newUnitType = userData.unitOfMeasurement ?: UnitMeasurementType.Metric.name
-        newDailyGoal = userData.dailyGoal.toString()
+    val updateData = {
+        Log.d("Profile", "Time to reset the edited data")
+        userDataVM.resetEditUserData()
     }
 
     ModalDrawerSheet {
@@ -86,18 +61,23 @@ fun ProfileScreenUi(
             isEditMode = isInEditMode,
             onClose = {
                 if (isInEditMode && hasChanges) {
-                    showConfirmDialog = false
+                    showConfirmDialog = true
                 }
-                isInEditMode = false
-                resetData()
-                onDismiss()
+
+                if(!showConfirmDialog) {
+                    isInEditMode = false
+                    onDismiss()
+                }
             },
             onToggleEdit = {
-                if (isInEditMode && hasChanges) {
-                    showConfirmDialog = !showConfirmDialog
-                }
-                else {
-                    isInEditMode = !isInEditMode
+                if (isInEditMode) {
+                    if (hasChanges) {
+                        showConfirmDialog = true  // show confirm dialog to save
+                    } else {
+                        isInEditMode = false  // no changes, just exit edit mode
+                    }
+                } else {
+                    isInEditMode = true  // enter edit mode
                 }
             }
         )
@@ -127,7 +107,11 @@ fun ProfileScreenUi(
                     }
                     newPfpFilePath = it.filePath
                 },
-                listOfNames = listOf(newUserName, newFirstName, newLastName),
+                newUserNamesData = UserPreferenceData(
+                    userName = editedUserData.userName,
+                    firstName = editedUserData.firstName,
+                    lastName = editedUserData.lastName,
+                ),
                 onNameChanges = {
                     if (it.userName != userData.userName ||
                         it.firstName != userData.firstName ||
@@ -136,13 +120,11 @@ fun ProfileScreenUi(
                         hasChanges = true
                     }
 
-                    Log.d("Profile", "Before update: $newUserName")
-
-                    newUserName = it.userName
-                    newFirstName = it.firstName
-                    newLastName = it.lastName
-
-                    Log.d("Profile", "After update: $newUserName")
+                    userDataVM.updateEditedUserData(
+                        userName = it.userName,
+                        firstName = it.firstName,
+                        lastName = it.lastName,
+                    )
                 }
             )
 
@@ -154,7 +136,10 @@ fun ProfileScreenUi(
                     ),
                 userData = userData,
                 isEditMode = isInEditMode,
-                userPreferenceList = listOf(newUnitType, newDailyGoal),
+                newUserPreferenceData = UserPreferenceData(
+                    dailyGoal = editedUserData.dailyGoal,
+                    unitOfMeasurement = editedUserData.unitOfMeasurement
+                ),
                 onPreferenceChange = {
                     if (it.dailyGoal != userData.dailyGoal ||
                         it.unitOfMeasurement != userData.unitOfMeasurement
@@ -162,9 +147,11 @@ fun ProfileScreenUi(
                         hasChanges = true
                     }
 
-                    newUnitType = it.unitOfMeasurement ?: UnitMeasurementType.Metric.name
-                    newDailyGoal = it.dailyGoal.toString()
-                },
+                    userDataVM.updateEditedUserData(
+                        unitOfMeasurement = it.unitOfMeasurement,
+                        dailyGoal = it.dailyGoal
+                    )
+                }
             )
 
             ProfileDrawerMeasurementsUi(
@@ -173,7 +160,12 @@ fun ProfileScreenUi(
                     .padding(vertical = dimensionResource(R.dimen.container_padding)),
                 userData = userData,
                 isEditMode = isInEditMode,
-                userMeasurementList = listOf(newWeight, newHeight, newAge, newGender),
+                newUserMeasurementData = UserPreferenceData(
+                    weight = editedUserData.weight,
+                    height = editedUserData.height,
+                    age = editedUserData.age,
+                    gender = editedUserData.gender,
+                ),
                 onMeasurementChange = {
                     if (it.weight != userData.weight ||
                         it.height != userData.height ||
@@ -183,53 +175,35 @@ fun ProfileScreenUi(
                         hasChanges = true
                     }
 
-                    newWeight = it.weight.toString()
-                    newHeight = it.height.toString()
-                    newAge = it.age
-                    newGender = it.gender ?: Genders.Male.name
+                    userDataVM.updateEditedUserData(
+                        weight = it.weight,
+                        height = it.height,
+                        age = it.age,
+                        gender = it.gender
+                    )
                 }
             )
         }
     }
 
-    val coroutineScope = rememberCoroutineScope()
     if(showConfirmDialog) {
         ConfirmationAlertDialog(
             onDismiss = {
                 showConfirmDialog = false
-                resetData()
-
                 hasChanges = false
+
+                updateData()
             },
             onContinuation = {
+                userDataVM.uploadNewUpdatedData()
+
+                userDataVM.uploadNewUpdatedFilePath(
+                    PhotoData(filePath = newPfpFilePath)
+                )
+
+                hasChanges = false
+                showConfirmDialog = false
                 isInEditMode = false
-                // I need to push everything to their respected vms first, THEN call the repos
-                // Even though the VM gets updated, the ui still doesn't update...
-                coroutineScope.launch {
-                    userDataVM.onUserDataChange(
-                        UserPreferenceData(
-                            userName = newUserName,
-                            firstName = newFirstName,
-                            lastName = newLastName,
-                            weight = newWeight.toFloatOrNull() ?: userData.weight,
-                            height = newHeight.toFloatOrNull() ?: userData.height,
-                            age = newAge.ifBlank { userData.age },
-                            gender = newGender,
-                            unitOfMeasurement = newUnitType,
-                            dailyGoal = newDailyGoal.toLongOrNull() ?: userData.dailyGoal,
-                        )
-                    )
-
-                    userDataVM.onFilePathChange(
-                        PhotoData(filePath = newPfpFilePath)
-                    )
-
-                    userDataVM.uploadUpdatedData()
-                    userDataVM.uploadUpdatedFilePath()
-
-                    hasChanges = false
-                    showConfirmDialog = false
-                }
             }
         )
     }

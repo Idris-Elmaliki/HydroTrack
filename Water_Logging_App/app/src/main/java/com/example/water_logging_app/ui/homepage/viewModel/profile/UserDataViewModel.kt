@@ -1,4 +1,4 @@
-package com.example.water_logging_app.ui.homepage.viewModel.settings
+package com.example.water_logging_app.ui.homepage.viewModel.profile
 
 import android.util.Log
 import androidx.core.net.toUri
@@ -25,20 +25,37 @@ class UserDataViewModel @Inject constructor(
     private var _userData = MutableStateFlow(UserPreferenceData())
     val userData : StateFlow<UserPreferenceData> = _userData.asStateFlow()
 
+    private var _editedUserData = MutableStateFlow(UserPreferenceData())
+    val editedUserData : StateFlow<UserPreferenceData> = _editedUserData.asStateFlow()
+
     private var _profilePictureUri = MutableStateFlow(PhotoData())
     val profilePicture : StateFlow<PhotoData> = _profilePictureUri.asStateFlow()
 
     init {
-        loadSettingsData()
+        loadUserData()
         loadProfilePic()
     }
 
-    private fun loadSettingsData() {
+    private fun loadUserData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val userData = repo.getUserPreference()?: UserPreferenceData()
 
                 _userData.update { data ->
+                    data.copy(
+                        firstName = userData.firstName,
+                        lastName = userData.lastName,
+                        userName = userData.userName,
+                        age = userData.age,
+                        gender = userData.gender,
+                        height = userData.height,
+                        weight = userData.weight,
+                        dailyGoal = userData.dailyGoal,
+                        unitOfMeasurement = userData.unitOfMeasurement
+                    )
+                }
+
+                _editedUserData.update { data ->
                     data.copy(
                         firstName = userData.firstName,
                         lastName = userData.lastName,
@@ -91,17 +108,22 @@ class UserDataViewModel @Inject constructor(
         }
     }
 
-    fun uploadUpdatedData() {
+    fun uploadNewUpdatedData() {
         Log.d("Profile", "Entered uploadUpdatedData")
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val newData = _editedUserData.value
+
                 _userData.update { data ->
                     data.copy(
                         isLoading = true
                     )
                 }
 
-                repo.insertUserPreference(_userData.value)
+                Log.d("Profile", "Before Saved data: ${_userData.value}")
+                repo.insertUserPreference(newData)
+                loadUserData()
+                Log.d("Profile", "After Saved data: ${_userData.value}")
 
                 _userData.update { data ->
                     data.copy(
@@ -152,7 +174,9 @@ class UserDataViewModel @Inject constructor(
         }
     }
 
-    fun uploadUpdatedFilePath() {
+    fun uploadNewUpdatedFilePath(
+        newData: PhotoData
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _profilePictureUri.update { data ->
@@ -161,7 +185,8 @@ class UserDataViewModel @Inject constructor(
                     )
                 }
 
-                photoRepo.saveImage(_profilePictureUri.value.filePath.toUri())
+                photoRepo.saveImage(newData.filePath.toUri())
+                loadProfilePic()
 
                 _profilePictureUri.update { data ->
                     data.copy(
@@ -178,6 +203,52 @@ class UserDataViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun resetEditUserData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val originalUserData = _userData.value
+
+            _editedUserData.update { data ->
+                data.copy(
+                    firstName = originalUserData.firstName,
+                    lastName = originalUserData.lastName,
+                    userName = originalUserData.userName,
+                    age = originalUserData.age,
+                    gender = originalUserData.gender,
+                    height = originalUserData.height,
+                    weight = originalUserData.weight,
+                    dailyGoal = originalUserData.dailyGoal,
+                    unitOfMeasurement = originalUserData.unitOfMeasurement
+                )
+            }
+        }
+    }
+
+    fun updateEditedUserData(
+        firstName: String? = null,
+        lastName: String? = null,
+        userName: String? = null,
+        age: String? = null,
+        gender: String? = null,
+        height: Float? = null,
+        weight: Float? = null,
+        dailyGoal: Long? = null,
+        unitOfMeasurement: String? = null
+    ) {
+        _editedUserData.update { data ->
+            data.copy(
+                firstName = firstName ?: data.firstName,
+                lastName = lastName ?: data.lastName,
+                userName = userName ?: data.userName,
+                age = age ?: data.age,
+                gender = gender ?: data.gender,
+                height = height ?: data.height,
+                weight = weight ?: data.weight,
+                dailyGoal = dailyGoal ?: data.dailyGoal,
+                unitOfMeasurement = unitOfMeasurement ?: data.unitOfMeasurement
+            )
         }
     }
 }
