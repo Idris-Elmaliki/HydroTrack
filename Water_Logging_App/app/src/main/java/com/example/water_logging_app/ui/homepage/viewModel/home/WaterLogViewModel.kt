@@ -169,8 +169,8 @@ class WaterLogViewModel @Inject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val newLog = WaterLogData(
-                waterAmount,
-                LocalDateTime.now()
+                amountOfWater = waterAmount,
+                timeOfInput = LocalDateTime.now()
             )
 
             // Update today's log list in state
