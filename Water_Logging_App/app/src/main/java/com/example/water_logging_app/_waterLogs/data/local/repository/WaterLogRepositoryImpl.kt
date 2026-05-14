@@ -48,6 +48,7 @@ private fun Flow<List<WaterLogEntity>>.toWaterLogDataList(): Flow<List<WaterLogD
     return map { entityList ->
         entityList.map { index ->
             WaterLogData(
+                id = index.id,
                 amountOfWater = index.amountOfWater,
                 timeOfInput = TimeConversion.getLocalDateTimeFromStringR(index.timeOfInput)
             )
@@ -61,6 +62,7 @@ private fun List<WaterLogData>.toListWaterLogEntity() : List<WaterLogEntity> {
     forEach { index ->
         entityList.add(
             WaterLogEntity(
+                id = index.id,
                 amountOfWater = index.amountOfWater,
                 timeOfInput = TimeConversion.getStringFromLocalDateTimeR(index.timeOfInput)
             )
@@ -72,6 +74,7 @@ private fun List<WaterLogData>.toListWaterLogEntity() : List<WaterLogEntity> {
 
 private fun WaterLogData.toWaterLogEntity(): WaterLogEntity {
     return WaterLogEntity(
+        id = id,
         amountOfWater = amountOfWater,
         timeOfInput = TimeConversion.getStringFromLocalDateTimeR(timeOfInput)
     )

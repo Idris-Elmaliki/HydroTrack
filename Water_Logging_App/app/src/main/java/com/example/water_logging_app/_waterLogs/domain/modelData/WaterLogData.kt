@@ -3,7 +3,7 @@ package com.example.water_logging_app._waterLogs.domain.modelData
 import java.time.LocalDateTime
 
 data class WaterLogData(
-    // will probably change the data in the future (as in add more)
+    val id: Long? = null, // I need to include id to stop duplication
     val amountOfWater : Int,
     val timeOfInput : LocalDateTime,
 )
