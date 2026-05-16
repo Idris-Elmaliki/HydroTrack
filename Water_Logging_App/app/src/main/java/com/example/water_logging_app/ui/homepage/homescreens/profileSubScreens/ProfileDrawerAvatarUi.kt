@@ -1,5 +1,8 @@
 package com.example.water_logging_app.ui.homepage.homescreens.profileSubScreens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,7 +36,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.water_logging_app.R
 import com.example.water_logging_app.photoPicker.domain.modelData.PhotoData
@@ -42,23 +44,28 @@ import com.example.water_logging_app.ui.theme.Aquamarine
 import com.example.water_logging_app.ui.theme.BrilliantAzure
 import com.example.water_logging_app.ui.theme.poppins
 
-private enum class NameList {
-    UserName,
-    FirstName,
-    LastName,
-}
 
 @Composable
 fun ProfileDrawerAvatarUi(
     modifier: Modifier,
     userData: UserPreferenceData,
-    pfpData: PhotoData,
     isEditMode: Boolean,
-    pfpPath: String,
+    newPfpPath: String,
     onPfpClick: (PhotoData) -> Unit,
     newUserNamesData: UserPreferenceData,
     onNameChanges: (UserPreferenceData) -> Unit,
 ) {
+    val singlePhotoPickerLaunch = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri ->
+            onPfpClick(
+                PhotoData(
+                    filePath = uri.toString()
+                )
+            )
+        }
+    )
+
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -97,7 +104,7 @@ fun ProfileDrawerAvatarUi(
                 )
         ) {
             AsyncImage(
-                model = pfpData.filePath.toUri(),
+                model = newPfpPath,
                 contentDescription = null,
                 placeholder = painterResource(R.drawable.default_pfp_icon),
                 error = painterResource(R.drawable.default_pfp_icon),
@@ -121,7 +128,11 @@ fun ProfileDrawerAvatarUi(
                         .size(dimensionResource(R.dimen.NavIconSize))
                         .clip(CircleShape)
                         .clickable(
-                            onClick = {}
+                            onClick = {
+                                singlePhotoPickerLaunch.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            }
                         )
                         .background(Aquamarine),
                     contentAlignment = Alignment.Center

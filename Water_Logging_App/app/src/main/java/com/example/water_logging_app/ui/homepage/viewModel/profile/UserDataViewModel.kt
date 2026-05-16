@@ -143,37 +143,6 @@ class UserDataViewModel @Inject constructor(
         }
     }
 
-    fun onUserDataChange(newData: UserPreferenceData) {
-        Log.d("Profile", "Entered onUserDataChange")
-        viewModelScope.launch(Dispatchers.IO) {
-            _userData.update { data ->
-                Log.d("Profile", "Entered onUserDataChange update")
-                data.copy(
-                    firstName = newData.firstName,
-                    lastName = newData.lastName,
-                    userName = newData.userName,
-                    age = newData.age,
-                    gender = newData.gender,
-                    height = newData.height,
-                    weight = newData.weight,
-                    dailyGoal = newData.dailyGoal,
-                    unitOfMeasurement = newData.unitOfMeasurement
-                )
-            }
-            Log.d("Profile", "Entered ${_userData.value.firstName}")
-        }
-    }
-
-    fun onFilePathChange(newData: PhotoData) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _profilePictureUri.update { data ->
-                data.copy(
-                    filePath = newData.filePath
-                )
-            }
-        }
-    }
-
     fun uploadNewUpdatedFilePath(
         newData: PhotoData
     ) {
