@@ -98,9 +98,8 @@ fun ProfileScreenUi(
                         horizontal = dimensionResource(R.dimen.container_padding)
                     ),
                 userData = userData,
-                pfpData = pfpData,
                 isEditMode = isInEditMode,
-                pfpPath = newPfpFilePath,
+                newPfpPath = newPfpFilePath,
                 onPfpClick = {
                     if(it.filePath != pfpData.filePath) {
                         hasChanges = true

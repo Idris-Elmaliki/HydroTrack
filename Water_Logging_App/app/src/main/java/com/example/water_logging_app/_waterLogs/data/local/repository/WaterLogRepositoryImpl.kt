@@ -42,6 +42,10 @@ class WaterLogRepositoryImpl @Inject constructor(
     override suspend fun deleteLoggedWaterData(waterData: WaterLogData) {
         waterLogDao.deleteWaterData(waterData.toWaterLogEntity())
     }
+
+    override suspend fun deleteWaterLogById(waterData : WaterLogData) {
+        waterLogDao.deleteWaterData(waterData.toWaterLogEntity())
+    }
 }
 
 private fun Flow<List<WaterLogEntity>>.toWaterLogDataList(): Flow<List<WaterLogData>> {

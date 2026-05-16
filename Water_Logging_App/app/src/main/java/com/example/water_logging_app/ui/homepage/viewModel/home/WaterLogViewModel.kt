@@ -266,4 +266,55 @@ class WaterLogViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteWaterLog(currentData: WaterLogData) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _todayWaterLogs.update { data ->
+                    data.copy(
+                        isLoading = true
+                    )
+                }
+
+                Log.d("Profile", "currentData id: ${currentData.id}")
+
+                repo.deleteWaterLogById(currentData)
+
+                _todayWaterLogs.update { state ->
+                    val updatedList = state.waterInfoList.filter { it != currentData }
+                    state.copy(
+                        waterInfoList = updatedList,
+                        isLoading = false
+                    )
+                }
+
+                // Update weekly map in state to keep it in sync
+                val currentWeeklyMap = _weeklyWaterLog.value.waterInfoList.toMutableMap()
+                val logDate = TimeConversion.getLocalDateFromLocalDateTimeV(currentData.timeOfInput)
+
+                currentWeeklyMap[logDate]?.let { list ->
+                    val updatedWeeklyList = list.filter { it != currentData }.toMutableList()
+                    currentWeeklyMap[logDate] = updatedWeeklyList
+
+                    _weeklyWaterLog.update { data ->
+                        data.copy(
+                            waterInfoList = currentWeeklyMap.toMap()
+                        )
+                    }
+                }
+
+                // Refresh recent logs to ensure the quick-selection buttons are accurate
+                loadTotalWaterLogs()
+            }
+            catch (e : Exception) {
+                Log.e("WaterLog", "Error deleting log: ${e.message}", e)
+                _todayWaterLogs.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
+                }
+            }
+        }
+    }
 }

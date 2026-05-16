@@ -21,4 +21,5 @@ interface WaterLogRepository {
     ) : Flow<List<WaterLogData>>
 
     suspend fun deleteLoggedWaterData(waterData : WaterLogData)
+    suspend fun deleteWaterLogById(waterData : WaterLogData)
 }
