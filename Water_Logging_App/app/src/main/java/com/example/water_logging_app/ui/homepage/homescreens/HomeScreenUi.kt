@@ -75,7 +75,7 @@ private const val ALPHA_AMOUNT = 0.7f
 @SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
+fun HomeScreenUi(
     modifier : Modifier,
     todayWaterLogVM: WaterLogViewModel,
     userDataVM : ROUserDataViewModel,
@@ -91,8 +91,8 @@ fun HomeScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    LaunchedEffect(Unit) {
-        dailyStreakVM.updateDailyStreakData(todayWLData)
+    LaunchedEffect(todayWLData) {
+        dailyStreakVM.updateDailyStreakData()
     }
 
     Scaffold(

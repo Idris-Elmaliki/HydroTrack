@@ -25,7 +25,7 @@ class AllWaterLogsViewModel @Inject constructor(
     val allWaterLogs : StateFlow<WaterLogDataList> = _allWaterLogs.asStateFlow()
 
     init {
-        loadAllWaterLogsASC()
+        loadAllWaterLogsDSC()
     }
 
     fun loadAllWaterLogsASC() {
@@ -99,4 +99,6 @@ class AllWaterLogsViewModel @Inject constructor(
             }
         }
     }
+
+    fun loadWaterLogsByDateRange(startDate: java.time.LocalDate, endDate: java.time.LocalDate) {}
 }

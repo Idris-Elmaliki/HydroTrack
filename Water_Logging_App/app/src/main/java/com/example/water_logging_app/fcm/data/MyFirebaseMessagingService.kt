@@ -17,7 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@AndroidEntryPoint // Don't forget, FCM is a service so Android made it, hence @AndroidEntryPoint
+@AndroidEntryPoint // Don't forget, FCM is a service that Android made and the Android OS controls, hence @AndroidEntryPoint
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     @Inject lateinit var repo: NotifRepository
 
@@ -57,6 +57,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         // Third we display the notification
         val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(1, notification)
+        manager.notify(System.currentTimeMillis().toInt(), notification)
     }
 }

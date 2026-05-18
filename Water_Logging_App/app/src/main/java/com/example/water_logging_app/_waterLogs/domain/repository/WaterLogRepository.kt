@@ -15,11 +15,12 @@ interface WaterLogRepository {
 
     suspend fun getWaterDataByDate(date : String) : Flow<List<WaterLogData>>
 
+    suspend fun getLatestWaterLogDate() : Flow<String?>
+
     suspend fun getWeeklyLoggedWaterData(
         startDate : String,
         endDate : String
     ) : Flow<List<WaterLogData>>
 
-    suspend fun deleteLoggedWaterData(waterData : WaterLogData)
     suspend fun deleteWaterLogById(waterData : WaterLogData)
 }

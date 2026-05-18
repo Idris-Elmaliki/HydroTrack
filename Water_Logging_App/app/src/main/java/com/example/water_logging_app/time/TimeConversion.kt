@@ -16,6 +16,8 @@ import java.time.LocalTime
 *   For ViewModels and Repositories, check the last letter in the func name!
 *
 *   (V = ViewModel, R = Repository, D = DataStore)
+*
+*  Though to be honest, this naming convention kinda sucks
 */
 object TimeConversion {
     fun getLocalDateFromLocalDateTimeV(
@@ -64,5 +66,13 @@ object TimeConversion {
         val string = date.toString()
 
         return string
+    }
+
+    fun getLocalDateFromString(
+        date: String
+    ): LocalDate {
+        val LocalDate = LocalDate.parse(date)
+
+        return LocalDate
     }
 }

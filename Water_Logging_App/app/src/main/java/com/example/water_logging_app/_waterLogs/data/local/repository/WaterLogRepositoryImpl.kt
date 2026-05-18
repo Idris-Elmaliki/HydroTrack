@@ -8,6 +8,7 @@ import com.example.water_logging_app.time.TimeConversion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import java.time.LocalDate
 import javax.inject.Inject
 
 class WaterLogRepositoryImpl @Inject constructor(
@@ -39,8 +40,8 @@ class WaterLogRepositoryImpl @Inject constructor(
         ).toWaterLogDataList()
     }
 
-    override suspend fun deleteLoggedWaterData(waterData: WaterLogData) {
-        waterLogDao.deleteWaterData(waterData.toWaterLogEntity())
+    override suspend fun getLatestWaterLogDate(): Flow<String?> {
+        return waterLogDao.getLatestWaterLog()
     }
 
     override suspend fun deleteWaterLogById(waterData : WaterLogData) {

@@ -33,4 +33,7 @@ interface WaterLogDAO {
 
     @Query("SELECT * FROM water_log_table WHERE timeOfInput BETWEEN :startDate AND :endDate")
     fun getWeeklyWaterLog(startDate : String, endDate : String) : Flow<List<WaterLogEntity>>
+
+    @Query("SELECT timeOfInput FROM water_log_table ORDER BY timeOfInput DESC LIMIT 1")
+    fun getLatestWaterLog() : Flow<String?>
 }

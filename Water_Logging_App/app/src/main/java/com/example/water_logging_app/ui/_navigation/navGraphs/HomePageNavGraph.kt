@@ -7,13 +7,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.example.water_logging_app.rememberActivity
 import com.example.water_logging_app.ui._navigation.routes.HomePageRoutes
-import com.example.water_logging_app.ui.homepage.homescreens.HistoryScreen
-import com.example.water_logging_app.ui.homepage.homescreens.HomeScreen
+import com.example.water_logging_app.ui.homepage.homescreens.HistoryScreenUi
+import com.example.water_logging_app.ui.homepage.homescreens.HomeScreenUi
 
 const val TWEEN_AMOUNT = 550
 fun NavGraphBuilder.homeGraph(
@@ -69,7 +68,7 @@ fun NavGraphBuilder.homeGraph(
                 }
             }
         ) {
-            HomeScreen(
+            HomeScreenUi(
                 modifier = modifier,
                 todayWaterLogVM = hiltViewModel(rememberActivity()),
                 userDataVM = hiltViewModel(rememberActivity()),
@@ -92,8 +91,10 @@ fun NavGraphBuilder.homeGraph(
                 )
             }
         ) {
-            HistoryScreen(
-                modifier = modifier
+            HistoryScreenUi(
+                modifier = modifier,
+                allWaterLogsVM = hiltViewModel(rememberActivity()),
+                userDataVM = hiltViewModel(rememberActivity())
             )
         }
     }
