@@ -94,5 +94,9 @@
     <string name="Profile">Profile</string>
     <string name="Avatar">Avatar</string>
     <string name="Preferences">Preferences</string>
+    <string name="History">History</string>
+    <string name="OK">OK</string>
+    <string name="Range">Range</string>
+    <string name="SingleDay">Single</string>
 
 </resources>

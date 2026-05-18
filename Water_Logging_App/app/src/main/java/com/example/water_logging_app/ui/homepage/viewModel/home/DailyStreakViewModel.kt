@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.water_logging_app._waterLogStreak.data.DailyStreakDataStoreManager
 import com.example.water_logging_app._waterLogStreak.domain.DailyStreakData
-import com.example.water_logging_app._waterLogs.domain.modelData.TodayWaterDataList
+import com.example.water_logging_app._waterLogs.data.local.repository.WaterLogRepositoryImpl
+import com.example.water_logging_app._waterLogs.domain.modelData.WaterLogData
+import com.example.water_logging_app.time.TimeConversion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -19,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DailyStreakViewModel @Inject constructor(
     private val dataStore : DailyStreakDataStoreManager,
+    private val repo : WaterLogRepositoryImpl
 ) : ViewModel() {
     private var _dailyStreak = MutableStateFlow(DailyStreakData())
     val dailyStreak = _dailyStreak.asStateFlow()
@@ -59,12 +63,20 @@ class DailyStreakViewModel @Inject constructor(
         return lastUpdatedDate == LocalDate.now()
     }
 
-    fun updateDailyStreakData(
-        todayWaterLog : TodayWaterDataList
-    ) {
+    fun updateDailyStreakData() {
         viewModelScope.launch(Dispatchers.IO) {
-            if(todayWaterLog.waterInfoList.isNotEmpty() && !streakAlreadyUpdatedToday()) {
-                val currentData = dailyStreak.value
+            var todayWaterLog : List<WaterLogData> = listOf()
+
+            repo.getWaterDataByDate(LocalDate.now().toString()).collect {
+                todayWaterLog = it
+            }
+
+            val currentData = dailyStreak.value
+
+            Log.d("Profile", "todayWaterLog.waterInfoList.isEmpty() : ${todayWaterLog.isEmpty()}")
+
+            if(todayWaterLog.isNotEmpty() && !streakAlreadyUpdatedToday()) {
+                Log.d("Profile", "In the if statement")
 
                 val newStreak = currentData.currentDailyStreak + 1
 
@@ -78,6 +90,31 @@ class DailyStreakViewModel @Inject constructor(
                                 currentData.maxDailyStreak
                             },
                         lastUpdatedDay = LocalDate.now()
+                    )
+                }
+            }
+            else if(todayWaterLog.isEmpty() && streakAlreadyUpdatedToday()) {
+                Log.d("Profile", "In the else if statement")
+
+                val newStreak = if(currentData.currentDailyStreak - 1 > 0) { currentData.currentDailyStreak - 1 }
+                                else { 0 }
+
+                val latestDate = repo.getLatestWaterLogDate().first()
+
+                _dailyStreak.update { data ->
+                    data.copy(
+                        currentDailyStreak = newStreak,
+                        maxDailyStreak = if (currentData.currentDailyStreak == currentData.maxDailyStreak) {
+                            newStreak
+                        } else {
+                            currentData.maxDailyStreak
+                        },
+                        lastUpdatedDay = latestDate?.let { s ->
+                            TimeConversion.getLocalDateFromLocalDateTimeV(
+                                TimeConversion.getLocalDateTimeFromStringR(s)
+                            )
+                        },
+                        isLoading = false
                     )
                 }
             }
