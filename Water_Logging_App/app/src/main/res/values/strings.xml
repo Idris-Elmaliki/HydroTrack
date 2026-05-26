@@ -98,5 +98,6 @@
     <string name="OK">OK</string>
     <string name="Range">Range</string>
     <string name="SingleDay">Single</string>
+    <string name="SelectDate">Select date</string>
 
 </resources>

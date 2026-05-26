@@ -1,37 +1,24 @@
 package com.example.water_logging_app.ui.homepage.homescreens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material3.Icon
-import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.CalendarMonth
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.getSelectedDate
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,9 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.water_logging_app.R
+import com.example.water_logging_app.ui.homepage.homescreens.historySubScreens.DateRangeSearchBarUi
+import com.example.water_logging_app.ui.homepage.homescreens.historySubScreens.HistoryLogList
+import com.example.water_logging_app.ui.homepage.homescreens.historySubScreens.SingleDaySearchBarUi
+import com.example.water_logging_app.ui.homepage.homescreens.historySubScreens.SortToggleUi
 import com.example.water_logging_app.ui.homepage.viewModel.history.AllWaterLogsViewModel
 import com.example.water_logging_app.ui.homepage.viewModel.home.ROUserDataViewModel
 import java.time.LocalDate
@@ -69,6 +59,15 @@ fun HistoryScreenUi(
 
     val startDatePickerState = rememberDatePickerState()
     val endDatePickerState = rememberDatePickerState()
+
+    LaunchedEffect(isNewestWaterLogs) {
+        if(isNewestWaterLogs) {
+            allWaterLogsVM.loadAllWaterLogsDSC()
+        }
+        else {
+            allWaterLogsVM.loadAllWaterLogsASC()
+        }
+    }
 
     if (showStartDatePicker) {
         DatePickerDialog(
@@ -187,6 +186,12 @@ fun HistoryScreenUi(
 
             if (isTimeRange) {
                 DateRangeSearchBarUi(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.text_padding),
+                            vertical = dimensionResource(R.dimen.text_padding)
+                        ),
                     startDate = startDate,
                     endDate = endDate,
                     onSearchClick = { showStartDatePicker = !showStartDatePicker },
@@ -197,6 +202,12 @@ fun HistoryScreenUi(
                 )
             } else {
                 SingleDaySearchBarUi(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = dimensionResource(R.dimen.text_padding),
+                            vertical = dimensionResource(R.dimen.text_padding)
+                        ),
                     selectedDate = startDate,
                     onSearchClick = { showStartDatePicker = !showStartDatePicker },
                     onClear = { startDate = null }
@@ -204,177 +215,18 @@ fun HistoryScreenUi(
             }
 
             SortToggleUi(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 isNewest = isNewestWaterLogs,
                 onSortChange = { isNewestWaterLogs = it }
             )
-        }
-    }
-}
 
-@Composable
-fun SingleDaySearchBarUi(
-    selectedDate: LocalDate?,
-    onSearchClick: () -> Unit,
-    onClear: () -> Unit
-) {
-    Card(
-        onClick = onSearchClick,
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        border = BorderStroke(
-            width = dimensionResource(R.dimen.BorderStroke),
-            color = MaterialTheme.colorScheme.outline
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = dimensionResource(R.dimen.text_padding),
-                    vertical = dimensionResource(R.dimen.text_padding)
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.text_padding))
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.CalendarMonth,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Selected Date",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = selectedDate?.toString() ?: "Select date",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
-                )
-            }
-            if (selectedDate != null) {
-                IconButton(onClick = onClear) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
-    }
-}
 
-@Composable
-private fun DateRangeSearchBarUi(
-    startDate: LocalDate?,
-    endDate: LocalDate?,
-    onSearchClick: () -> Unit,
-    onClear: () -> Unit
-) {
-    Card(
-        onClick = onSearchClick,
-        shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        border = BorderStroke(
-            width = dimensionResource(R.dimen.BorderStroke),
-            color = MaterialTheme.colorScheme.outline
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = dimensionResource(R.dimen.text_padding),
-                    vertical = dimensionResource(R.dimen.text_padding)
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.text_padding))
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.CalendarMonth,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "From",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = startDate?.toString() ?: "Select date",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
-                )
-            }
-            VerticalDivider(modifier = Modifier.height(28.dp))
-            Column(modifier = Modifier.weight(1f).padding(start = 10.dp)) {
-                Text(
-                    text = "To",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = endDate?.toString() ?: "Select date",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
-                )
-            }
-            if (startDate != null || endDate != null) {
-                IconButton(onClick = onClear) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SortToggleUi(
-    isNewest: Boolean,
-    onSortChange: (Boolean) -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "Sort by",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Row(horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.text_padding))) {
-            FilterChip(
-                selected = isNewest,
-                onClick = { onSortChange(true) },
-                label = { Text("Newest") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowUpward,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp)
-                    )
-                }
-            )
-            FilterChip(
-                selected = !isNewest,
-                onClick = { onSortChange(false) },
-                label = { Text("Oldest") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDownward,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp)
-                    )
-                }
+            HistoryLogList(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                waterLogDataList = allWaterLogs,
+                userData = userData
             )
         }
     }
